@@ -1,0 +1,6 @@
+﻿<Project>
+	<PropertyGroup>
+		<TromboneChampDir>E:\SteamLibrary\steamapps\common\TromboneChamp</TromboneChampDir>
+		<TromboneTootDir>C:\Users\Sabz\AppData\Roaming\r2modmanPlus-local\TromboneChamp\profiles\Default\BepInEx\plugins\TootTally-Core</TromboneTootDir>
+	</PropertyGroup>
+</Project>

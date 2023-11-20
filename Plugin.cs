@@ -2,19 +2,14 @@
 using BaboonAPI.Hooks.Tracks;
 using BepInEx;
 using BepInEx.Configuration;
-using BepInEx.Logging;
 using HarmonyLib;
 using System;
-using System.Runtime.Remoting.Messaging;
-using TootTallyCore.APIServices;
+using System.IO;
 using TootTallyCore.Graphics;
 using TootTallyCore.Graphics.Animations;
 using TootTallyCore.Utils.Assets;
-using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
-using UnityEngine.PostProcessing;
-using static UnityEngine.Analytics.Analytics;
 
 namespace TootTallyCore
 {
@@ -59,13 +54,12 @@ namespace TootTallyCore
 
         private void TryInitialize()
         {
-            AssetManager.LoadAssets();
-            AssetBundleManager.LoadAssets();
-
+            AssetManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets"));
+            //AssetBundleManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets/TootTallyAssets"));
             _harmony.PatchAll(typeof(GameObjectFactory));
-
             gameObject.AddComponent<TootTallyNotifManager>();
             gameObject.AddComponent<TootTallyAnimationManager>();
+
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");
         }

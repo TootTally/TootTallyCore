@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TootTallyCore.Graphics.Animations;
-using TootTallyCore.Utils.Helpers;
+﻿using TootTallyCore.Graphics.Animations;
 using UnityEngine;
 
 namespace TootTallyCore.Graphics

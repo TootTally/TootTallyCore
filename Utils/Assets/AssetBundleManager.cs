@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TootTallyCore.Graphics;
 using UnityEngine.Networking;
 using UnityEngine;
@@ -16,13 +14,12 @@ namespace TootTallyCore.Utils.Assets
         private static AssetBundle _assetBundle;
         private static Dictionary<string, GameObject> _prefabDict;
         private static bool _isInitialized;
-        public static void LoadAssets()
+        public static void LoadAssets(string filePath)
         {
             _prefabDict = new Dictionary<string, GameObject>();
 
-            string bundlePath = Path.Combine(Path.GetDirectoryName(Plugin.Instance.Info.Location), ASSET_BUNDLE_PATH);
-            if (File.Exists(bundlePath))
-                Plugin.Instance.StartCoroutine(LoadAssetBundle(bundlePath, OnAssetBundleLoaded));
+            if (File.Exists(filePath))
+                Plugin.Instance.StartCoroutine(LoadAssetBundle(filePath, OnAssetBundleLoaded));
         }
 
         public static IEnumerator<UnityWebRequestAsyncOperation> LoadAssetBundle(string filePath, Action<AssetBundle> callback)
@@ -43,8 +40,7 @@ namespace TootTallyCore.Utils.Assets
                 Plugin.LogError("AssetBundle was null");
                 return;
             }
-            _assetBundle = assetBundle;
-            _assetBundle.GetAllAssetNames().ToList().ForEach(name => _prefabDict.Add(Path.GetFileNameWithoutExtension(name), _assetBundle.LoadAsset<GameObject>(name)));
+            assetBundle.GetAllAssetNames().ToList().ForEach(name => _prefabDict.Add(Path.GetFileNameWithoutExtension(name), _assetBundle.LoadAsset<GameObject>(name)));
             _isInitialized = true;
         }
 
@@ -63,7 +59,6 @@ namespace TootTallyCore.Utils.Assets
 
         public static void Dispose()
         {
-            _assetBundle.Unload(true);
             _prefabDict.Clear();
             _prefabDict = null;
         }

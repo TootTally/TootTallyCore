@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
-using Rewired.UI.ControlMapper;
 using System;
-using System.Linq;
 using TMPro;
-using TootTallyCore.APIServices;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;

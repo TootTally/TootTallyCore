@@ -11,6 +11,9 @@ namespace TootTallyCore.Graphics
 {
     public static class GameObjectFactory
     {
+        //TEMP
+        public static TMP_Text GetComfortaaFont => _comfortaaTextPrefab;
+
         private static CustomButton _buttonPrefab;
         private static TextMeshProUGUI _multicoloreTextPrefab, _comfortaaTextPrefab;
         private static GameObject _bubblePrefab;

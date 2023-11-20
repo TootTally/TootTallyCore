@@ -48,6 +48,9 @@ namespace TootTallyCore
             if (Instance != null) return;
             Instance = this;
 
+            ShouldShowNotifs = Config.Bind("General", "Display Toasts", true, "Activate toast notifications for important events.");
+            DebugMode = Config.Bind("General", "Debug Mode", false, "Add extra logging information for debugging.");
+
             _harmony = new Harmony(Info.Metadata.GUID);
             GameInitializationEvent.Register(Info, TryInitialize);
         }
@@ -58,11 +61,15 @@ namespace TootTallyCore
         {
             AssetManager.LoadAssets();
             AssetBundleManager.LoadAssets();
+
+            _harmony.PatchAll(typeof(GameObjectFactory));
+
             gameObject.AddComponent<TootTallyNotifManager>();
             gameObject.AddComponent<TootTallyAnimationManager>();
-            _harmony.PatchAll(typeof(GameObjectFactory));
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");
         }
+
+
     }
 }

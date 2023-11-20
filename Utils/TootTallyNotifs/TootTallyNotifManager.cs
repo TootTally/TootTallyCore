@@ -16,7 +16,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
         private static List<TootTallyNotif> _toRemoveNotificationList;
         private static ConcurrentQueue<TootTallyNotifData> _pendingNotifications;
         private static GameObject _notifCanvas;
-        private static bool IsInitialized;
+        private static bool IsInitialized = false;
 
         private void Awake()
         {

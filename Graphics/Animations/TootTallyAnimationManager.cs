@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace TootTallyCore.Graphics.Animations
 {
-    public class TootTallyAnimationManager
+    public class TootTallyAnimationManager : MonoBehaviour
     {
         private static List<TootTallyAnimation> _animationList;
         private static List<TootTallyAnimation> _animationToAdd;

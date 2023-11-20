@@ -38,17 +38,17 @@ namespace TootTallyCore.Graphics
             _settingsPanelVolumeSlider.gameObject.SetActive(false);
             GameObject.DontDestroyOnLoad(_settingsPanelVolumeSlider);
             _creditPanel = __instance.ext_credits_go.transform.parent.gameObject;
-            OnHomeControllerInitialize();
+            OnHomeControllerInitialize(__instance);
         }
 
         [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
         [HarmonyPostfix]
-        static void YoinkGraphicsLevelSelectController()
+        static void YoinkGraphicsLevelSelectController(LevelSelectController __instance)
         {
-            OnLevelSelectControllerInitialize();
+            OnLevelSelectControllerInitialize(__instance);
         }
 
-        public static void OnHomeControllerInitialize()
+        public static void OnHomeControllerInitialize(HomeController homeController)
         {
 
             if (_isHomeControllerInitialized) return;
@@ -63,7 +63,7 @@ namespace TootTallyCore.Graphics
             _isHomeControllerInitialized = true;
         }
 
-        public static void OnLevelSelectControllerInitialize()
+        public static void OnLevelSelectControllerInitialize(LevelSelectController levelSelectController)
         {
             if (_isLevelSelectControllerInitialized) return;
 

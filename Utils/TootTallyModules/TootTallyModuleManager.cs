@@ -9,19 +9,13 @@ namespace TootTallyCore.Utils.TootTallyModules
     {
         public static List<ITootTallyModule> TootTallyModules { get; private set; }
 
-        internal static void Initialize()
-        {
-            TootTallyModules = new List<ITootTallyModule>();
-        }
-
         public static void AddModule(ITootTallyModule module)
         {
-            if (TootTallyModules == null) Plugin.LogInfo("tootTallyModules IS NULL");
+            TootTallyModules ??= new List<ITootTallyModule>();
             TootTallyModules.Add(module);
             if (!module.IsConfigInitialized)
             {
                 module.ModuleConfigEnabled.SettingChanged += delegate { ModuleConfigEnabled_SettingChanged(module); };
-                //_tootTallyModulePage.AddToggle(module.Name.Split('.')[1], module.ModuleConfigEnabled); // Holy shit this sucks why did I do this LMFAO
                 module.IsConfigInitialized = true;
 
             }

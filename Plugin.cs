@@ -7,7 +7,11 @@ using HarmonyLib;
 using System;
 using System.Runtime.Remoting.Messaging;
 using TootTallyCore.APIServices;
+using TootTallyCore.Graphics;
+using TootTallyCore.Graphics.Animations;
+using TootTallyCore.Utils.Assets;
 using TootTallyCore.Utils.TootTallyModules;
+using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 using static UnityEngine.Analytics.Analytics;
@@ -52,6 +56,11 @@ namespace TootTallyCore
 
         private void TryInitialize()
         {
+            AssetManager.LoadAssets();
+            AssetBundleManager.LoadAssets();
+            gameObject.AddComponent<TootTallyNotifManager>();
+            gameObject.AddComponent<TootTallyAnimationManager>();
+            _harmony.PatchAll(typeof(GameObjectFactory));
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");
         }

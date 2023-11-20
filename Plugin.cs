@@ -59,6 +59,7 @@ namespace TootTallyCore
             AssetManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets"));
             //AssetBundleManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets/TootTallyAssets"));
             _harmony.PatchAll(typeof(GameObjectFactory));
+            _harmony.PatchAll(typeof(TootTallyMainPatches));
             gameObject.AddComponent<TootTallyNotifManager>();
             gameObject.AddComponent<TootTallyAnimationManager>();
 
@@ -67,6 +68,12 @@ namespace TootTallyCore
             LogInfo($"Game Version: {Application.version}");
         }
 
-
+        
+        private static class TootTallyMainPatches
+        {
+            [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
+            [HarmonyPrefix]
+            private static bool RemoveTheGodDamnShake() => false;
+        }
     }
 }

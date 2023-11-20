@@ -10,13 +10,11 @@ namespace TootTallyCore.Utils.Assets
 {
     public static class AssetBundleManager
     {
-        private const string ASSET_BUNDLE_PATH = "Assets/TootTallyAssets";
-        private static AssetBundle _assetBundle;
         private static Dictionary<string, GameObject> _prefabDict;
         private static bool _isInitialized;
         public static void LoadAssets(string filePath)
         {
-            _prefabDict = new Dictionary<string, GameObject>();
+            _prefabDict ??= new Dictionary<string, GameObject>();
 
             if (File.Exists(filePath))
                 Plugin.Instance.StartCoroutine(LoadAssetBundle(filePath, OnAssetBundleLoaded));
@@ -40,7 +38,7 @@ namespace TootTallyCore.Utils.Assets
                 Plugin.LogError("AssetBundle was null");
                 return;
             }
-            assetBundle.GetAllAssetNames().ToList().ForEach(name => _prefabDict.Add(Path.GetFileNameWithoutExtension(name), _assetBundle.LoadAsset<GameObject>(name)));
+            assetBundle.GetAllAssetNames().ToList().ForEach(name => _prefabDict.Add(Path.GetFileNameWithoutExtension(name), assetBundle.LoadAsset<GameObject>(name)));
             _isInitialized = true;
         }
 

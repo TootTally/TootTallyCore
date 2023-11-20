@@ -7,31 +7,38 @@ namespace TootTallyCore.Utils.TootTallyModules
 {
     public static class TootTallyModuleManager
     {
-        public static List<ITootTallyModule> TootTallyModules { get; private set; }
-
+        private static List<ITootTallyModule> _tootTallyModuleList;
         public static void AddModule(ITootTallyModule module)
         {
-            TootTallyModules ??= new List<ITootTallyModule>();
-            TootTallyModules.Add(module);
+            _tootTallyModuleList ??= new List<ITootTallyModule>();
+            _tootTallyModuleList.Add(module);
             if (!module.IsConfigInitialized)
             {
                 module.ModuleConfigEnabled.SettingChanged += delegate { ModuleConfigEnabled_SettingChanged(module); };
                 module.IsConfigInitialized = true;
 
             }
-            if (module.ModuleConfigEnabled.Value)
+        }
+
+        public static void LoadModules()
+        {
+            _tootTallyModuleList.ForEach(m =>
             {
-                try
+                if (m.ModuleConfigEnabled.Value)
                 {
-                    module.LoadModule();
+                    try
+                    {
+                        m.LoadModule();
+                    }
+                    catch (Exception e)
+                    {
+                        Plugin.LogError($"Module {m.Name} couldn't be loaded.");
+                        Plugin.LogError(e.Message);
+                        Plugin.LogError(e.StackTrace);
+                    }
                 }
-                catch (Exception e)
-                {
-                    Plugin.LogError($"Module {module.Name} couldn't be loaded.");
-                    Plugin.LogError(e.Message);
-                    Plugin.LogError(e.StackTrace);
-                }
-            }
+            });
+
         }
 
         private static void ModuleConfigEnabled_SettingChanged(ITootTallyModule module)

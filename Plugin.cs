@@ -8,12 +8,14 @@ using System.IO;
 using TootTallyCore.Graphics;
 using TootTallyCore.Graphics.Animations;
 using TootTallyCore.Utils.Assets;
+using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
 
 namespace TootTallyCore
 {
     [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
+    [BepInIncompatibility("TootTally")]
     public class Plugin : BaseUnityPlugin
     {
         public static int BUILDDATE = 20231119;
@@ -60,6 +62,7 @@ namespace TootTallyCore
             gameObject.AddComponent<TootTallyNotifManager>();
             gameObject.AddComponent<TootTallyAnimationManager>();
 
+            TootTallyModuleManager.LoadModules();
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");
         }

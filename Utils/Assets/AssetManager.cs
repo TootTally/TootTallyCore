@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TootTallyCore.APIServices;
 using UnityEngine;
 
@@ -19,9 +20,10 @@ namespace TootTallyCore.Utils.Assets
 
             if (!Directory.Exists(directory)) return;
 
-            foreach (string assetName in Directory.GetFiles(directory))
+            foreach (string asset in Directory.GetFiles(directory).Where(f => Path.GetExtension(f) == ".png"))
             {
-                Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(assetName, texture =>
+                var assetName = Path.GetFileName(asset);
+                Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(asset, texture =>
                 {
                     if (texture != null)
                     {

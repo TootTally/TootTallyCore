@@ -26,10 +26,8 @@ namespace TootTallyCore.Utils.Assets
                 if (!textureDictionary.ContainsKey(assetName))
                     Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(asset, texture =>
                     {
-                        if (texture != null)
-                        {
+                        if (texture != null && !textureDictionary.ContainsKey(assetName))
                             textureDictionary.Add(assetName, texture);
-                        }
                         else
                             DownloadAssetFromServer("http://cdn.toottally.com/assets/" + assetName, directory, assetName);
                     }));

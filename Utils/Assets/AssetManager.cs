@@ -23,15 +23,16 @@ namespace TootTallyCore.Utils.Assets
             foreach (string asset in Directory.GetFiles(directory).Where(f => Path.GetExtension(f) == ".png"))
             {
                 var assetName = Path.GetFileName(asset);
-                Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(asset, texture =>
-                {
-                    if (texture != null)
+                if (!textureDictionary.ContainsKey(assetName))
+                    Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(asset, texture =>
                     {
-                        textureDictionary.Add(assetName, texture);
-                    }
-                    else
-                        DownloadAssetFromServer("http://cdn.toottally.com/assets/" + assetName, directory, assetName);
-                }));
+                        if (texture != null)
+                        {
+                            textureDictionary.Add(assetName, texture);
+                        }
+                        else
+                            DownloadAssetFromServer("http://cdn.toottally.com/assets/" + assetName, directory, assetName);
+                    }));
             }
         }
 
@@ -50,7 +51,7 @@ namespace TootTallyCore.Utils.Assets
             string assetPath = Path.Combine(assetDir, assetName);
             Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(assetPath, texture =>
             {
-                if (texture != null)
+                if (texture != null && !textureDictionary.ContainsKey(assetName))
                 {
                     Plugin.LogInfo("Asset " + assetName + " Reloaded");
                     textureDictionary.Add(assetName, texture);
@@ -64,7 +65,8 @@ namespace TootTallyCore.Utils.Assets
             {
                 Plugin.Instance.StartCoroutine(TootTallyAPIService.LoadPFPFromServer(userID, (texture) =>
                 {
-                    textureDictionary.Add(userID.ToString(), texture);
+                    if (!textureDictionary.ContainsKey(userID.ToString()))
+                        textureDictionary.Add(userID.ToString(), texture);
                     callback(GetSprite(userID.ToString()));
                 }));
             }

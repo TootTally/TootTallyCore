@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Assets;
+using TootTallyCore.APIServices;
 
 namespace TootTallyCore.Graphics
 {
@@ -13,6 +14,7 @@ namespace TootTallyCore.Graphics
     {
         //TEMP
         public static TMP_Text GetComfortaaFont => _comfortaaTextPrefab;
+        public static GameObject GetOverlayPanelPrefab => _overlayPanelPrefab;
 
         private static CustomButton _buttonPrefab;
         private static TextMeshProUGUI _multicoloreTextPrefab, _comfortaaTextPrefab;
@@ -352,87 +354,6 @@ namespace TootTallyCore.Graphics
             GameObject.DontDestroyOnLoad(_overlayPanelPrefab);
         }
 
-
-        private static void SetUserCardPrefab()
-        {
-            _userCardPrefab = GameObject.Instantiate(_overlayPanelPrefab.transform.Find("FSLatencyPanel").gameObject);
-            _userCardPrefab.name = "UserCardPrefab";
-            _userCardPrefab.GetComponent<Image>().color = new Color(0, 0, 0, 0);
-
-
-            var fgRect = _userCardPrefab.transform.Find("LatencyFG").GetComponent<RectTransform>();
-            var bgRect = _userCardPrefab.transform.Find("LatencyBG").GetComponent<RectTransform>();
-            fgRect.GetComponent<Image>().maskable = bgRect.GetComponent<Image>().maskable = true;
-            var size = new Vector2(360, 100);
-            fgRect.sizeDelta = size;
-            fgRect.anchoredPosition = Vector2.zero;
-            bgRect.sizeDelta = size + (Vector2.one * 10f);
-            bgRect.anchoredPosition = Vector2.zero;
-            _userCardPrefab.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-            var horizontalContentHolder = fgRect.gameObject;
-            DestroyFromParent(horizontalContentHolder, "title");
-            DestroyFromParent(horizontalContentHolder, "subtitle");
-
-            var horizontalLayoutGroup = horizontalContentHolder.AddComponent<HorizontalLayoutGroup>();
-            horizontalLayoutGroup.padding = new RectOffset(5, 5, 5, 5);
-            horizontalLayoutGroup.spacing = 20f;
-            horizontalLayoutGroup.childAlignment = TextAnchor.MiddleCenter;
-            horizontalLayoutGroup.childControlHeight = horizontalLayoutGroup.childControlWidth = true;
-            horizontalLayoutGroup.childForceExpandHeight = horizontalLayoutGroup.childForceExpandWidth = false;
-
-
-
-            var contentHolderLeft = horizontalContentHolder.transform.Find("MainPage").gameObject;
-            contentHolderLeft.name = "LeftContent";
-
-            var verticalLayoutGroup = contentHolderLeft.GetComponent<VerticalLayoutGroup>();
-            verticalLayoutGroup.padding = new RectOffset(5, 5, 5, 5);
-            verticalLayoutGroup.spacing = 4f;
-            verticalLayoutGroup.childAlignment = TextAnchor.MiddleCenter;
-            verticalLayoutGroup.childControlHeight = verticalLayoutGroup.childControlWidth = true;
-            verticalLayoutGroup.childForceExpandHeight = verticalLayoutGroup.childForceExpandWidth = true;
-
-            var contentHolderRight = GameObject.Instantiate(contentHolderLeft, horizontalContentHolder.transform);
-            contentHolderRight.name = "RightContent";
-            var verticalLayoutGroupRight = contentHolderRight.GetComponent<VerticalLayoutGroup>();
-            verticalLayoutGroupRight.childControlHeight = verticalLayoutGroupRight.childControlWidth = false;
-            verticalLayoutGroupRight.childForceExpandHeight = verticalLayoutGroupRight.childForceExpandWidth = false;
-
-            var outlineTemp = new GameObject("PFPPrefab", typeof(Image));
-            var outlineImage = outlineTemp.GetComponent<Image>();
-            outlineImage.maskable = true;
-            outlineImage.preserveAspect = true;
-
-            var maskTemp = GameObject.Instantiate(outlineTemp, outlineTemp.transform);
-            maskTemp.name = "ImageMask";
-            var pfpTemp = GameObject.Instantiate(maskTemp, maskTemp.transform);
-            pfpTemp.name = "Image";
-
-            var mask = maskTemp.AddComponent<Mask>();
-            mask.showMaskGraphic = false;
-
-            var maskImage = maskTemp.GetComponent<Image>();
-            maskImage.sprite = AssetManager.GetSprite("PfpMask.png");
-            maskTemp.GetComponent<RectTransform>().sizeDelta = new Vector2(90, 90);
-
-            var pfpImage = pfpTemp.GetComponent<Image>();
-            outlineTemp.transform.SetSiblingIndex(0);
-            outlineImage.enabled = false;
-            pfpImage.sprite = AssetManager.GetSprite("icon.png");
-            pfpImage.preserveAspect = false;
-
-            var layoutElement = outlineTemp.AddComponent<LayoutElement>();
-            layoutElement.minHeight = layoutElement.minWidth = 96;
-            var pfp = GameObject.Instantiate(outlineTemp, horizontalContentHolder.transform);
-            pfp.transform.SetSiblingIndex(0);
-            pfp.name = "PFP";
-            GameObject.DestroyImmediate(outlineTemp);
-
-            GameObject.DontDestroyOnLoad(_userCardPrefab);
-            _userCardPrefab.SetActive(false);
-        }
-
         #endregion
 
         #region Create Objects
@@ -492,7 +413,7 @@ namespace TootTallyCore.Graphics
             return bar;
         }
 
-        private static void TintImage(Image image, Color tint, float percent) =>
+        public static void TintImage(Image image, Color tint, float percent) =>
             image.color = new Color(image.color.r * (1f - percent) + tint.r * percent, image.color.g * (1f - percent) + tint.g * percent, image.color.b * (1f - percent) + tint.b * percent);
 
         public static GameObject CreateOverlayPanel(Transform canvasTransform, Vector2 anchoredPosition, Vector2 size, float borderThiccness, string name)
@@ -755,7 +676,6 @@ namespace TootTallyCore.Graphics
 
             return notif;
         }
-
 
         #endregion
 

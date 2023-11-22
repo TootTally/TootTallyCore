@@ -179,6 +179,7 @@ namespace TootTallyCore.Graphics
             RectTransform popUpNorifRectTransform = _tootTallyNotifPrefab.GetComponent<RectTransform>();
             popUpNorifRectTransform.anchoredPosition = new Vector2(695, -700);
             popUpNorifRectTransform.sizeDelta = new Vector2(450, 200);
+            _tootTallyNotifPrefab.transform.Find("Window Body").GetComponent<Image>().color = new Color(.1f, .1f, .1f);
 
             TMP_Text notifText = GameObject.Instantiate(_multicoloreTextPrefab, _tootTallyNotifPrefab.transform);
             notifText.name = "NotifText";
@@ -206,7 +207,7 @@ namespace TootTallyCore.Graphics
             bubblePrefabRect.sizeDelta = new Vector2(250, 100);
             bubblePrefabRect.pivot = new Vector2(1, 0);
 
-
+            _bubblePrefab.transform.Find("Window Body").GetComponent<Image>().color = new Color(.1f, .1f, .1f);
 
             var text = GameObject.Instantiate(_multicoloreTextPrefab, _bubblePrefab.transform.Find("Window Body"));
             text.name = "BubbleText";
@@ -595,7 +596,7 @@ namespace TootTallyCore.Graphics
             rect.localScale = Vector2.zero;
             rect.eulerAngles = active ? new Vector3(0, 0, 8) : Vector3.zero;
             return btn;
-        }  
+        }
 
         public static TMP_InputField CreateInputField(Transform canvasTransform, Vector2 anchoredPosition, Vector2 size, string name, bool isPassword)
         {

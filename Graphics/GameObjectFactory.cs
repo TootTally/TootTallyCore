@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using UnityEngine;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Assets;
-using TootTallyCore.APIServices;
 
 namespace TootTallyCore.Graphics
 {
@@ -26,7 +25,7 @@ namespace TootTallyCore.Graphics
         private static GameObject _settingsGraphics, _creditPanel;
         private static TMP_InputField _inputFieldPrefab;
 
-        private static GameObject _overlayPanelPrefab, _userCardPrefab;
+        private static GameObject _overlayPanelPrefab;
 
         private static bool _isHomeControllerInitialized;
         private static bool _isLevelSelectControllerInitialized;
@@ -74,6 +73,44 @@ namespace TootTallyCore.Graphics
             Plugin.LogDebug("Generating VerticalSlider prefab...");
             SetVerticalSliderPrefab();
             _isLevelSelectControllerInitialized = true;
+        }
+
+        public static void UpdatePrefabTheme()
+        {
+            if (_isHomeControllerInitialized)
+            {
+                try
+                {
+                    /*_bubblePrefab.GetComponent<Image>().color = Theme.themeColors.notification.border;
+                    _bubblePrefab.transform.Find("Window Body").gameObject.GetComponent<Image>().color = Theme.themeColors.notification.background;
+                    _bubblePrefab.transform.Find("Window Body/BubbleText").GetComponent<TMP_Text>().color = Theme.themeColors.notification.defaultText;
+                    _bubblePrefab.transform.Find("Window Body/BubbleText").GetComponent<TMP_Text>().outlineColor = Theme.themeColors.notification.textOutline;
+
+                    _overlayPanelPrefab.transform.Find("FSLatencyPanel/LatencyBG").gameObject.GetComponent<Image>().color = Theme.themeColors.notification.border;
+                    _overlayPanelPrefab.transform.Find("FSLatencyPanel/LatencyFG").gameObject.GetComponent<Image>().color = Theme.themeColors.notification.background;*/
+                }
+                catch (Exception e)
+                {
+                    Plugin.LogError("HomeController Theme Couldn't be applied.");
+                    Plugin.LogException(e);
+                }
+            }
+
+            if (_isLevelSelectControllerInitialized)
+            {
+                try
+                {
+                    /*_sliderPrefab.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Theme.themeColors.leaderboard.slider.fill;
+                    _verticalSliderPrefab.transform.Find("Handle").gameObject.GetComponent<Image>().color = Theme.themeColors.leaderboard.slider.handle;
+                    _verticalSliderPrefab.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Theme.themeColors.leaderboard.slider.fill;
+                    _verticalSliderPrefab.transform.Find("Background").GetComponent<Image>().color = Theme.themeColors.leaderboard.slider.background;*/
+                }
+                catch (Exception e)
+                {
+                    Plugin.LogError("LevelSelectController Theme Couldn't be applied.");
+                    Plugin.LogException(e);
+                }
+            }
         }
 
         #region SetPrefabs
@@ -288,7 +325,7 @@ namespace TootTallyCore.Graphics
             Slider defaultSlider = GameObject.Find("MainCanvas/FullScreenPanel/Slider").GetComponent<Slider>(); //yoink
 
             _sliderPrefab = GameObject.Instantiate(defaultSlider);
-            //_sliderPrefab.transform.Find("Fill Area/Fill").GetComponent<Image>().color = GameTheme.themeColors.leaderboard.slider.fill;
+            //_sliderPrefab.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Theme.themeColors.leaderboard.slider.fill;
 
             RectTransform sliderRect = _sliderPrefab.GetComponent<RectTransform>();
             sliderRect.anchoredPosition = new Vector2(-200, 0);
@@ -318,10 +355,10 @@ namespace TootTallyCore.Graphics
             GameObject fsLatencyPanel = _overlayPanelPrefab.transform.Find("FSLatencyPanel").gameObject;
             fsLatencyPanel.SetActive(true);
             GameObject.DestroyImmediate(fsLatencyPanel.transform.Find("LatencyBG2").gameObject);
-            //fsLatencyPanel.transform.Find("LatencyBG").gameObject.GetComponent<Image>().color = GameTheme.themeColors.notification.border;
+            //fsLatencyPanel.transform.Find("LatencyBG").gameObject.GetComponent<Image>().color = Theme.themeColors.notification.border;
 
             GameObject latencyFGPanel = fsLatencyPanel.transform.Find("LatencyFG").gameObject; //this where most objects are located
-            //latencyFGPanel.GetComponent<Image>().color = GameTheme.themeColors.notification.background;
+            //latencyFGPanel.GetComponent<Image>().color = Theme.themeColors.notification.background;
             DestroyFromParent(latencyFGPanel, "page2");
             DestroyFromParent(latencyFGPanel, "page3");
             DestroyFromParent(latencyFGPanel, "page4");
@@ -331,9 +368,9 @@ namespace TootTallyCore.Graphics
             Text title = latencyFGPanel.transform.Find("title").gameObject.GetComponent<Text>();
             Text subtitle = latencyFGPanel.transform.Find("subtitle").gameObject.GetComponent<Text>();
             title.text = "TootTally Panel";
-            //title.color = GameTheme.themeColors.notification.defaultText;
+            //title.color = Theme.themeColors.notification.defaultText;
             subtitle.text = "TootTally Panel Early Version Description";
-            //subtitle.color = GameTheme.themeColors.notification.defaultText;
+            //subtitle.color = Theme.themeColors.notification.defaultText;
 
 
             GameObject mainPage = latencyFGPanel.transform.Find("page1").gameObject;
@@ -437,11 +474,24 @@ namespace TootTallyCore.Graphics
             CustomButton newButton = UnityEngine.Object.Instantiate(_buttonPrefab, canvasTransform);
             newButton.name = name;
 
+            /*if (OptionalTootTallyThemes.IsEnabled)
+            {
+                ColorBlock btnColors = newButton.button.colors;
+                btnColors.normalColor = Theme.themeColors.replayButton.colors.normalColor;
+                btnColors.highlightedColor = Theme.themeColors.replayButton.colors.highlightedColor;
+                btnColors.pressedColor = Theme.themeColors.replayButton.colors.pressedColor;
+                btnColors.selectedColor = Theme.themeColors.replayButton.colors.normalColor;
+                newButton.button.colors = btnColors;
+                newButton.textHolder.color = Theme.themeColors.replayButton.text;
+            }*/
+
+
             newButton.textHolder.text = text;
             newButton.textHolder.alignment = TextAnchor.MiddleCenter;
             newButton.textHolder.fontSize = 22;
             newButton.textHolder.horizontalOverflow = HorizontalWrapMode.Wrap;
             newButton.textHolder.verticalOverflow = VerticalWrapMode.Overflow;
+
 
             newButton.GetComponent<RectTransform>().sizeDelta = size;
             newButton.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
@@ -484,10 +534,22 @@ namespace TootTallyCore.Graphics
             imageHolder.transform.localScale = new Vector3(.81f, .81f);
             GameObject.DestroyImmediate(imageHolder.GetComponent<Text>());
             Image image = imageHolder.AddComponent<Image>();
-            image.color = Color.white;
             image.preserveAspect = true;
             image.maskable = true;
             image.sprite = sprite;
+
+            /*if (OptionalTootTallyThemes.IsEnabled)
+            {
+                /*ColorBlock btnColors = newButton.button.colors;
+                btnColors.normalColor = Theme.themeColors.replayButton.colors.normalColor;
+                btnColors.highlightedColor = Theme.themeColors.replayButton.colors.highlightedColor;
+                btnColors.pressedColor = Theme.themeColors.replayButton.colors.pressedColor;
+                btnColors.selectedColor = Theme.themeColors.replayButton.colors.normalColor;
+                newButton.button.colors = btnColors;
+                image.color = isImageThemable ? Theme.themeColors.replayButton.text : Color.white;
+            }*/
+            image.color = Color.white;
+
 
             newButton.GetComponent<RectTransform>().sizeDelta = size;
             newButton.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;
@@ -510,6 +572,9 @@ namespace TootTallyCore.Graphics
             glow.transform.SetParent(btn.transform);
             glow.transform.localScale = Vector3.one / 1.2f;
             glow.SetActive(active);
+            /*if (OptionalTootTallyThemes.IsEnabled)
+                image.color = Theme.themeColors.replayButton.text;
+            else*/
             image.color = Color.white;
             var rect = btn.GetComponent<RectTransform>();
             rect.pivot = Vector2.one / 2f;

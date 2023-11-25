@@ -3,8 +3,16 @@ using BaboonAPI.Hooks.Tracks;
 using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using TootTallyCore.Graphics;
 using TootTallyCore.Graphics.Animations;
 using TootTallyCore.Utils.Assets;
@@ -18,7 +26,7 @@ namespace TootTallyCore
     [BepInIncompatibility("TootTally")]
     public class Plugin : BaseUnityPlugin
     {
-        public static int BUILDDATE = 20231119;
+        public static int BUILDDATE = 20231125;
 
         public static Plugin Instance;
         private Harmony _harmony;
@@ -57,7 +65,6 @@ namespace TootTallyCore
         private void TryInitialize()
         {
             AssetManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets"));
-            //AssetBundleManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets/TootTallyAssets"));
             _harmony.PatchAll(typeof(GameObjectFactory));
             _harmony.PatchAll(typeof(TootTallyMainPatches));
             gameObject.AddComponent<TootTallyNotifManager>();
@@ -68,7 +75,6 @@ namespace TootTallyCore
             LogInfo($"Game Version: {Application.version}");
         }
 
-        
         private static class TootTallyMainPatches
         {
             [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]

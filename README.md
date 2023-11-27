@@ -2,7 +2,7 @@
 TootTallyAPI for Trombone Champ Modding
 
 ## TootTally Modules
-TootTally Modules are mods managed by TootTallyCore. They can be enabled / disabled dynamically without the need of restarting your game. They are use to decouple features into multiple independent components and not over "feature-ise" one single plugin. For more information on how to create a TootTally Modules, head to (hello)[link]
+TootTally Modules are mods managed by TootTallyCore. They can be enabled / disabled dynamically without the need of restarting your game. They are use to decouple features into multiple independent components and not over "feature-ise" one single plugin. For more information on how to create a TootTally Modules, head to [the toottally module template page](https://github.com/TootTally/TootTally.ModuleTemplate)
 
 ## TootTally Notifs
 TootTally Notifications are a convenient way to display information to the user.

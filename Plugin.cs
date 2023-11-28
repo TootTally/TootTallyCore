@@ -54,6 +54,16 @@ namespace TootTallyCore
             ThemeName = Config.Bind("Themes", "ThemeName", DEFAULT_THEME.ToString());
             Config.SettingChanged += ThemeManager.Config_SettingChanged;
 
+            string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");
+            if (!Directory.Exists(targetThemePath))
+            {
+                string sourceThemePath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Themes");
+                if (Directory.Exists(sourceThemePath))
+                    Directory.Move(sourceThemePath, targetThemePath);
+                else
+                    return;
+            }
+
             _harmony = new Harmony(Info.Metadata.GUID);
             GameInitializationEvent.Register(Info, TryInitialize);
         }
@@ -80,16 +90,6 @@ namespace TootTallyCore
         private void TryInitialize()
         {
             AssetManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets"));
-
-            string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");
-            if (!Directory.Exists(targetThemePath))
-            {
-                string sourceThemePath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Themes");
-                if (Directory.Exists(sourceThemePath))
-                    Directory.Move(sourceThemePath, targetThemePath);
-                else
-                    return;
-            }
 
             _harmony.PatchAll(typeof(ThemeManager));
             _harmony.PatchAll(typeof(GameObjectFactory));

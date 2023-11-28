@@ -8,6 +8,21 @@ namespace TootTallyCore.Utils.Helpers
 {
     public static class FileHelper
     {
+        public static void TryMigrateFolder(string sourceFolderPath, string targetFolderPath, bool renameToOldIfAlreadyExists)
+        {
+            if (Directory.Exists(sourceFolderPath))
+            {
+                if (Directory.Exists(targetFolderPath))
+                {
+                    if (Directory.Exists(targetFolderPath + "Old"))
+                        Directory.Delete(targetFolderPath + "Old");
+                    Directory.Move(targetFolderPath, targetFolderPath + "Old");
+                }
+                Directory.Move(sourceFolderPath, targetFolderPath);
+            }
+        }
+
+
         public static void WriteJsonToFile(string dirName, string fileName, string jsonString)
         {
             try

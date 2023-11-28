@@ -22,6 +22,7 @@ using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyThemes;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace TootTallyCore
 {
@@ -80,9 +81,44 @@ namespace TootTallyCore
 
         private static class TootTallyMainPatches
         {
+            private static bool _isGCEnabled;
             [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
             [HarmonyPrefix]
             private static bool RemoveTheGodDamnShake() => false;
+
+            [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
+            [HarmonyPostfix]
+            private static void DisableGarbageCollector()
+            {
+                if (_isGCEnabled)
+                {
+                    GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
+                    _isGCEnabled = false;
+                }
+               
+            }
+
+            [HarmonyPatch(typeof(GameController), nameof(GameController.pauseQuitLevel))]
+            [HarmonyPostfix]
+            private static void EnableGarbageCollectorOnQuit()
+            {
+                if (!_isGCEnabled)
+                {
+                    GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
+                    _isGCEnabled = true;
+                }
+            }
+
+            [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
+            [HarmonyPostfix]
+            private static void EnableGarbageCollectorOnLevelSelectEnter()
+            {
+                if (!_isGCEnabled)
+                {
+                    GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
+                    _isGCEnabled = true;
+                }
+            }
         }
     }
 }

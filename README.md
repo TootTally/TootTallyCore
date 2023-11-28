@@ -4,6 +4,26 @@ TootTallyAPI for Trombone Champ Modding
 ## TootTally Modules
 TootTally Modules are mods managed by TootTallyCore. They can be enabled / disabled dynamically without the need of restarting your game. They are use to decouple features into multiple independent components and not over "feature-ise" one single plugin. For more information on how to create a TootTally Modules, head to [the toottally module template page](https://github.com/TootTally/TootTally.ModuleTemplate)
 
+All current modules:
+[Accounts](https://github.com/TootTally/TootTallyAccounts)
+[BackgroundDim](https://github.com/TootTally/TootTallyBackgroundDim)
+[CustomCursor](https://github.com/TootTally/TootTallyCustomCursor)
+[Accounts](https://github.com/TootTally/TootTallyCustomNote)
+[Accounts](https://github.com/TootTally/TootTallyCustomTromboner)
+[Accounts](https://github.com/TootTally/TootTallyDiscordSDK)
+[Accounts](https://github.com/TootTally/TootTallyGameModifiers)
+[Accounts](https://github.com/TootTally/TootTallyGameTweaks)
+[Accounts](https://github.com/TootTally/TootTallyKeyOverlay)
+[Accounts](https://github.com/TootTally/TootTallyLeaderboard)
+[Accounts](https://github.com/TootTally/TootTallySettings)
+[SongDownloader](https://github.com/TootTally/TootTallySettings)
+[Spectator](https://github.com/TootTally/TootTallySpectator)
+[TootScoreVisualize](https://github.com/TootTally/TootTallyTootScoreVisualizer)
+[Trombuddies](https://github.com/TootTally/TootTallyTrombuddies)
+[TTCounter](https://github.com/TootTally/TootTallyTTCounter)
+[TwitchIntegration](https://github.com/TootTally/TootTallyTwitchIntegration)
+[WebsocketLibs](https://github.com/TootTally/TootTallyWebSocketLibs)
+
 ## TootTally Notifs
 TootTally Notifications are a convenient way to display information to the user.
 - There are 3 values needed when creating a notification: Message, Color, Lifespan (Seconds).

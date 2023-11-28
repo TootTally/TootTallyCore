@@ -22,6 +22,7 @@ using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyThemes;
 using UnityEngine;
+using UnityEngine.Profiling.Memory.Experimental;
 using UnityEngine.Scripting;
 
 namespace TootTallyCore
@@ -64,7 +65,24 @@ namespace TootTallyCore
             GameInitializationEvent.Register(Info, TryInitialize);
         }
 
-        public void ReloadTracks() => TrackLookup.reload();
+
+        private void Update()
+        {
+            if (!_isReloadingTracks && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+            {
+                _isReloadingTracks = true;
+                TootTallyNotifManager.DisplayNotif("Reloading tracks... Lag is normal.");
+                ReloadTracks();
+            }
+        }
+
+        private bool _isReloadingTracks;
+
+        public void ReloadTracks()
+        {
+            TrackLookup.reload();
+            _isReloadingTracks = false;
+        }
 
         private void TryInitialize()
         {
@@ -81,7 +99,6 @@ namespace TootTallyCore
 
         private static class TootTallyMainPatches
         {
-            private static bool _isGCEnabled;
             [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
             [HarmonyPrefix]
             private static bool RemoveTheGodDamnShake() => false;
@@ -90,11 +107,8 @@ namespace TootTallyCore
             [HarmonyPostfix]
             private static void DisableGarbageCollector()
             {
-                if (_isGCEnabled)
-                {
+                if (IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
-                    _isGCEnabled = false;
-                }
                
             }
 
@@ -102,23 +116,19 @@ namespace TootTallyCore
             [HarmonyPostfix]
             private static void EnableGarbageCollectorOnQuit()
             {
-                if (!_isGCEnabled)
-                {
+                if (!IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
-                    _isGCEnabled = true;
-                }
             }
 
             [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
             [HarmonyPostfix]
             private static void EnableGarbageCollectorOnLevelSelectEnter()
             {
-                if (!_isGCEnabled)
-                {
+                if (IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
-                    _isGCEnabled = true;
-                }
             }
+
+            private static bool IsGCEnabled => GarbageCollector.GCMode == GarbageCollector.Mode.Enabled;
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿using BaboonAPI.Hooks.Initializer;
+﻿using BaboonAPI.Hooks.Entrypoints;
+using BaboonAPI.Hooks.Initializer;
 using BaboonAPI.Hooks.Tracks;
 using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using Newtonsoft.Json;
+using Rewired.UI.ControlMapper;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,6 +20,7 @@ using TootTallyCore.Graphics.Animations;
 using TootTallyCore.Utils.Assets;
 using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
+using TootTallyThemes;
 using UnityEngine;
 
 namespace TootTallyCore

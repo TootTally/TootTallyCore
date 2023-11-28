@@ -22,7 +22,7 @@ namespace TootTallyCore.Utils.TootTallyModules
 
         public static void LoadModules()
         {
-            _tootTallyModuleList.ForEach(m =>
+            _tootTallyModuleList?.ForEach(m =>
             {
                 if (m.ModuleConfigEnabled.Value)
                 {
@@ -33,8 +33,7 @@ namespace TootTallyCore.Utils.TootTallyModules
                     catch (Exception e)
                     {
                         Plugin.LogError($"Module {m.Name} couldn't be loaded.");
-                        Plugin.LogError(e.Message);
-                        Plugin.LogError(e.StackTrace);
+                        Plugin.LogException(e);
                     }
                 }
             });
@@ -45,8 +44,16 @@ namespace TootTallyCore.Utils.TootTallyModules
         {
             if (module.ModuleConfigEnabled.Value)
             {
-                module.LoadModule();
-                TootTallyNotifManager.DisplayNotif($"Module {module.Name} Enabled.", Color.white);
+                try
+                {
+                    module.LoadModule();
+                    TootTallyNotifManager.DisplayNotif($"Module {module.Name} Enabled.", Color.white);
+                }
+                catch (Exception e)
+                {
+                    Plugin.LogError($"Module {module.Name} couldn't be loaded.");
+                    Plugin.LogException(e);
+                }
             }
             else
             {

@@ -41,7 +41,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
             _pendingNotifications.Enqueue(new TootTallyNotifData(message, textColor, lifespan));
         }
 
-        public static void DisplayNotif(string message) => DisplayNotif(message, Color.white);
+        public static void DisplayNotif(string message) => DisplayNotif(message, Theme.colors.notification.defaultText);
 
         private static void OnNotifCountChangeSetNewPosition()
         {

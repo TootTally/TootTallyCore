@@ -19,5 +19,6 @@ namespace TootTallyCore.Graphics
         }
 
         public void RemoveAllOnClickActions() => button.onClick.RemoveAllListeners();
+
     }
 }

@@ -29,12 +29,6 @@
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="TootTallyThemes">
-			<HintPath>C:\Users\Sabz\AppData\Roaming\r2modmanPlus-local\TromboneChamp\profiles\TTCoreTesting\BepInEx\plugins\TootTally-Themes\TootTallyThemes.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(TromboneTootDir) != ''">
 		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TromboneTootDir)" />
 	</Target>

@@ -1,4 +1,5 @@
-﻿using BaboonAPI.Hooks.Initializer;
+﻿using BaboonAPI.Hooks.Entrypoints;
+using BaboonAPI.Hooks.Initializer;
 using BaboonAPI.Hooks.Tracks;
 using BepInEx;
 using BepInEx.Configuration;
@@ -20,6 +21,7 @@ namespace TootTallyCore
     public class Plugin : BaseUnityPlugin
     {
         public static int BUILDDATE = 20231128;
+        private const string DEFAULT_THEME = "Default";
 
         public static Plugin Instance;
         private Harmony _harmony;
@@ -40,6 +42,7 @@ namespace TootTallyCore
 
         public ConfigEntry<bool> DebugMode { get; private set; }
         public ConfigEntry<bool> ShouldShowNotifs { get; private set; }
+        public ConfigEntry<string> ThemeName { get; private set; }
 
         private void Awake()
         {
@@ -48,6 +51,8 @@ namespace TootTallyCore
 
             ShouldShowNotifs = Config.Bind("General", "Display Toasts", true, "Activate toast notifications for important events.");
             DebugMode = Config.Bind("General", "Debug Mode", false, "Add extra logging information for debugging.");
+            ThemeName = Config.Bind("Themes", "ThemeName", DEFAULT_THEME.ToString());
+            Config.SettingChanged += ThemeManager.Config_SettingChanged;
 
             _harmony = new Harmony(Info.Metadata.GUID);
             GameInitializationEvent.Register(Info, TryInitialize);
@@ -75,6 +80,18 @@ namespace TootTallyCore
         private void TryInitialize()
         {
             AssetManager.LoadAssets(Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Assets"));
+
+            string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");
+            if (!Directory.Exists(targetThemePath))
+            {
+                string sourceThemePath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Themes");
+                if (Directory.Exists(sourceThemePath))
+                    Directory.Move(sourceThemePath, targetThemePath);
+                else
+                    return;
+            }
+
+            _harmony.PatchAll(typeof(ThemeManager));
             _harmony.PatchAll(typeof(GameObjectFactory));
             _harmony.PatchAll(typeof(TootTallyMainPatches));
             gameObject.AddComponent<TootTallyNotifManager>();

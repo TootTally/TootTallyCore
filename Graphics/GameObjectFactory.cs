@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using UnityEngine;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Assets;
-using static TootTallyCore.Plugin;
 
 namespace TootTallyCore.Graphics
 {

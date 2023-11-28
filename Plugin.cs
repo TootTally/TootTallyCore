@@ -60,7 +60,7 @@ namespace TootTallyCore
             {
                 _isReloadingTracks = true;
                 TootTallyNotifManager.DisplayNotif("Reloading tracks... Lag is normal.");
-                ReloadTracks();
+                Plugin.Instance.Invoke("ReloadTracks", .5f);
             }
         }
 

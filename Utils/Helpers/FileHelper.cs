@@ -15,7 +15,7 @@ namespace TootTallyCore.Utils.Helpers
                 if (Directory.Exists(targetFolderPath))
                 {
                     if (Directory.Exists(targetFolderPath + "Old"))
-                        Directory.Delete(targetFolderPath + "Old");
+                        Directory.Delete(targetFolderPath + "Old", true);
                     Directory.Move(targetFolderPath, targetFolderPath + "Old");
                 }
                 Directory.Move(sourceFolderPath, targetFolderPath);

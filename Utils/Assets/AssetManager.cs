@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using TootTallyCore.APIServices;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TootTallyCore.Utils.Assets
 {
@@ -28,19 +29,21 @@ namespace TootTallyCore.Utils.Assets
                         if (texture != null && !textureDictionary.ContainsKey(assetName))
                             textureDictionary.Add(assetName, texture);
                         else
-                            DownloadAssetFromServer("http://cdn.toottally.com/assets/" + assetName, directory, assetName);
+                            Plugin.LogError($"{assetName} couldn't be found.");
                     }));
             }
         }
 
-        public static void DownloadAssetFromServer(string apiLink, string assetDir, string assetName)
+        public static void LoadSingleAsset(string assetPath, string assetName)
         {
-            Plugin.LogInfo("Downloading asset " + assetName);
-            string assetPath = Path.Combine(assetDir, assetName);
-            Plugin.Instance.StartCoroutine(TootTallyAPIService.DownloadTextureFromServer(apiLink, assetPath, success =>
-            {
-                ReloadTextureLocal(assetDir, assetName);
-            }));
+            if (!textureDictionary.ContainsKey(assetName))
+                Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(assetPath, texture =>
+                {
+                    if (texture != null && !textureDictionary.ContainsKey(assetName))
+                        textureDictionary.Add(assetName, texture);
+                    else
+                        Plugin.LogError($"{assetName} couldn't be found.");
+                }));
         }
 
         public static void ReloadTextureLocal(string assetDir, string assetName)

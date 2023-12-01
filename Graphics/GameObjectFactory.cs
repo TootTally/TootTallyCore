@@ -443,12 +443,24 @@ namespace TootTallyCore.Graphics
         public static GameObject CreateClickableImageHolder(Transform canvasTransform, Vector2 position, Vector2 size, Sprite sprite, string name, Action onClick)
         {
             var imageHolder = CreateImageHolder(canvasTransform, position, size, sprite, name);
+            var image = imageHolder.GetComponent<Image>();
+            var color = image.color;
             var eventTrigger = imageHolder.AddComponent<EventTrigger>();
 
             EventTrigger.Entry pointerClickEvent = new EventTrigger.Entry();
             pointerClickEvent.eventID = EventTriggerType.PointerClick;
             pointerClickEvent.callback.AddListener((data) => onClick?.Invoke());
             eventTrigger.triggers.Add(pointerClickEvent);
+
+            EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();
+            pointerEnterEvent.eventID = EventTriggerType.PointerEnter;
+            pointerEnterEvent.callback.AddListener((data) => TintImage(image, Color.black, .1f));
+            eventTrigger.triggers.Add(pointerEnterEvent);
+
+            EventTrigger.Entry pointerLeaveEvent = new EventTrigger.Entry();
+            pointerLeaveEvent.eventID = EventTriggerType.PointerExit;
+            pointerLeaveEvent.callback.AddListener((data) => image.color = color);
+            eventTrigger.triggers.Add(pointerEnterEvent);
 
             return imageHolder;
         }

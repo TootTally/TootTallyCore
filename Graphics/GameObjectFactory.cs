@@ -444,6 +444,7 @@ namespace TootTallyCore.Graphics
         {
             var imageHolder = CreateImageHolder(canvasTransform, position, size, sprite, name);
             var image = imageHolder.GetComponent<Image>();
+            var color = image.color;
             var eventTrigger = imageHolder.AddComponent<EventTrigger>();
 
             EventTrigger.Entry pointerClickEvent = new EventTrigger.Entry();
@@ -453,13 +454,13 @@ namespace TootTallyCore.Graphics
 
             EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();
             pointerEnterEvent.eventID = EventTriggerType.PointerEnter;
-            pointerEnterEvent.callback.AddListener((data) => TintImage(image, Color.black, .1f));
+            pointerEnterEvent.callback.AddListener((data) => TintImage(image, Color.black, .25f));
             eventTrigger.triggers.Add(pointerEnterEvent);
 
             EventTrigger.Entry pointerLeaveEvent = new EventTrigger.Entry();
             pointerLeaveEvent.eventID = EventTriggerType.PointerExit;
-            pointerLeaveEvent.callback.AddListener((data) => image.color = Color.white);
-            eventTrigger.triggers.Add(pointerEnterEvent);
+            pointerLeaveEvent.callback.AddListener((data) => image.color = color);
+            eventTrigger.triggers.Add(pointerLeaveEvent);
 
             return imageHolder;
         }

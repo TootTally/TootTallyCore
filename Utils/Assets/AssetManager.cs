@@ -34,16 +34,23 @@ namespace TootTallyCore.Utils.Assets
             }
         }
 
-        public static void LoadSingleAsset(string assetPath, string assetName)
+        public static void LoadSingleAsset(string assetPath, string assetName, Action<Sprite> callback = null)
         {
-            if (!textureDictionary.ContainsKey(assetName))
-                Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(assetPath, texture =>
+            if (textureDictionary.ContainsKey(assetName))
+            {
+                callback?.Invoke(GetSprite(assetName));
+                return;
+            }
+            Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(assetPath, texture =>
+            {
+                if (texture != null && !textureDictionary.ContainsKey(assetName))
                 {
-                    if (texture != null && !textureDictionary.ContainsKey(assetName))
-                        textureDictionary.Add(assetName, texture);
-                    else
-                        Plugin.LogError($"{assetName} couldn't be found.");
-                }));
+                    textureDictionary.Add(assetName, texture);
+                    callback?.Invoke(GetSprite(assetName));
+                }
+                else
+                    Plugin.LogError($"{assetName} couldn't be found.");
+            }));
         }
 
         public static void ReloadTextureLocal(string assetDir, string assetName)

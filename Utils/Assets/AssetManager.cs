@@ -53,19 +53,6 @@ namespace TootTallyCore.Utils.Assets
             }));
         }
 
-        public static void ReloadTextureLocal(string assetDir, string assetName)
-        {
-            string assetPath = Path.Combine(assetDir, assetName);
-            Plugin.Instance.StartCoroutine(TootTallyAPIService.TryLoadingTextureLocal(assetPath, texture =>
-            {
-                if (texture != null && !textureDictionary.ContainsKey(assetName))
-                {
-                    Plugin.LogInfo("Asset " + assetName + " Reloaded");
-                    textureDictionary.Add(assetName, texture);
-                }
-            }));
-        }
-
         public static void GetProfilePictureByID(int userID, Action<Sprite> callback)
         {
             if (!textureDictionary.ContainsKey(userID.ToString()))

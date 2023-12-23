@@ -40,19 +40,19 @@ namespace TootTallyCore.Utils.Helpers
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                string ret = "";
+                var ret = new StringBuilder();
                 byte[] hashArray = sha256.ComputeHash(data);
                 foreach (byte b in hashArray)
                 {
-                    ret += $"{b:x2}";
+                    ret.Append(b.ToString("x2"));
                 }
-                return ret;
+                return ret.ToString();
             }
         }
 
         public static string CalcFileHash(string fileLocation)
         {
-            if (!File.Exists(fileLocation))
+            if (!File.Exists(fileLocation) || new FileInfo(fileLocation).Length > 2_000_000)
                 return "";
             return CalcSHA256Hash(Encoding.UTF8.GetBytes(File.ReadAllText(fileLocation)));
         }

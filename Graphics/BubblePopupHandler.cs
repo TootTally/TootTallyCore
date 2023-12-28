@@ -6,12 +6,19 @@ namespace TootTallyCore.Graphics
 {
     public class BubblePopupHandler : MonoBehaviour
     {
+        private Camera _camera;
         private GameObject _bubble;
         private EventTrigger _parentTrigger;
         private TootTallyAnimation _positionAnimation;
         private TootTallyAnimation _scaleAnimation;
         private bool _useWorldPosition;
         private bool _isActive;
+
+        public void Initialize(GameObject bubble, Camera camera, bool useWorldPosition = true)
+        {
+            _camera = camera;
+            Initialize(bubble, useWorldPosition);
+        }
 
         public void Initialize(GameObject bubble, bool useWorldPosition = true)
         {
@@ -44,10 +51,11 @@ namespace TootTallyCore.Graphics
 
             if (_isActive)
             {
+                var cam = _camera ?? Camera.main;
                 var v3 = Input.mousePosition;
                 v3.z = 10;
                 if (_useWorldPosition)
-                    _positionAnimation?.SetTargetVector(Camera.main.ScreenToWorldPoint(v3));
+                    _positionAnimation?.SetTargetVector(cam.ScreenToWorldPoint(v3));
                 else
                     _positionAnimation?.SetTargetVector(v3);
             }

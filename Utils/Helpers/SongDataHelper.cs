@@ -79,7 +79,13 @@ namespace TootTallyCore.Utils.Helpers
 
         public static string GetSongHash(TromboneTrack track)
         {
-            return track is CustomTrack ? CalcFileHash(GetSongFilePath(track)) : track.trackref;
+            if (track is CustomTrack)
+                return CalcFileHash(GetSongFilePath(track));
+            else if (track.GetType().ToString() == "BaboonAPI.Patch.BaseGameTrack") //Should probably ask BaboonAPI to make this public
+                return track.trackref;
+            Plugin.LogInfo($"TrackType {track.GetType()} is unknown.");
+            return null;
+
         }
 
         public static string GenerateBaseTmb(TromboneTrack track)

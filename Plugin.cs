@@ -117,19 +117,35 @@ namespace TootTallyCore
                
             }
 
-            [HarmonyPatch(typeof(GameController), nameof(GameController.pauseQuitLevel))]
+            [HarmonyPatch(typeof(PauseCanvasController), nameof(PauseCanvasController.showPausePanel))]
             [HarmonyPostfix]
-            private static void EnableGarbageCollectorOnQuit()
+            private static void EnableGarbageCollectorOnPause()
             {
                 if (!IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
+            }
+
+            [HarmonyPatch(typeof(GameController), nameof(GameController.resumeTrack))]
+            [HarmonyPostfix]
+            private static void DisableGarbageCollectorOnResumeTrack()
+            {
+                if (IsGCEnabled)
+                    GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
             }
 
             [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
             [HarmonyPostfix]
             private static void EnableGarbageCollectorOnLevelSelectEnter()
             {
-                if (IsGCEnabled)
+                if (!IsGCEnabled)
+                    GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
+            }
+
+            [HarmonyPatch(typeof(PlaytestAnims), nameof(PlaytestAnims.Start))]
+            [HarmonyPostfix]
+            private static void EnableGarbageCollectorOnMultiplayerEnter()
+            {
+                if (!IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
             }
 

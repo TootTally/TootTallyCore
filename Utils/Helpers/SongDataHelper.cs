@@ -1,4 +1,5 @@
 ﻿using BaboonAPI.Hooks.Tracks;
+using BaboonAPI.Internal.BaseGame;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,7 @@ namespace TootTallyCore.Utils.Helpers
         {
             if (track is CustomTrack)
                 return CalcFileHash(GetSongFilePath(track));
-            else if (track.GetType().ToString() == "BaboonAPI.Patch.BaseGameTrack") //Should probably ask BaboonAPI to make this public
+            else if (track is BaseGameTrack)
                 return track.trackref;
             Plugin.LogInfo($"TrackType {track.GetType()} is unknown.");
             return null;

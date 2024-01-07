@@ -482,7 +482,7 @@ namespace TootTallyCore
         [HarmonyPostfix]
         public static void OnAdvanceSongsPostFix(LevelSelectController __instance)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < __instance.alltrackslist[__instance.songindex].difficulty; i++)
             {
                 if (!Theme.isDefault)
                     __instance.diffstars[i].color = Color.Lerp(Theme.colors.diffStar.gradientStart, Theme.colors.diffStar.gradientEnd, i / 9f);

@@ -10,6 +10,7 @@ namespace TootTallyCore.Graphics.Animations
         private static List<TootTallyAnimation> _animationToAdd;
         private static List<TootTallyAnimation> _animationToRemove;
         private static bool _isInitialized;
+        public static bool UnscaledDeltaTime = true;
 
         public static TootTallyAnimation AddNewTransformPositionAnimation(GameObject gameObject, Vector3 targetVector,
             float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null)
@@ -95,17 +96,17 @@ namespace TootTallyCore.Graphics.Animations
             //add animation the needs to be added
             if (_animationToAdd.Count > 0)
             {
-                _animationToAdd.ForEach(anim => _animationList.Add(anim));
+                _animationToAdd.ForEach(_animationList.Add);
                 _animationToAdd.Clear();
             }
 
             //update all animations
-            _animationList.ForEach(anim => anim.UpdateVector());
+            _animationList.ForEach(anim => anim.UpdateVector(UnscaledDeltaTime));
 
             //remove animations that are done
             if (_animationToRemove.Count > 0)
             {
-                _animationToRemove.ForEach(anim => _animationList.Remove(anim));
+                _animationList.RemoveAll(_animationToRemove.Contains);
                 _animationToRemove.Clear();
             }
 

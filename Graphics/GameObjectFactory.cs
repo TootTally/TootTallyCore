@@ -146,7 +146,7 @@ namespace TootTallyCore.Graphics
         private static void SetMulticoloreTextPrefab()
         {
             GameObject mainCanvas = GameObject.Find("MainCanvas").gameObject;
-            GameObject headerCreditText = mainCanvas.transform.Find("FullCreditsPanel/header-credits/Text").gameObject;
+            GameObject headerCreditText = mainCanvas.transform.Find("SettingsPanel/header-Settings/Text").gameObject;
 
             GameObject textHolder = GameObject.Instantiate(headerCreditText);
             textHolder.name = "defaultTextPrefab";
@@ -265,7 +265,10 @@ namespace TootTallyCore.Graphics
 
             _bubblePrefab = GameObject.Instantiate(bufferPanel);
             _bubblePrefab.name = "BubblePrefab";
-            GameObject.DestroyImmediate(_bubblePrefab.transform.Find("Window Body/all_settiings").gameObject);
+
+            var windowBody = _bubblePrefab.transform.Find("Window Body");
+
+            GameObject.DestroyImmediate(windowBody.Find("all_settiings").gameObject);
 
             CanvasGroup canvasGroup = _bubblePrefab.AddComponent<CanvasGroup>();
             canvasGroup.blocksRaycasts = false;
@@ -274,9 +277,9 @@ namespace TootTallyCore.Graphics
             bubblePrefabRect.sizeDelta = new Vector2(250, 100);
             bubblePrefabRect.pivot = new Vector2(1, 0);
 
-            _bubblePrefab.transform.Find("Window Body").GetComponent<Image>().color = new Color(.1f, .1f, .1f);
+            windowBody.GetComponent<Image>().color = new Color(.1f, .1f, .1f);
 
-            var text = GameObject.Instantiate(_multicoloreTextPrefab, _bubblePrefab.transform.Find("Window Body"));
+            var text = GameObject.Instantiate(_multicoloreTextPrefab, windowBody);
             text.name = "BubbleText";
             text.maskable = false;
             text.enableWordWrapping = true;
@@ -618,6 +621,16 @@ namespace TootTallyCore.Graphics
         {
             Slider slider = GameObject.Instantiate(_sliderPrefab, canvasTransform);
             slider.name = name;
+            return slider;
+        }
+
+        public static Slider CreateHomeSlider(Transform canvasTransform, Vector2 position, Vector2 size)
+        {
+            var slider = GameObject.Instantiate(_settingsPanelVolumeSlider, canvasTransform);
+            var rect = slider.GetComponent<RectTransform>();
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+            slider.gameObject.SetActive(true);
             return slider;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 namespace TootTallyCore.Graphics.Animations
 {
@@ -34,7 +35,7 @@ namespace TootTallyCore.Graphics.Animations
 
         public void SetCallback(Action<GameObject> onFinishCallback) => _onFinishCallback = onFinishCallback;
 
-        public void UpdateVector()
+        public void UpdateVector(bool unscaledDeltaTime)
         {
             if (_gameObject == null)
             {
@@ -42,12 +43,11 @@ namespace TootTallyCore.Graphics.Animations
                 return;
             }
 
-            var delta = Time.deltaTime;
+            var delta = unscaledDeltaTime ? Time.unscaledDeltaTime : Time.deltaTime;
             _timeSpan -= delta;
             if (_timeSpan <= 0)
             {
-                if (_vectorType == VectorType.EulerAngle)
-                    _gameObject.transform.eulerAngles = _targetVector;
+                SnapToFinalVector();
 
                 if (_onFinishCallback != null)
                 {
@@ -84,6 +84,34 @@ namespace TootTallyCore.Graphics.Animations
                         break;
 
                 }
+            }
+        }
+
+        public void SnapToFinalVector()
+        {
+            switch (_vectorType)
+            {
+                case VectorType.TransformScale:
+                    _gameObject.transform.localScale = _targetVector;
+                    break;
+                case VectorType.TransformPosition:
+                    _gameObject.transform.position = _targetVector;
+                    break;
+                case VectorType.Position:
+                    _gameObject.GetComponent<RectTransform>().anchoredPosition = _targetVector;
+                    break;
+                case VectorType.SizeDelta:
+                    _gameObject.GetComponent<RectTransform>().sizeDelta = _targetVector;
+                    break;
+                case VectorType.Scale:
+                    _gameObject.GetComponent<RectTransform>().localScale = _targetVector;
+                    break;
+                case VectorType.EulerAngle:
+                    _gameObject.transform.eulerAngles = _targetVector;
+                    break;
+                case VectorType.Rotation:
+                    _gameObject.transform.rotation = Quaternion.Euler(_targetVector);
+                    break;
             }
         }
 

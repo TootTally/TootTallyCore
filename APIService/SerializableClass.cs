@@ -55,6 +55,7 @@ namespace TootTallyCore.APIServices
             public float tt;
             public bool is_rated;
             public float replay_speed;
+            public string[] modifiers;
 
             public int[] GetTally => new int[] { nasty, meh, okay, nice, perfect };
         }

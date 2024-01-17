@@ -28,8 +28,6 @@ namespace TootTallyCore.Utils.Assets
                     {
                         if (texture != null && !textureDictionary.ContainsKey(assetName))
                             textureDictionary.Add(assetName, texture);
-                        else
-                            Plugin.LogError($"{assetName} couldn't be found.");
                     }));
             }
         }
@@ -48,8 +46,6 @@ namespace TootTallyCore.Utils.Assets
                     textureDictionary.Add(assetName, texture);
                     callback?.Invoke(GetSprite(assetName));
                 }
-                else
-                    Plugin.LogError($"{assetName} couldn't be found.");
             }));
         }
 
@@ -57,10 +53,10 @@ namespace TootTallyCore.Utils.Assets
         {
             if (!textureDictionary.ContainsKey(userID.ToString()))
             {
-                Plugin.Instance.StartCoroutine(TootTallyAPIService.LoadPFPFromServer(userID, (texture) =>
+                Plugin.Instance.StartCoroutine(TootTallyAPIService.LoadPFPFromServer(userID, texture =>
                 {
                     if (!textureDictionary.ContainsKey(userID.ToString()))
-                        textureDictionary.Add(userID.ToString(), texture);
+                        textureDictionary.Add(userID.ToString(), texture ?? textureDictionary[DEFAULT_TEXTURE_NAME]);
                     callback(GetSprite(userID.ToString()));
                 }));
             }

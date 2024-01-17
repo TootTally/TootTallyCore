@@ -77,6 +77,12 @@ namespace TootTallyCore
                 TootTallyNotifManager.DisplayNotif("Reloading tracks... Lag is normal.");
                 Plugin.Instance.Invoke("ReloadTracks", .5f);
             }
+            else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))
+            {
+                TootTallyNotifManager.DisplayNotif("Forcing garbage collection.");
+                for (int i = 0; i < 9; i++)
+                    GC.Collect(i % 3, GCCollectionMode.Forced);
+            }
         }
 
         private bool _isReloadingTracks;
@@ -114,7 +120,7 @@ namespace TootTallyCore
             {
                 if (IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
-               
+
             }
 
             [HarmonyPatch(typeof(PauseCanvasController), nameof(PauseCanvasController.showPausePanel))]
@@ -139,6 +145,7 @@ namespace TootTallyCore
             {
                 if (!IsGCEnabled)
                     GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
+
             }
 
             [HarmonyPatch(typeof(PlaytestAnims), nameof(PlaytestAnims.Start))]

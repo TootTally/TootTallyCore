@@ -12,6 +12,8 @@ namespace TootTallyCore
 {
     public static class ThemeManager
     {
+        public static Action OnThemeRefreshEvents;
+
         private const string CONFIG_FIELD = "Themes";
         private const string DEFAULT_THEME = "Default";
         public static Text songyear, songgenre, songcomposer, songtempo, songduration, songdesctext;
@@ -48,14 +50,15 @@ namespace TootTallyCore
         {
             if (_currentTheme == Plugin.Instance.ThemeName.Value) return; //skip if theme did not change
 
-            SetTheme(Plugin.Instance.ThemeName.Value);
-            TootTallyNotifManager.DisplayNotif("New Theme Loaded!");
+            _currentTheme = Plugin.Instance.ThemeName.Value;
+            RefreshTheme();
         }
 
         public static void RefreshTheme()
         {
             SetTheme(_currentTheme);
-            TootTallyNotifManager.DisplayNotif("Theme refreshed!");
+            OnThemeRefreshEvents?.Invoke();
+            TootTallyNotifManager.DisplayNotif("Theme Reloaded!");
         }
 
         [HarmonyPatch(typeof(HomeController), nameof(HomeController.Start))]

@@ -49,13 +49,13 @@ namespace TootTallyCore
             if (_currentTheme == Plugin.Instance.ThemeName.Value) return; //skip if theme did not change
 
             SetTheme(Plugin.Instance.ThemeName.Value);
-            TootTallyNotifManager.DisplayNotif("New Theme Loaded!", Theme.colors.notification.defaultText);
+            TootTallyNotifManager.DisplayNotif("New Theme Loaded!");
         }
 
         public static void RefreshTheme()
         {
             SetTheme(_currentTheme);
-            TootTallyNotifManager.DisplayNotif("Theme refreshed!", Theme.colors.notification.defaultText);
+            TootTallyNotifManager.DisplayNotif("Theme refreshed!");
         }
 
         [HarmonyPatch(typeof(HomeController), nameof(HomeController.Start))]

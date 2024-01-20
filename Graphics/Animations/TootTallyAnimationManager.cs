@@ -37,6 +37,10 @@ namespace TootTallyCore.Graphics.Animations
         }
 
         public static TootTallyAnimation AddNewScaleAnimation(GameObject gameObject, Vector2 targetVector,
+           float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null) =>
+            AddNewScaleAnimation(gameObject, new Vector3(targetVector.x, targetVector.y, 1), timeSpan, secondDegreeAnimation, onFinishCallback);
+
+        public static TootTallyAnimation AddNewScaleAnimation(GameObject gameObject, Vector3 targetVector,
            float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null)
         {
             TootTallyAnimation anim = new TootTallyAnimation(gameObject, gameObject.GetComponent<RectTransform>().localScale, targetVector, 1f, timeSpan, TootTallyAnimation.VectorType.Scale, secondDegreeAnimation, true, onFinishCallback);
@@ -45,6 +49,10 @@ namespace TootTallyCore.Graphics.Animations
         }
 
         public static TootTallyAnimation AddNewTransformScaleAnimation(GameObject gameObject, Vector2 targetVector,
+           float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null) =>
+            AddNewTransformScaleAnimation(gameObject, new Vector3(targetVector.x, targetVector.y, 1), timeSpan, secondDegreeAnimation, onFinishCallback);
+
+        public static TootTallyAnimation AddNewTransformScaleAnimation(GameObject gameObject, Vector3 targetVector,
            float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null)
         {
             TootTallyAnimation anim = new TootTallyAnimation(gameObject, gameObject.transform.localScale, targetVector, 1f, timeSpan, TootTallyAnimation.VectorType.TransformScale, secondDegreeAnimation, true, onFinishCallback);

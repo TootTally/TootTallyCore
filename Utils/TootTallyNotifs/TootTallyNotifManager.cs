@@ -34,14 +34,17 @@ namespace TootTallyCore.Utils.TootTallyNotifs
             IsInitialized = true;
         }
 
-        public static void DisplayNotif(string message, Color textColor, float lifespan = 6f)
+        private static void DisplayNotif(string message, Color textColor, float lifespan)
         {
             if (!IsInitialized || !Plugin.Instance.ShouldShowNotifs.Value) return;
 
             _pendingNotifications.Enqueue(new TootTallyNotifData(message, textColor, lifespan));
         }
 
-        public static void DisplayNotif(string message) => DisplayNotif(message, Theme.colors.notification.defaultText);
+        public static void DisplayNotif(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.defaultText, lifespan);
+        public static void DisplayWarning(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.warningText, lifespan);
+        public static void DisplayError(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.errorText, lifespan);
+        public static void DisplayCustom(string message, Color textColor, float lifespan = 6f) => DisplayNotif(message, textColor, lifespan);
 
         private static void OnNotifCountChangeSetNewPosition()
         {

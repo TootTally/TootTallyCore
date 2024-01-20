@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.IO;
 using System.Text;
 using static TootTallyCore.APIServices.SerializableClass;
+using System.Linq;
 
 namespace TootTallyCore.Utils.Helpers
 {
@@ -12,13 +13,16 @@ namespace TootTallyCore.Utils.Helpers
         {
             if (Directory.Exists(sourceFolderPath))
             {
-                if (Directory.Exists(targetFolderPath))
+                var folders = Directory.GetDirectories(sourceFolderPath);
+                foreach (var f in folders)
                 {
-                    if (Directory.Exists(targetFolderPath + "Old"))
-                        Directory.Delete(targetFolderPath + "Old", true);
-                    Directory.Move(targetFolderPath, targetFolderPath + "Old");
+                    var targetFolder = Path.Combine(targetFolderPath, Path.GetFileNameWithoutExtension(f));
+                    if (Directory.Exists(targetFolder)) continue;
+                    Plugin.LogInfo($"Move new folder {targetFolder}");
+                    Directory.Move(f, targetFolder);
                 }
-                Directory.Move(sourceFolderPath, targetFolderPath);
+                Plugin.LogInfo($"Deleting source folder {sourceFolderPath}");
+                Directory.Delete(sourceFolderPath, true);
             }
         }
 

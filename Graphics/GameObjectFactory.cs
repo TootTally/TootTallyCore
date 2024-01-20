@@ -129,6 +129,8 @@ namespace TootTallyCore.Graphics
                 try
                 {
                     _sliderPrefab.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Theme.colors.leaderboard.slider.fill;
+                    _sliderPrefab.transform.Find("Background").GetComponent<Image>().color = Theme.colors.scrollSpeedSlider.background;
+                    _sliderPrefab.transform.Find("Handle Slide Area/Handle").gameObject.GetComponent<Image>().color = Theme.colors.scrollSpeedSlider.handle;
                     _verticalSliderPrefab.transform.Find("Handle").gameObject.GetComponent<Image>().color = Theme.colors.leaderboard.slider.handle;
                     _verticalSliderPrefab.transform.Find("Fill Area/Fill").GetComponent<Image>().color = Theme.colors.leaderboard.slider.fill;
                     _verticalSliderPrefab.transform.Find("Background").GetComponent<Image>().color = Theme.colors.leaderboard.slider.background;
@@ -423,7 +425,10 @@ namespace TootTallyCore.Graphics
         public static LoadingIcon CreateLoadingIcon(Transform canvasTransform, Vector2 position, Vector2 size, Sprite sprite, bool isActive, string name) =>
             new LoadingIcon(CreateImageHolder(canvasTransform, position, size, sprite, name), isActive);
 
-        public static GameObject CreateImageHolder(Transform canvasTransform, Vector2 position, Vector2 size, Sprite sprite, string name)
+        public static GameObject CreateImageHolder(Transform canvasTransform, Vector2 position, Vector2 size, Sprite sprite, string name) =>
+            CreateImageHolder(canvasTransform, position, size, sprite, name, false);
+
+        public static GameObject CreateImageHolder(Transform canvasTransform, Vector2 position, Vector2 size, Sprite sprite, string name, bool isThemeable)
         {
             GameObject imageHolder = new GameObject(name, typeof(Image));
             imageHolder.transform.SetParent(canvasTransform);
@@ -435,7 +440,7 @@ namespace TootTallyCore.Graphics
 
             Image image = imageHolder.GetComponent<Image>();
             image.preserveAspect = true;
-            image.color = Color.white;
+            image.color = isThemeable ? Theme.colors.replayButton.text : Color.white;
             image.sprite = sprite;
 
             image.gameObject.SetActive(true);
@@ -563,6 +568,8 @@ namespace TootTallyCore.Graphics
             image.sprite = sprite;
             if (!isImageThemable)
                 image.color = Color.white;
+            else
+                image.color = Theme.colors.replayButton.text;
 
 
             newButton.GetComponent<RectTransform>().sizeDelta = size;
@@ -581,12 +588,12 @@ namespace TootTallyCore.Graphics
                 btn.AddComponent<BubblePopupHandler>().Initialize(CreateBubble(Vector2.zero, $"{name}Bubble", description, 6, true, 16));
             var glow = new GameObject("glow", typeof(Image));
             var image = glow.GetComponent<Image>();
+            image.color = Theme.colors.replayButton.text;
             image.maskable = true;
             image.sprite = AssetManager.GetSprite("glow.png");
             glow.transform.SetParent(btn.transform);
             glow.transform.localScale = Vector3.one / 1.2f;
             glow.SetActive(active);
-            image.color = Color.white;
             var rect = btn.GetComponent<RectTransform>();
             rect.pivot = Vector2.one / 2f;
             rect.anchorMin = rect.anchorMax = new Vector2(0, 1);
@@ -633,7 +640,7 @@ namespace TootTallyCore.Graphics
             slider.gameObject.SetActive(true);
             return slider;
         }
-
+        public static TMP_Text CreateSingleText(Transform canvasTransform, string name, string text, TextFont textFont = TextFont.Comfortaa) => CreateSingleText(canvasTransform, name, text, new Vector2(0, 1), canvasTransform.GetComponent<RectTransform>().sizeDelta, Theme.colors.leaderboard.text, textFont);
         public static TMP_Text CreateSingleText(Transform canvasTransform, string name, string text, Color color, TextFont textFont = TextFont.Comfortaa) => CreateSingleText(canvasTransform, name, text, new Vector2(0, 1), canvasTransform.GetComponent<RectTransform>().sizeDelta, color, textFont);
         public static TMP_Text CreateSingleText(Transform canvasTransform, string name, string text, Vector2 pivot, Vector2 size, Color color, TextFont textFont = TextFont.Comfortaa)
         {
@@ -746,7 +753,8 @@ namespace TootTallyCore.Graphics
         public static GameObject CreateBubble(Vector2 size, string name, Sprite sprite)
         {
             var imageObj = CreateImageHolder(null, Vector2.zero, size, sprite, name);
-            imageObj.GetComponent<Image>().maskable = false;
+            var image = imageObj.GetComponent<Image>();
+            image.maskable = false;
             imageObj.AddComponent<CanvasGroup>().blocksRaycasts = false;
             return imageObj;
         }

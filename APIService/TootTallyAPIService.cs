@@ -334,7 +334,7 @@ namespace TootTallyCore.APIServices
             else
             {
                 Plugin.LogError($"Could not get active access token.");
-                TootTallyNotifManager.DisplayNotif("Could not get active access token, please re-authorize TootTally on Twitch", Color.yellow, 10f);
+                TootTallyNotifManager.DisplayWarning("Could not get active access token, please re-authorize TootTally on Twitch");
                 callback(null);
             }
         }

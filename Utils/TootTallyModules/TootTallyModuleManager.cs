@@ -47,7 +47,7 @@ namespace TootTallyCore.Utils.TootTallyModules
                 try
                 {
                     module.LoadModule();
-                    TootTallyNotifManager.DisplayNotif($"Module {module.Name} Enabled.", Color.white);
+                    TootTallyNotifManager.DisplayNotif($"Module {module.Name} Enabled.");
                 }
                 catch (Exception e)
                 {
@@ -58,7 +58,7 @@ namespace TootTallyCore.Utils.TootTallyModules
             else
             {
                 module.UnloadModule();
-                TootTallyNotifManager.DisplayNotif($"Module {module.Name} Disabled.", Color.white);
+                TootTallyNotifManager.DisplayNotif($"Module {module.Name} Disabled.");
             }
         }
     }

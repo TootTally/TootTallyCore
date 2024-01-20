@@ -307,7 +307,7 @@ namespace TootTallyCore.Graphics
 
             var myBtn = gameObjectHolder.AddComponent<Button>();
             myBtn.colors = oldBtnColors;
-
+            myBtn.navigation = new Navigation() { mode = Navigation.Mode.None };
 
             _buttonPrefab = gameObjectHolder.AddComponent<CustomButton>();
             _buttonPrefab.ConstructNewButton(gameObjectHolder.GetComponent<Button>(), gameObjectHolder.GetComponentInChildren<Text>());
@@ -323,6 +323,7 @@ namespace TootTallyCore.Graphics
 
             _verticalSliderPrefab = GameObject.Instantiate(defaultSlider);
             _verticalSliderPrefab.direction = Slider.Direction.TopToBottom;
+            _verticalSliderPrefab.navigation = new Navigation { mode = Navigation.Mode.None };
 
             RectTransform sliderRect = _verticalSliderPrefab.GetComponent<RectTransform>();
             sliderRect.sizeDelta = new Vector2(25, 745);
@@ -358,6 +359,7 @@ namespace TootTallyCore.Graphics
             Slider defaultSlider = GameObject.Find("MainCanvas/FullScreenPanel/Slider").GetComponent<Slider>(); //yoink
 
             _sliderPrefab = GameObject.Instantiate(defaultSlider);
+            _sliderPrefab.navigation = new Navigation { mode = Navigation.Mode.None };
 
             RectTransform sliderRect = _sliderPrefab.GetComponent<RectTransform>();
             sliderRect.anchoredPosition = new Vector2(-200, 0);
@@ -634,6 +636,7 @@ namespace TootTallyCore.Graphics
         public static Slider CreateHomeSlider(Transform canvasTransform, Vector2 position, Vector2 size)
         {
             var slider = GameObject.Instantiate(_settingsPanelVolumeSlider, canvasTransform);
+            slider.navigation = new Navigation() { mode = Navigation.Mode.None };
             var rect = slider.GetComponent<RectTransform>();
             rect.anchoredPosition = position;
             rect.sizeDelta = size;

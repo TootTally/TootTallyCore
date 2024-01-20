@@ -1,7 +1,12 @@
-﻿using System;
+﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO.Ports;
+using System.Linq;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 namespace TootTallyCore.Utils.TootTallyModules
 {
@@ -24,17 +29,15 @@ namespace TootTallyCore.Utils.TootTallyModules
         {
             _tootTallyModuleList?.ForEach(m =>
             {
-                if (m.ModuleConfigEnabled.Value)
+                try
                 {
-                    try
-                    {
+                    if (m.ModuleConfigEnabled.Value)
                         m.LoadModule();
-                    }
-                    catch (Exception e)
-                    {
-                        Plugin.LogError($"Module {m.Name} couldn't be loaded.");
-                        Plugin.LogException(e);
-                    }
+                }
+                catch (Exception e)
+                {
+                    Plugin.LogError($"Module {m.Name} couldn't be loaded.");
+                    Plugin.LogException(e);
                 }
             });
 
@@ -42,23 +45,23 @@ namespace TootTallyCore.Utils.TootTallyModules
 
         private static void ModuleConfigEnabled_SettingChanged(ITootTallyModule module)
         {
-            if (module.ModuleConfigEnabled.Value)
+            try
             {
-                try
+                if (module.ModuleConfigEnabled.Value)
                 {
                     module.LoadModule();
                     TootTallyNotifManager.DisplayNotif($"Module {module.Name} Enabled.");
                 }
-                catch (Exception e)
+                else
                 {
-                    Plugin.LogError($"Module {module.Name} couldn't be loaded.");
-                    Plugin.LogException(e);
+                    module.UnloadModule();
+                    TootTallyNotifManager.DisplayNotif($"Module {module.Name} Disabled.");
                 }
             }
-            else
+            catch (Exception e)
             {
-                module.UnloadModule();
-                TootTallyNotifManager.DisplayNotif($"Module {module.Name} Disabled.");
+                Plugin.LogError($"Module {module.Name} couldn't be un/loaded.");
+                Plugin.LogException(e);
             }
         }
     }

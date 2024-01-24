@@ -9,12 +9,16 @@ namespace TootTallyCore.Utils.Helpers
 {
     public static class FileHelper
     {
-        public static void TryMigrateFolder(string sourceFolderPath, string targetFolderPath, bool renameToOldIfAlreadyExists)
+        //Backward compatibility reasons
+        public static void TryMigrateFolder(string sourceFolderPath, string targetFolderPath, bool renameToOldIfAlreadyExists) => TryMigrateFolder(sourceFolderPath, targetFolderPath);
+        public static void TryMigrateFolder(string sourceFolderPath, string targetFolderPath)
         {
             if (Directory.Exists(sourceFolderPath))
             {
                 var folders = Directory.GetDirectories(sourceFolderPath);
+                var files = Directory.GetFiles(sourceFolderPath);
                 if (!Directory.Exists(targetFolderPath)) Directory.CreateDirectory(targetFolderPath);
+
                 foreach (var f in folders)
                 {
                     var targetFolder = Path.Combine(targetFolderPath, Path.GetFileNameWithoutExtension(f));
@@ -22,6 +26,14 @@ namespace TootTallyCore.Utils.Helpers
                     Plugin.LogInfo($"Move new folder {targetFolder}");
                     Directory.Move(f, targetFolder);
                 }
+                foreach (var f in files)
+                {
+                    var targetFile = Path.Combine(targetFolderPath, Path.GetFileName(f));
+                    if (File.Exists(targetFile)) continue;
+                    Plugin.LogInfo($"Moving file {targetFile}");
+                    File.Move(f, targetFile);
+                }
+
                 Plugin.LogInfo($"Deleting source folder {sourceFolderPath}");
                 Directory.Delete(sourceFolderPath, true);
             }

@@ -14,6 +14,7 @@ namespace TootTallyCore.Utils.Helpers
             if (Directory.Exists(sourceFolderPath))
             {
                 var folders = Directory.GetDirectories(sourceFolderPath);
+                if (!Directory.Exists(targetFolderPath)) Directory.CreateDirectory(targetFolderPath);
                 foreach (var f in folders)
                 {
                     var targetFolder = Path.Combine(targetFolderPath, Path.GetFileNameWithoutExtension(f));

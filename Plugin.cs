@@ -9,6 +9,7 @@ using System.IO;
 using TootTallyCore.Graphics;
 using TootTallyCore.Graphics.Animations;
 using TootTallyCore.Utils.Assets;
+using TootTallyCore.Utils.TootTallyGlobals;
 using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
@@ -43,6 +44,8 @@ namespace TootTallyCore
         public ConfigEntry<bool> DebugMode { get; private set; }
         public ConfigEntry<bool> ShouldShowNotifs { get; private set; }
         public ConfigEntry<string> ThemeName { get; private set; }
+        public ConfigEntry<bool> RunGCWhilePlaying { get; private set; }
+        public ConfigEntry<bool> ChangePitch { get; private set; }
 
         private void Awake()
         {
@@ -52,6 +55,8 @@ namespace TootTallyCore
             ShouldShowNotifs = Config.Bind("General", "Display Toasts", true, "Activate toast notifications for important events.");
             DebugMode = Config.Bind("General", "Debug Mode", false, "Add extra logging information for debugging.");
             ThemeName = Config.Bind("Themes", "ThemeName", DEFAULT_THEME.ToString());
+            RunGCWhilePlaying = Config.Bind("General", "Deactivate Garbage Collector While Playing.", false, "Deactivate the garbage collector during gameplay to prevent lag spikes.");
+            ChangePitch = Config.Bind("General", "Change Pitch", false, "Change the pitch on speed changes.");
             Config.SettingChanged += ThemeManager.Config_SettingChanged;
 
             string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");
@@ -99,64 +104,13 @@ namespace TootTallyCore
 
             _harmony.PatchAll(typeof(ThemeManager));
             _harmony.PatchAll(typeof(GameObjectFactory));
-            _harmony.PatchAll(typeof(TootTallyMainPatches));
+            _harmony.PatchAll(typeof(TootTallyPatches));
             gameObject.AddComponent<TootTallyNotifManager>();
             gameObject.AddComponent<TootTallyAnimationManager>();
 
             TootTallyModuleManager.LoadModules();
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");
-        }
-
-        private static class TootTallyMainPatches
-        {
-            [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
-            [HarmonyPrefix]
-            private static bool RemoveTheGodDamnShake() => false;
-
-            [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
-            [HarmonyPostfix]
-            private static void DisableGarbageCollector()
-            {
-                if (IsGCEnabled)
-                    GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
-
-            }
-
-            [HarmonyPatch(typeof(PauseCanvasController), nameof(PauseCanvasController.showPausePanel))]
-            [HarmonyPostfix]
-            private static void EnableGarbageCollectorOnPause()
-            {
-                if (!IsGCEnabled)
-                    GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
-            }
-
-            [HarmonyPatch(typeof(GameController), nameof(GameController.resumeTrack))]
-            [HarmonyPostfix]
-            private static void DisableGarbageCollectorOnResumeTrack()
-            {
-                if (IsGCEnabled)
-                    GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
-            }
-
-            [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
-            [HarmonyPostfix]
-            private static void EnableGarbageCollectorOnLevelSelectEnter()
-            {
-                if (!IsGCEnabled)
-                    GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
-
-            }
-
-            [HarmonyPatch(typeof(PlaytestAnims), nameof(PlaytestAnims.Start))]
-            [HarmonyPostfix]
-            private static void EnableGarbageCollectorOnMultiplayerEnter()
-            {
-                if (!IsGCEnabled)
-                    GarbageCollector.GCMode = GarbageCollector.Mode.Enabled;
-            }
-
-            private static bool IsGCEnabled => GarbageCollector.GCMode == GarbageCollector.Mode.Enabled;
         }
     }
 }

@@ -8,6 +8,14 @@ namespace TootTallyCore.Utils.TootTallyGlobals
 {
     public static class TootTallyPatches
     {
+        [HarmonyPatch(typeof(GameController), nameof(GameController.buildNotes))]
+        [HarmonyPrefix]
+        public static void FixAudioLatency(GameController __instance)
+        {
+            if (GlobalVariables.practicemode == 1 && !GlobalVariables.turbomode)
+                __instance.latency_offset = GlobalVariables.localsettings.latencyadjust * 0.001f * TootTallyGlobalVariables.gameSpeedMultiplier;
+        }
+
         [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
         [HarmonyPrefix]
         private static bool RemoveTheGodDamnShake() => false;

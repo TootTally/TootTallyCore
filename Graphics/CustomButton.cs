@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
 namespace TootTallyCore.Graphics
@@ -14,6 +15,8 @@ namespace TootTallyCore.Graphics
             this.textHolder = textHolder;
             textHolder.supportRichText = true;
             textHolder.maskable = true;
+            if (textHolder.TryGetComponent(out LocalizeStringEvent locEvent))
+                GameObject.DestroyImmediate(locEvent);
             this.name = name;
             RemoveAllOnClickActions();
         }

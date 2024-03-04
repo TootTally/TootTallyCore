@@ -110,7 +110,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("SongButton theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -125,7 +125,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Song Title theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -146,7 +146,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Lines theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -205,7 +205,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Capsules theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -237,7 +237,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Play button theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -269,7 +269,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Back button theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -317,7 +317,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError("THEME CRASH: " + e.Message);
+                Plugin.LogError("Random button theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -341,7 +341,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Pointer arrow theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -361,7 +361,7 @@ namespace TootTallyCore
             }
             catch (Exception e)
             {
-                Plugin.LogError(e.Message);
+                Plugin.LogError("Background theme couldn't be applied:" + e.Message);
             }
             #endregion
 
@@ -379,37 +379,37 @@ namespace TootTallyCore
         #region hoverAndUnHoverSongButtons
         [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverBtn))]
         [HarmonyPostfix]
-        public static void OnHoverBtnPostfix(LevelSelectController __instance, object[] __args)
+        public static void OnHoverBtnPostfix(LevelSelectController __instance, int btnnum)
         {
             if (Theme.isDefault) return;
-            if ((int)__args[0] >= 7)
+            if (btnnum >= 7)
             {
-                __instance.btnbgs[(int)__args[0]].GetComponent<Image>().color = Theme.colors.songButton.outline;
+                __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.outline;
                 return;
             }
-            __instance.btnbgs[(int)__args[0]].GetComponent<Image>().color = Theme.colors.songButton.background;
-            __instance.btnbgs[(int)__args[0]].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outlineOver;
-            __instance.btnbgs[(int)__args[0]].transform.parent.Find("Text").GetComponent<Text>().color = Theme.colors.songButton.textOver;
+            __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
+            __instance.btnbgs[btnnum].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outlineOver;
+            __instance.btnbgs[btnnum].transform.parent.Find("Text").GetComponent<Text>().color = Theme.colors.songButton.textOver;
         }
 
         [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.unHoverBtn))]
         [HarmonyPostfix]
-        public static void OnUnHoverBtnPostfix(LevelSelectController __instance, object[] __args)
+        public static void OnUnHoverBtnPostfix(LevelSelectController __instance, int btnnum)
         {
             if (Theme.isDefault) return;
-            if ((int)__args[0] >= 7)
+            if (btnnum >= 7)
             {
-                __instance.btnbgs[(int)__args[0]].GetComponent<Image>().color = Theme.colors.songButton.background;
+                __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
                 return;
             }
-            __instance.btnbgs[(int)__args[0]].GetComponent<Image>().color = Theme.colors.songButton.background;
-            __instance.btnbgs[(int)__args[0]].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outline;
-            __instance.btnbgs[(int)__args[0]].transform.parent.Find("Text").GetComponent<Text>().color = Theme.colors.songButton.text;
+            __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
+            __instance.btnbgs[btnnum].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outline;
+            __instance.btnbgs[btnnum].transform.parent.Find("Text").GetComponent<Text>().color = Theme.colors.songButton.text;
         }
         #endregion
 
         #region PlayAndBackEvents
-        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverPlay))]
+        /*[HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverPlay))]
         [HarmonyPrefix]
         public static bool OnHoverPlayBypassIfThemeNotDefault(LevelSelectController __instance)
         {
@@ -418,7 +418,7 @@ namespace TootTallyCore
             __instance.playhovering = true;
             __instance.playbtnobj.transform.Find("playBackground").GetComponent<Image>().color = Theme.colors.playButton.backgroundOver;
             __instance.playbtnobj.transform.Find("playOutline").GetComponent<Image>().color = Theme.colors.playButton.outlineOver;
-            __instance.playbtnobj.transform.Find("playText").GetComponent<Image>().color = Theme.colors.playButton.textOver;
+            __instance.playbtnobj.transform.Find("txt-play-front").GetComponent<Text>().color = Theme.colors.playButton.textOver;
             __instance.playbtnobj.transform.Find("playShadow").GetComponent<Image>().color = Theme.colors.playButton.shadowOver;
             return false;
         }
@@ -431,14 +431,14 @@ namespace TootTallyCore
             __instance.playhovering = false;
             __instance.playbtnobj.transform.Find("playBackground").GetComponent<Image>().color = Theme.colors.playButton.background;
             __instance.playbtnobj.transform.Find("playOutline").GetComponent<Image>().color = Theme.colors.playButton.outline;
-            __instance.playbtnobj.transform.Find("playText").GetComponent<Image>().color = Theme.colors.playButton.text;
+            __instance.playbtnobj.transform.Find("txt-play-front").GetComponent<Text>().color = Theme.colors.playButton.text;
             __instance.playbtnobj.transform.Find("playShadow").GetComponent<Image>().color = Theme.colors.playButton.shadow;
             return false;
         }
 
-        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverBack))]
+        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverBtn))]
         [HarmonyPrefix]
-        public static bool OnHoverBackBypassIfThemeNotDefault(LevelSelectController __instance)
+        public static bool OnHoverBackBypassIfThemeNotDefault(LevelSelectController __instance, int btnnum)
         {
             if (Theme.isDefault) return true;
             __instance.hoversfx.Play();
@@ -449,17 +449,19 @@ namespace TootTallyCore
             return false;
         }
 
-        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverOutBack))]
+        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.unHoverBtn))]
         [HarmonyPrefix]
-        public static bool OnHoverOutBackBypassIfThemeNotDefault(LevelSelectController __instance)
+        public static bool OnHoverOutBackBypassIfThemeNotDefault(LevelSelectController __instance, int btnnum)
         {
             if (Theme.isDefault) return true;
+
+
             __instance.backbutton.gameObject.transform.Find("backBackground").GetComponent<Image>().color = Theme.colors.backButton.background;
             __instance.backbutton.gameObject.transform.Find("backOutline").GetComponent<Image>().color = Theme.colors.backButton.outline;
             __instance.backbutton.gameObject.transform.Find("backText").GetComponent<Image>().color = Theme.colors.backButton.text;
             __instance.backbutton.gameObject.transform.Find("backShadow").GetComponent<Image>().color = Theme.colors.backButton.shadow;
             return false;
-        }
+        }*/
 
         public static void OnPointerEnterRandomEvent(LevelSelectController __instance)
         {

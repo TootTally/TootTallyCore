@@ -148,7 +148,7 @@ namespace TootTallyCore.Graphics
         private static void SetMulticoloreTextPrefab()
         {
             GameObject mainCanvas = GameObject.Find("MainCanvas").gameObject;
-            GameObject headerCreditText = mainCanvas.transform.Find("SettingsPanel/header-Settings/Text").gameObject;
+            GameObject headerCreditText = mainCanvas.transform.Find("SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top").gameObject;
 
             GameObject textHolder = GameObject.Instantiate(headerCreditText);
             textHolder.name = "defaultTextPrefab";

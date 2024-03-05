@@ -66,7 +66,7 @@ namespace TootTallyCore.Utils.Helpers
             }
             else
             {
-                return $"{Application.streamingAssetsPath}/leveldata/{track.trackref}.tmb";
+                return $"{Application.streamingAssetsPath}/trackassets/{track.trackref}/trackdata.tmb";
             }
         }
 

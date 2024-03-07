@@ -90,7 +90,7 @@ namespace TootTallyCore
                 {
                     Image img = __instance.btnbgs[i];
                     img.sprite = AssetManager.GetSprite("SongButtonBackground.png");
-                    img.transform.parent.Find("Text").GetComponent<Text>().color = i == 0 ? Theme.colors.songButton.textOver : Theme.colors.songButton.text;
+                    img.transform.parent.GetChild(3).GetComponent<Text>().color = i == 0 ? Theme.colors.songButton.textOver : Theme.colors.songButton.text;
 
                     GameObject btnBGShadow = UnityEngine.Object.Instantiate(btnBGPrefab, img.gameObject.transform.parent);
                     btnBGShadow.name = "Shadow";
@@ -389,7 +389,7 @@ namespace TootTallyCore
             }
             __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
             __instance.btnbgs[btnnum].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outlineOver;
-            __instance.btnbgs[btnnum].transform.parent.Find("Text").GetComponent<Text>().color = Theme.colors.songButton.textOver;
+            __instance.btnbgs[btnnum].transform.parent.GetChild(3).GetComponent<Text>().color = Theme.colors.songButton.textOver;
         }
 
         [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.unHoverBtn))]
@@ -404,7 +404,7 @@ namespace TootTallyCore
             }
             __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
             __instance.btnbgs[btnnum].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outline;
-            __instance.btnbgs[btnnum].transform.parent.Find("Text").GetComponent<Text>().color = Theme.colors.songButton.text;
+            __instance.btnbgs[btnnum].transform.parent.GetChild(3).GetComponent<Text>().color = Theme.colors.songButton.text;
         }
         #endregion
 

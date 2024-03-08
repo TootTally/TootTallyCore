@@ -475,6 +475,30 @@ namespace TootTallyCore.Graphics
             return imageHolder;
         }
 
+        public static GameObject CreateClickableImageHolder(Transform canvasTransform, Vector2 position, Vector2 size, Sprite sprite, string name, Color color, Color hoverColor, Action onClick)
+        {
+            var imageHolder = CreateImageHolder(canvasTransform, position, size, sprite, name);
+            var image = imageHolder.GetComponent<Image>();
+            var eventTrigger = imageHolder.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerClickEvent = new EventTrigger.Entry();
+            pointerClickEvent.eventID = EventTriggerType.PointerClick;
+            pointerClickEvent.callback.AddListener(data => onClick?.Invoke());
+            eventTrigger.triggers.Add(pointerClickEvent);
+
+            EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();
+            pointerEnterEvent.eventID = EventTriggerType.PointerEnter;
+            pointerEnterEvent.callback.AddListener(data => image.color = hoverColor);
+            eventTrigger.triggers.Add(pointerEnterEvent);
+
+            EventTrigger.Entry pointerLeaveEvent = new EventTrigger.Entry();
+            pointerLeaveEvent.eventID = EventTriggerType.PointerExit;
+            pointerLeaveEvent.callback.AddListener(data => image.color = color);
+            eventTrigger.triggers.Add(pointerLeaveEvent);
+
+            return imageHolder;
+        }
+
         public static ProgressBar CreateProgressBar(Transform canvasTransform, Vector2 position, Vector2 size, bool active, string name)
         {
             Slider slider = GameObject.Instantiate(_settingsPanelVolumeSlider, canvasTransform);

@@ -160,6 +160,7 @@ namespace TootTallyCore.Utils.Helpers
 
 
         private const string _DOWNLOAD_MIRROR_LINK = "https://sgp1.digitaloceanspaces.com/toottally/chartmirrors/"; //May or may not use this
+        private const string _PIXELDRAIN_DOWNLOAD_LINK = "https://pixeldrain.com/api/file/";
         private const string _DISCORD_DOWNLOAD_HEADER = "https://cdn.discordapp.com/";
         private const string _GOOGLEDRIVE_LINK_HEADER = "https://drive.google.com/file/d/";
         private const string _GOOGLEDRIVE_DOWNLOAD_HEADER = "https://drive.google.com/uc?export=download&id=";
@@ -171,7 +172,7 @@ namespace TootTallyCore.Utils.Helpers
                 return song.mirror;
             else if (song.download != null)
             {
-                if (song.download.Contains(_DISCORD_DOWNLOAD_HEADER) && Path.GetExtension(song.download).Contains(".zip"))
+                if ((song.download.Contains(_DISCORD_DOWNLOAD_HEADER) && Path.GetExtension(song.download).Contains(".zip")) || song.download.Contains(_PIXELDRAIN_DOWNLOAD_LINK))
                     return song.download;
                 else if (song.download.Contains(_GOOGLEDRIVE_LINK_HEADER))
                     return GetGoogleDriveDownloadLink(song.download);

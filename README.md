@@ -39,7 +39,7 @@ TootTallyNotifManager.DisplayNotif("MyOtherMessage");
 Just be mindfull that the user probably doesn't want to get spammed with notifs unless necessary :)
 
 ## TootTally Animations
-TootTally Animations are an easy way to create flexible animations for Unity Gameobject's properties. It uses (Second degree order dynamics)[https://apmonitor.com/pdc/index.php/Main/SecondOrderSystems] to create smooth and alive transitions between two points.
+TootTally Animations are an easy way to create flexible animations for Unity Gameobject's properties. It uses [Second degree order dynamics](https://apmonitor.com/pdc/index.php/Main/SecondOrderSystems) to create smooth and alive transitions between two points.
 > [!WARNING]
 > Keep in mind that these animation are __frame rate dependent__.
 > While this makes the animations much smoother at a higher frame rate, there is a risk that the animation looks different when a a long-lasting freeze happens.

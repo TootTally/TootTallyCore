@@ -99,6 +99,28 @@ namespace TootTallyCore.Utils.TootTallyGlobals
             }
         }
 
+        [HarmonyPatch(typeof(GameController), nameof(GameController.Update))]
+        [HarmonyPostfix]
+        public static void OnGameControllerUpdateFixPitchAndBreathing(GameController __instance)
+        {
+
+            float value = 0;
+            if (!__instance.noteplaying && __instance.breathcounter >= 0f)
+            {
+                if (!__instance.outofbreath)
+                    value = Time.deltaTime * (1 - TootTallyGlobalVariables.gameSpeedMultiplier) * 8.5f;
+                else
+                    value = Time.deltaTime * (1 - TootTallyGlobalVariables.gameSpeedMultiplier) * .29f;
+            }
+            __instance.breathcounter += value;
+
+            if (__instance.breathcounter >= 1f) { __instance.breathcounter = .99f; }
+            if (__instance.outofbreath && __instance.breathcounter < 0f) { __instance.breathcounter = .01f; }
+
+            if (__instance.noteplaying && Plugin.Instance.ChangePitch.Value)
+                __instance.currentnotesound.pitch *= TootTallyGlobalVariables.gameSpeedMultiplier;
+        }
+
 
         [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
         [HarmonyPostfix]

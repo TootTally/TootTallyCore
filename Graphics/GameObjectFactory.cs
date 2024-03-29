@@ -441,6 +441,7 @@ namespace TootTallyCore.Graphics
             rect.localScale = Vector3.one;
 
             Image image = imageHolder.GetComponent<Image>();
+            image.useSpriteMesh = true;
             image.preserveAspect = true;
             image.color = isThemeable ? Theme.colors.replayButton.text : Color.white;
             image.sprite = sprite;
@@ -589,6 +590,7 @@ namespace TootTallyCore.Graphics
             imageHolder.transform.localScale = new Vector3(.81f, .81f);
             GameObject.DestroyImmediate(imageHolder.GetComponent<Text>());
             Image image = imageHolder.AddComponent<Image>();
+            image.useSpriteMesh = true;
             image.preserveAspect = true;
             image.maskable = true;
             image.sprite = sprite;
@@ -614,6 +616,7 @@ namespace TootTallyCore.Graphics
                 btn.AddComponent<BubblePopupHandler>().Initialize(CreateBubble(Vector2.zero, $"{name}Bubble", description, 6, true, 16));
             var glow = new GameObject("glow", typeof(Image));
             var image = glow.GetComponent<Image>();
+            image.useSpriteMesh = true;
             image.color = Theme.colors.replayButton.text;
             image.maskable = true;
             image.sprite = AssetManager.GetSprite("glow.png");

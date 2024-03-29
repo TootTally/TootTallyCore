@@ -518,8 +518,10 @@ namespace TootTallyCore
 
         public static void OverwriteGameObjectSpriteAndColor(GameObject gameObject, string spriteName, Color spriteColor)
         {
-            gameObject.GetComponent<Image>().sprite = AssetManager.GetSprite(spriteName);
-            gameObject.GetComponent<Image>().color = spriteColor;
+            var image = gameObject.GetComponent<Image>();
+            image.useSpriteMesh = true;
+            image.sprite = AssetManager.GetSprite(spriteName);
+            image.color = spriteColor;
         }
     }
 }

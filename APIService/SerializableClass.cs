@@ -248,6 +248,7 @@ namespace TootTallyCore.APIServices
             public float tt;
             public int rank;
             public bool allowSubmit;
+            public bool dev;
             public string email;
             public string api_key;
             public string status;

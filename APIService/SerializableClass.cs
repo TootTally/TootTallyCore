@@ -102,7 +102,7 @@ namespace TootTallyCore.APIServices
         }
 
         [Serializable]
-        public class SendableModInfo
+        public struct SendableModInfo
         {
             public string name;
             public string version;
@@ -154,7 +154,7 @@ namespace TootTallyCore.APIServices
         }
 
         [Serializable]
-        public class APIHeartbeat
+        public struct APIHeartbeat
         {
             public string apiKey;
             public int status;

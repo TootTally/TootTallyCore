@@ -99,10 +99,43 @@ namespace TootTallyCore.Utils.TootTallyGlobals
             }
         }
 
+
+
+        private static double _songTime;
+        private static float _songLength;
+        private static bool _startSongTime;
+
         [HarmonyPatch(typeof(GameController), nameof(GameController.Update))]
         [HarmonyPostfix]
         public static void OnGameControllerUpdateFixPitchAndBreathing(GameController __instance)
         {
+            if (_startSongTime)
+            {
+                _songTime += Time.deltaTime * TootTallyGlobalVariables.gameSpeedMultiplier;
+                if (!__instance.level_finished && !__instance.musictrack.isPlaying && _songTime >= _songLength)
+                {
+                    Plugin.LogInfo("Toottally forced level_finished to prevent softlock.");
+                    __instance.levelendtime = 0.001f;
+                    __instance.musictrack.time = 0.01f;
+                    __instance.level_finished = true;
+                    __instance.curtainc.closeCurtain(true);
+                    if (__instance.totalscore < 0)
+                        __instance.totalscore = 0;
+                    GlobalVariables.gameplay_scoretotal = __instance.totalscore;
+                    if (GlobalVariables.localsettings.acc_autotoot)
+                        __instance.maxlevelscore = Mathf.FloorToInt(__instance.maxlevelscore * 0.5f);
+                    GlobalVariables.gameplay_scoreperc = __instance.totalscore / __instance.maxlevelscore;
+                    GlobalVariables.gameplay_notescores = new int[]
+                    {
+                        __instance.scores_F,
+                        __instance.scores_D,
+                        __instance.scores_C,
+                        __instance.scores_B,
+                        __instance.scores_A
+                    };
+                }
+            }
+
 
             float value = 0;
             if (!__instance.noteplaying && __instance.breathcounter >= 0f)
@@ -124,7 +157,29 @@ namespace TootTallyCore.Utils.TootTallyGlobals
 
         [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
         [HarmonyPostfix]
-        private static void DisableGarbageCollector()
+        private static void OnGameControllerStartSetupTimer(GameController __instance)
+        {
+            _startSongTime = false;
+            if (__instance.freeplay) return;
+            _songLength = __instance.musictrack.clip.length;
+            _songTime = 0;
+        }
+
+        [HarmonyPatch(typeof(GameController), nameof(GameController.playsong))]
+        [HarmonyPostfix]
+        public static void OnGameControllerStartSongStartSongTime(GameController __instance)
+        {
+            if (__instance.freeplay || TootTallyGlobalVariables.isSpectating || TootTallyGlobalVariables.isReplaying) return;
+
+            Plugin.LogInfo($"Starting song time.");
+            _startSongTime = true;
+        }
+
+        #region GC Stuff
+
+        [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
+        [HarmonyPostfix]
+        private static void DisableGarbageCollector(GameController __instance)
         {
             if (Plugin.Instance.RunGCWhilePlaying.Value) return;
 
@@ -132,6 +187,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
                 GarbageCollector.GCMode = GarbageCollector.Mode.Disabled;
 
         }
+
 
         [HarmonyPatch(typeof(PauseCanvasController), nameof(PauseCanvasController.showPausePanel))]
         [HarmonyPostfix]
@@ -175,5 +231,6 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         }
 
         private static bool IsGCEnabled => GarbageCollector.GCMode == GarbageCollector.Mode.Enabled;
+        #endregion
     }
 }

@@ -109,7 +109,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         [HarmonyPostfix]
         public static void OnGameControllerUpdateFixPitchAndBreathing(GameController __instance)
         {
-            if (_startSongTime)
+            if (_startSongTime && !__instance.paused && !__instance.quitting && !__instance.retrying)
             {
                 _songTime += Time.deltaTime * TootTallyGlobalVariables.gameSpeedMultiplier;
                 if (!__instance.level_finished && !__instance.musictrack.isPlaying && _songTime >= _songLength)

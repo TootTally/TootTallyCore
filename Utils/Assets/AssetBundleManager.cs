@@ -20,15 +20,16 @@ namespace TootTallyCore.Utils.Assets
                 Plugin.Instance.StartCoroutine(LoadAssetBundle(filePath, OnAssetBundleLoaded));
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> LoadAssetBundle(string filePath, Action<AssetBundle> callback)
+        public static IEnumerator<AssetBundleCreateRequest> LoadAssetBundle(string filePath, Action<AssetBundle> callback)
         {
-            UnityWebRequest webRequest = UnityWebRequestAssetBundle.GetAssetBundle(filePath);
-            yield return webRequest.SendWebRequest();
+            var request = AssetBundle.LoadFromFileAsync(filePath);
+            
+            yield return request;
 
-            if (!webRequest.isNetworkError && !webRequest.isHttpError)
-                callback(DownloadHandlerAssetBundle.GetContent(webRequest));
+            if (request == null)
+                Plugin.LogError($"AssetBundle {filePath} failed to load.");
             else
-                Plugin.LogError("AssetBundle failed to load.");
+                callback(request.assetBundle);
         }
 
         public static void OnAssetBundleLoaded(AssetBundle assetBundle)

@@ -7,7 +7,6 @@ using UnityEngine;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Assets;
 
-
 namespace TootTallyCore.Graphics
 {
     public static class GameObjectFactory
@@ -83,7 +82,7 @@ namespace TootTallyCore.Graphics
             if (_isHomeControllerInitialized)
             {
                 try
-                {   
+                {
                     _tootTallyNotifPrefab.GetComponent<Image>().color =
                     _bubblePrefab.GetComponent<Image>().color = Theme.colors.notification.border;
                     _tootTallyNotifPrefab.transform.Find("Window Body").gameObject.GetComponent<Image>().color =
@@ -168,6 +167,8 @@ namespace TootTallyCore.Graphics
             _multicoloreTextPrefab.GetComponent<RectTransform>().sizeDelta = textHolder.GetComponent<RectTransform>().sizeDelta;
             _multicoloreTextPrefab.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             _multicoloreTextPrefab.richText = true;
+            _multicoloreTextPrefab.material = headerCreditText.GetComponent<Text>().material;
+
             GameObject.DontDestroyOnLoad(_multicoloreTextPrefab);
         }
 
@@ -195,6 +196,8 @@ namespace TootTallyCore.Graphics
             _comfortaaTextPrefab.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             _comfortaaTextPrefab.richText = true;
             _comfortaaTextPrefab.enableWordWrapping = false;
+            _comfortaaTextPrefab.material = advancePanelText.GetComponent<Text>().material;
+
             GameObject.DontDestroyOnLoad(_comfortaaTextPrefab);
         }
 

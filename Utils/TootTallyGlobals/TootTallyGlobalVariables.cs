@@ -13,5 +13,6 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         public static bool isReplaying = false;
         public static bool isOldReplay = false;
         public static bool isSpectating = false;
+        public static bool isPracticing = false;
     }
 }

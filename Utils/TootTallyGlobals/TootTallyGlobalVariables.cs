@@ -14,5 +14,6 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         public static bool isOldReplay = false;
         public static bool isSpectating = false;
         public static bool isPracticing = false;
+        public static bool allowSubmit = true;
     }
 }

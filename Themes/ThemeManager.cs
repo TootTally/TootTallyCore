@@ -71,11 +71,15 @@ namespace TootTallyCore
             _isInitialized = true;
         }
 
+        private static AudioSource _btnClickSfx;
+
         [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.Start))]
         [HarmonyPostfix]
         public static void ChangeThemeOnLevelSelectControllerStartPostFix(LevelSelectController __instance)
         {
             if (Theme.isDefault) return;
+
+            _btnClickSfx = __instance.hoversfx;
 
             foreach (GameObject btn in __instance.btns)
                 btn.transform.Find("ScoreText").gameObject.GetComponent<Text>().color = Theme.colors.leaderboard.text;
@@ -119,8 +123,8 @@ namespace TootTallyCore
             {
                 __instance.songtitlebar.GetComponent<Image>().color = Theme.colors.title.titleBar;
                 __instance.scenetitle.GetComponent<Text>().color = Theme.colors.title.titleShadow;
-                GameObject.Find("MainCanvas/FullScreenPanel/title/GameObject").GetComponent<Text>().color = Theme.colors.title.title;
                 __instance.longsongtitle.color = Theme.colors.title.songName;
+                __instance.longsongtitle_dropshadow.color = Theme.colors.title.titleShadow;
                 __instance.longsongtitle.GetComponent<Outline>().effectColor = Theme.colors.title.outline;
             }
             catch (Exception e)
@@ -212,7 +216,7 @@ namespace TootTallyCore
             #region PlayButton
             try
             {
-                GameObject playButtonBG = __instance.playbtn.transform.Find("BG").gameObject;
+                GameObject playButtonBG = __instance.playbtnobj.transform.Find("play-bg").gameObject;
                 GameObject playBGPrefab = UnityEngine.Object.Instantiate(playButtonBG, __instance.playbtn.transform);
                 foreach (Transform t in playBGPrefab.transform) UnityEngine.Object.Destroy(t.gameObject);
 
@@ -224,16 +228,15 @@ namespace TootTallyCore
                 playOutline.name = "playOutline";
                 OverwriteGameObjectSpriteAndColor(playOutline, "PlayOutline.png", Theme.colors.playButton.outline);
 
-                GameObject playText = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
-                playText.name = "playText";
-                OverwriteGameObjectSpriteAndColor(playText, "PlayText.png", Theme.colors.playButton.text);
+                var playText = UnityEngine.Object.Instantiate(__instance.playbtn.transform.GetChild(3), __instance.playbtn.transform).GetChild(0).GetComponent<Text>();
+                playText.color = Theme.colors.playButton.text;
 
                 GameObject playShadow = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
                 playShadow.name = "playShadow";
                 OverwriteGameObjectSpriteAndColor(playShadow, "PlayShadow.png", Theme.colors.playButton.shadow);
 
-                UnityEngine.Object.DestroyImmediate(playButtonBG);
-                UnityEngine.Object.DestroyImmediate(playBGPrefab);
+                GameObject.DestroyImmediate(playButtonBG);
+                GameObject.DestroyImmediate(playBGPrefab);
             }
             catch (Exception e)
             {
@@ -244,8 +247,8 @@ namespace TootTallyCore
             #region BackButton
             try
             {
-                GameObject backButtonBG = __instance.backbutton.transform.Find("BG").gameObject;
-                GameObject backBGPrefab = UnityEngine.Object.Instantiate(backButtonBG, __instance.backbutton.transform);
+                GameObject backButtonBG = __instance.backbutton.transform.Find("button-full").gameObject;
+                GameObject backBGPrefab = UnityEngine.Object.Instantiate(backButtonBG.transform.GetChild(0).gameObject, __instance.backbutton.transform);
                 foreach (Transform t in backBGPrefab.transform) UnityEngine.Object.Destroy(t.gameObject);
 
                 GameObject backBackgroundImg = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
@@ -256,9 +259,9 @@ namespace TootTallyCore
                 backOutline.name = "backOutline";
                 OverwriteGameObjectSpriteAndColor(backOutline, "BackOutline.png", Theme.colors.backButton.outline);
 
-                GameObject backText = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
+                var backText = UnityEngine.Object.Instantiate(__instance.backbutton.transform.GetChild(0).GetChild(2), __instance.backbutton.transform).GetComponent<Text>();
                 backText.name = "backText";
-                OverwriteGameObjectSpriteAndColor(backText, "BackText.png", Theme.colors.backButton.text);
+                backText.color = Theme.colors.backButton.text;
 
                 GameObject backShadow = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
                 backShadow.name = "backShadow";
@@ -409,16 +412,16 @@ namespace TootTallyCore
         #endregion
 
         #region PlayAndBackEvents
-        /*[HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverPlay))]
+        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverPlay))]
         [HarmonyPrefix]
         public static bool OnHoverPlayBypassIfThemeNotDefault(LevelSelectController __instance)
         {
             if (Theme.isDefault) return true;
-            __instance.hoversfx.Play();
+            _btnClickSfx.Play();
             __instance.playhovering = true;
             __instance.playbtnobj.transform.Find("playBackground").GetComponent<Image>().color = Theme.colors.playButton.backgroundOver;
             __instance.playbtnobj.transform.Find("playOutline").GetComponent<Image>().color = Theme.colors.playButton.outlineOver;
-            __instance.playbtnobj.transform.Find("txt-play-front").GetComponent<Text>().color = Theme.colors.playButton.textOver;
+            __instance.playbtnobj.transform.Find("txt-play/txt-play-front").GetComponent<Text>().color = Theme.colors.playButton.textOver;
             __instance.playbtnobj.transform.Find("playShadow").GetComponent<Image>().color = Theme.colors.playButton.shadowOver;
             return false;
         }
@@ -431,37 +434,34 @@ namespace TootTallyCore
             __instance.playhovering = false;
             __instance.playbtnobj.transform.Find("playBackground").GetComponent<Image>().color = Theme.colors.playButton.background;
             __instance.playbtnobj.transform.Find("playOutline").GetComponent<Image>().color = Theme.colors.playButton.outline;
-            __instance.playbtnobj.transform.Find("txt-play-front").GetComponent<Text>().color = Theme.colors.playButton.text;
+            __instance.playbtnobj.transform.Find("txt-play/txt-play-front").GetComponent<Text>().color = Theme.colors.playButton.text;
             __instance.playbtnobj.transform.Find("playShadow").GetComponent<Image>().color = Theme.colors.playButton.shadow;
             return false;
         }
 
-        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.hoverBtn))]
+        [HarmonyPatch(typeof(BackButtonController), nameof(BackButtonController.onHover))]
         [HarmonyPrefix]
-        public static bool OnHoverBackBypassIfThemeNotDefault(LevelSelectController __instance, int btnnum)
+        public static bool OnHoverBackBypassIfThemeNotDefault(BackButtonController __instance, bool hovering)
         {
             if (Theme.isDefault) return true;
-            __instance.hoversfx.Play();
-            __instance.backbutton.gameObject.transform.Find("backBackground").GetComponent<Image>().color = Theme.colors.backButton.backgroundOver;
-            __instance.backbutton.gameObject.transform.Find("backOutline").GetComponent<Image>().color = Theme.colors.backButton.outlineOver;
-            __instance.backbutton.gameObject.transform.Find("backText").GetComponent<Image>().color = Theme.colors.backButton.textOver;
-            __instance.backbutton.gameObject.transform.Find("backShadow").GetComponent<Image>().color = Theme.colors.backButton.shadowOver;
+            __instance.txt_back = __instance.gameObject.transform.Find("backText").GetComponent<Text>();
+            if (hovering)
+            {
+                _btnClickSfx.Play();
+                __instance.gameObject.transform.Find("backBackground").GetComponent<Image>().color = Theme.colors.backButton.backgroundOver;
+                __instance.gameObject.transform.Find("backOutline").GetComponent<Image>().color = Theme.colors.backButton.outlineOver;
+                __instance.txt_back.color = Theme.colors.backButton.textOver;
+                __instance.gameObject.transform.Find("backShadow").GetComponent<Image>().color = Theme.colors.backButton.shadowOver;
+            }
+            else
+            {
+                __instance.gameObject.transform.Find("backBackground").GetComponent<Image>().color = Theme.colors.backButton.background;
+                __instance.gameObject.transform.Find("backOutline").GetComponent<Image>().color = Theme.colors.backButton.outline;
+                __instance.txt_back.color = Theme.colors.backButton.text;
+                __instance.gameObject.transform.Find("backShadow").GetComponent<Image>().color = Theme.colors.backButton.shadow;
+            }
             return false;
         }
-
-        [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.unHoverBtn))]
-        [HarmonyPrefix]
-        public static bool OnHoverOutBackBypassIfThemeNotDefault(LevelSelectController __instance, int btnnum)
-        {
-            if (Theme.isDefault) return true;
-
-
-            __instance.backbutton.gameObject.transform.Find("backBackground").GetComponent<Image>().color = Theme.colors.backButton.background;
-            __instance.backbutton.gameObject.transform.Find("backOutline").GetComponent<Image>().color = Theme.colors.backButton.outline;
-            __instance.backbutton.gameObject.transform.Find("backText").GetComponent<Image>().color = Theme.colors.backButton.text;
-            __instance.backbutton.gameObject.transform.Find("backShadow").GetComponent<Image>().color = Theme.colors.backButton.shadow;
-            return false;
-        }*/
 
         public static void OnPointerEnterRandomEvent(LevelSelectController __instance)
         {

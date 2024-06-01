@@ -218,7 +218,6 @@ namespace TootTallyCore
             {
                 GameObject playButtonBG = __instance.playbtnobj.transform.Find("play-bg").gameObject;
                 GameObject playBGPrefab = UnityEngine.Object.Instantiate(playButtonBG, __instance.playbtn.transform);
-                foreach (Transform t in playBGPrefab.transform) UnityEngine.Object.Destroy(t.gameObject);
 
                 GameObject playBackgroundImg = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
                 playBackgroundImg.name = "playBackground";
@@ -235,8 +234,8 @@ namespace TootTallyCore
                 playShadow.name = "playShadow";
                 OverwriteGameObjectSpriteAndColor(playShadow, "PlayShadow.png", Theme.colors.playButton.shadow);
 
-                GameObject.DestroyImmediate(playButtonBG);
-                GameObject.DestroyImmediate(playBGPrefab);
+                playButtonBG.SetActive(false);
+                playBGPrefab.SetActive(false);
             }
             catch (Exception e)
             {
@@ -249,7 +248,7 @@ namespace TootTallyCore
             {
                 GameObject backButtonBG = __instance.backbutton.transform.Find("button-full").gameObject;
                 GameObject backBGPrefab = UnityEngine.Object.Instantiate(backButtonBG.transform.GetChild(0).gameObject, __instance.backbutton.transform);
-                foreach (Transform t in backBGPrefab.transform) UnityEngine.Object.Destroy(t.gameObject);
+                foreach (Transform t in backBGPrefab.transform) t.gameObject.SetActive(false);
 
                 GameObject backBackgroundImg = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
                 backBackgroundImg.name = "backBackground";
@@ -267,8 +266,8 @@ namespace TootTallyCore
                 backShadow.name = "backShadow";
                 OverwriteGameObjectSpriteAndColor(backShadow, "BackShadow.png", Theme.colors.backButton.shadow);
 
-                UnityEngine.Object.DestroyImmediate(backButtonBG);
-                UnityEngine.Object.DestroyImmediate(backBGPrefab);
+                backButtonBG.SetActive(false);
+                backBGPrefab.SetActive(false);
             }
             catch (Exception e)
             {
@@ -287,7 +286,7 @@ namespace TootTallyCore
                 RectTransform randomRectTransform = randomButtonPrefab.GetComponent<RectTransform>();
                 randomRectTransform.anchoredPosition = Vector2.zero;
                 randomRectTransform.localScale = Vector3.one;
-                UnityEngine.Object.DestroyImmediate(__instance.btnrandom.transform.Find("btn").gameObject);
+                __instance.btnrandom.transform.Find("btn").gameObject.SetActive(false);
 
                 GameObject randomButtonBackground = UnityEngine.Object.Instantiate(randomButtonPrefab, __instance.btnrandom.transform);
                 randomButtonBackground.name = "RandomBackground";
@@ -305,7 +304,7 @@ namespace TootTallyCore
                 OverwriteGameObjectSpriteAndColor(randomButtonIcon, "RandomIcon.png", GameTheme.themeColors.randomButton.text);*/
 
                 UnityEngine.Object.DestroyImmediate(__instance.btnrandom.GetComponent<Image>());
-                UnityEngine.Object.DestroyImmediate(randomButtonPrefab);
+                randomButtonPrefab.SetActive(false);
 
                 EventTrigger randomBtnEvents = __instance.btnrandom.AddComponent<EventTrigger>();
                 EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();

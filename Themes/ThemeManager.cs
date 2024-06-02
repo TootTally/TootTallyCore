@@ -218,6 +218,7 @@ namespace TootTallyCore
             {
                 GameObject playButtonBG = __instance.playbtnobj.transform.Find("play-bg").gameObject;
                 GameObject playBGPrefab = UnityEngine.Object.Instantiate(playButtonBG, __instance.playbtn.transform);
+                foreach (Transform t in playBGPrefab.transform) t.gameObject.SetActive(false);
 
                 GameObject playBackgroundImg = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
                 playBackgroundImg.name = "playBackground";

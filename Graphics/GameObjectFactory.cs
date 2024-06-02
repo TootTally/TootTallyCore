@@ -147,7 +147,9 @@ namespace TootTallyCore.Graphics
 
         private static void SetTextPrefabs()
         {
-            var fallbackFonts = Font.GetPathsToOSFonts().Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
+            var fallbackFonts = Font.GetPathsToOSFonts()
+                .Where(path => path.ToLower().Contains("arial"))
+                .Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
             _multicoloreTextPrefab = CreateTextPrefab("defaultTextPrefab", "SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top", fallbackFonts);
             _comfortaaTextPrefab = CreateTextPrefab("ComfortaaTextPrefab", "AdvancedInfoPanel/primary-content/intro/copy", fallbackFonts);
         }

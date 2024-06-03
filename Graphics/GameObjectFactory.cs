@@ -8,6 +8,7 @@ using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Assets;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 namespace TootTallyCore.Graphics
 {
@@ -147,8 +148,10 @@ namespace TootTallyCore.Graphics
 
         private static void SetTextPrefabs()
         {
-            var fallbackFonts = Font.GetPathsToOSFonts()
-                .Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
+            var s = Stopwatch.StartNew();
+            var paths = Font.GetPathsToOSFonts();
+            var fallbackFonts = paths.Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
+            Plugin.LogInfo($"Loaded {paths.Length} fallback fonts in {s.Elapsed.TotalSeconds}s");
             _multicoloreTextPrefab = CreateTextPrefab("defaultTextPrefab", "SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top", fallbackFonts);
             _comfortaaTextPrefab = CreateTextPrefab("ComfortaaTextPrefab", "AdvancedInfoPanel/primary-content/intro/copy", fallbackFonts);
         }

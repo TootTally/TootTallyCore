@@ -6,6 +6,9 @@ using UnityEngine.UI;
 using UnityEngine;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Assets;
+using System.Collections.Generic;
+using System.Linq;
+using System.Diagnostics;
 
 namespace TootTallyCore.Graphics
 {
@@ -54,8 +57,7 @@ namespace TootTallyCore.Graphics
 
             if (_isHomeControllerInitialized) return;
 
-            SetMulticoloreTextPrefab();
-            SetComfortaaTextPrefab();
+            SetTextPrefabs();
             SetInputFieldPrefab();
             SetNotificationPrefab();
             SetBubblePrefab();
@@ -144,61 +146,44 @@ namespace TootTallyCore.Graphics
 
         #region SetPrefabs
 
-        private static void SetMulticoloreTextPrefab()
+        private static void SetTextPrefabs()
         {
-            GameObject mainCanvas = GameObject.Find("MainCanvas").gameObject;
-            GameObject headerCreditText = mainCanvas.transform.Find("SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top").gameObject;
-
-            GameObject textHolder = GameObject.Instantiate(headerCreditText);
-            textHolder.name = "defaultTextPrefab";
-            textHolder.SetActive(true);
-            GameObject.DestroyImmediate(textHolder.GetComponent<Text>());
-            _multicoloreTextPrefab = textHolder.AddComponent<TextMeshProUGUI>();
-            _multicoloreTextPrefab.fontSize = 22;
-            _multicoloreTextPrefab.text = "defaultText";
-            _multicoloreTextPrefab.font = TMP_FontAsset.CreateFontAsset(headerCreditText.GetComponent<Text>().font);
-
-            _multicoloreTextPrefab.fontMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, .25f);
-            _multicoloreTextPrefab.fontMaterial.EnableKeyword(ShaderUtilities.Keyword_Outline);
-            _multicoloreTextPrefab.fontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, .25f);
-            _multicoloreTextPrefab.fontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Color.black);
-
-            _multicoloreTextPrefab.alignment = TextAlignmentOptions.Center;
-            _multicoloreTextPrefab.GetComponent<RectTransform>().sizeDelta = textHolder.GetComponent<RectTransform>().sizeDelta;
-            _multicoloreTextPrefab.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _multicoloreTextPrefab.richText = true;
-            _multicoloreTextPrefab.material = headerCreditText.GetComponent<Text>().material;
-
-            GameObject.DontDestroyOnLoad(_multicoloreTextPrefab);
+            var s = Stopwatch.StartNew();
+            var paths = Font.GetPathsToOSFonts();
+            var fallbackFonts = paths.Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
+            Plugin.LogInfo($"Loaded {paths.Length} fallback fonts in {s.Elapsed.TotalSeconds}s");
+            _multicoloreTextPrefab = CreateTextPrefab("defaultTextPrefab", "SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top", fallbackFonts);
+            _comfortaaTextPrefab = CreateTextPrefab("ComfortaaTextPrefab", "AdvancedInfoPanel/primary-content/intro/copy", fallbackFonts);
         }
 
-        private static void SetComfortaaTextPrefab()
+        private static TextMeshProUGUI CreateTextPrefab(string name, string path, List<TMP_FontAsset> fallbackFonts)
         {
             GameObject mainCanvas = GameObject.Find("MainCanvas").gameObject;
-            GameObject advancePanelText = mainCanvas.transform.Find("AdvancedInfoPanel/primary-content/intro/copy").gameObject;
+            GameObject headerCreditText = mainCanvas.transform.Find(path).gameObject;
 
-            GameObject textHolder = GameObject.Instantiate(advancePanelText);
-            textHolder.name = "ComfortaaTextPrefab";
+            GameObject textHolder = GameObject.Instantiate(headerCreditText);
+            textHolder.name = name;
             textHolder.SetActive(true);
             GameObject.DestroyImmediate(textHolder.GetComponent<Text>());
-            _comfortaaTextPrefab = textHolder.AddComponent<TextMeshProUGUI>();
-            _comfortaaTextPrefab.fontSize = 22;
-            _comfortaaTextPrefab.text = "DefaultText";
-            _comfortaaTextPrefab.font = TMP_FontAsset.CreateFontAsset(advancePanelText.GetComponent<Text>().font);
+            var tmp = textHolder.AddComponent<TextMeshProUGUI>();
+            tmp.fontSize = 22;
+            tmp.text = "defaultText";
+            tmp.font = TMP_FontAsset.CreateFontAsset(headerCreditText.GetComponent<Text>().font);
+            tmp.font.fallbackFontAssetTable = fallbackFonts;
 
-            _comfortaaTextPrefab.fontMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, .25f);
-            _comfortaaTextPrefab.fontMaterial.EnableKeyword(ShaderUtilities.Keyword_Outline);
-            _comfortaaTextPrefab.fontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, .25f);
-            _comfortaaTextPrefab.fontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Color.black);
+            tmp.fontMaterial.SetFloat(ShaderUtilities.ID_FaceDilate, .25f);
+            tmp.fontMaterial.EnableKeyword(ShaderUtilities.Keyword_Outline);
+            tmp.fontMaterial.SetFloat(ShaderUtilities.ID_OutlineWidth, .25f);
+            tmp.fontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, Color.black);
 
-            _comfortaaTextPrefab.alignment = TextAlignmentOptions.Center;
-            _comfortaaTextPrefab.GetComponent<RectTransform>().sizeDelta = textHolder.GetComponent<RectTransform>().sizeDelta;
-            _comfortaaTextPrefab.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            _comfortaaTextPrefab.richText = true;
-            _comfortaaTextPrefab.enableWordWrapping = false;
-            _comfortaaTextPrefab.material = advancePanelText.GetComponent<Text>().material;
-
-            GameObject.DontDestroyOnLoad(_comfortaaTextPrefab);
+            tmp.alignment = TextAlignmentOptions.Center;
+            tmp.GetComponent<RectTransform>().sizeDelta = textHolder.GetComponent<RectTransform>().sizeDelta;
+            tmp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            tmp.richText = true;
+            tmp.enableWordWrapping = false;
+            tmp.material = headerCreditText.GetComponent<Text>().material;
+            GameObject.DontDestroyOnLoad(tmp);
+            return tmp;
         }
 
         private static void SetInputFieldPrefab()

@@ -152,11 +152,11 @@ namespace TootTallyCore.Graphics
             var paths = Font.GetPathsToOSFonts();
             var fallbackFonts = paths.Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
             Plugin.LogInfo($"Loaded {paths.Length} fallback fonts in {s.Elapsed.TotalSeconds}s");
-            _multicoloreTextPrefab = CreateTextPrefab("defaultTextPrefab", "SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top", fallbackFonts);
-            _comfortaaTextPrefab = CreateTextPrefab("ComfortaaTextPrefab", "AdvancedInfoPanel/primary-content/intro/copy", fallbackFonts);
+            _multicoloreTextPrefab = CreateTextPrefab("defaultTextPrefab", "SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top", fallbackFonts, true);
+            _comfortaaTextPrefab = CreateTextPrefab("ComfortaaTextPrefab", "AdvancedInfoPanel/primary-content/intro/copy", fallbackFonts, false);
         }
 
-        private static TextMeshProUGUI CreateTextPrefab(string name, string path, List<TMP_FontAsset> fallbackFonts)
+        private static TextMeshProUGUI CreateTextPrefab(string name, string path, List<TMP_FontAsset> fallbackFonts, bool wordWrapping)
         {
             GameObject mainCanvas = GameObject.Find("MainCanvas").gameObject;
             GameObject headerCreditText = mainCanvas.transform.Find(path).gameObject;
@@ -180,7 +180,7 @@ namespace TootTallyCore.Graphics
             tmp.GetComponent<RectTransform>().sizeDelta = textHolder.GetComponent<RectTransform>().sizeDelta;
             tmp.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
             tmp.richText = true;
-            tmp.enableWordWrapping = false;
+            tmp.enableWordWrapping = wordWrapping;
             tmp.material = headerCreditText.GetComponent<Text>().material;
             GameObject.DontDestroyOnLoad(tmp);
             return tmp;

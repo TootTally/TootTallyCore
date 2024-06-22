@@ -62,7 +62,7 @@ namespace TootTallyCore.Graphics.ProgressCounter
         {
             IsCompleted = true;
             IsRunning = false;
-            _timer = null;
+            _timer.Stop();
             GetFinishedElapsedTime = _timer.Elapsed.TotalMilliseconds;
             OnProgressCounterFinish?.Invoke(this);
         }

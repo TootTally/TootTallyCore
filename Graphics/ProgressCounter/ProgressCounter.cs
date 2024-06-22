@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace TootTallyCore.Graphics.ProgressCounter
 {
-    public abstract class ProgressCounter
+    public class ProgressCounter
     {
         public Action<ProgressCounter, float> OnProgressCounterUpdate;
         public Action<ProgressCounter> OnProgressCounterFinish;

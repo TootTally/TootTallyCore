@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace TootTallyCore.Graphics.ProgressCounter
 {
@@ -30,23 +31,17 @@ namespace TootTallyCore.Graphics.ProgressCounter
             if (IsForcedStopped || IsCompleted) return;
 
             if (!IsRunning && !IsCompleted)
-            {
-                IsRunning = true;
-                _timer = Stopwatch.StartNew();
-            }
-            _progressPercent = progressPercent;
-            if (_progressPercent >= 1)
-            {
-                IsCompleted = true;
-                IsRunning = false;
-                _timer = null;
-                GetElapsedMillisecondsTime = _timer.Elapsed.TotalMilliseconds;
-                OnProgressCounterFinish?.Invoke(this);
-                return;
-            }
+                Start();
+            _progressPercent = Mathf.Clamp(progressPercent, 0, 1);
 
             OnProgressCounterUpdate?.Invoke(this, _progressPercent);
             GetElapsedMillisecondsTime = _timer.Elapsed.TotalMilliseconds;
+        }
+
+        public void Start()
+        {
+            IsRunning = true;
+            _timer = Stopwatch.StartNew();
         }
 
         public void Reset()
@@ -61,6 +56,15 @@ namespace TootTallyCore.Graphics.ProgressCounter
         {
             IsForcedStopped = true;
             IsRunning = false;
+        }
+
+        public void Finish()
+        {
+            IsCompleted = true;
+            IsRunning = false;
+            _timer = null;
+            GetElapsedMillisecondsTime = _timer.Elapsed.TotalMilliseconds;
+            OnProgressCounterFinish?.Invoke(this);
         }
 
         public void ClearEvents()

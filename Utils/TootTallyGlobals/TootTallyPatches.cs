@@ -13,7 +13,11 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         public static void FixAudioLatency(GameController __instance)
         {
             if (GlobalVariables.practicemode == 1 && !GlobalVariables.turbomode)
-                __instance.latency_offset = GlobalVariables.localsettings.latencyadjust * 0.001f * TootTallyGlobalVariables.gameSpeedMultiplier;
+            {
+                var fixedLatency = GlobalVariables.localsettings.latencyadjust * 0.001f * TootTallyGlobalVariables.gameSpeedMultiplier;
+                Plugin.LogInfo($"Fixed audio latency from: {__instance.latency_offset} to {fixedLatency}");
+                __instance.latency_offset = fixedLatency;
+            }
         }
 
         [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
@@ -75,8 +79,9 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         {
             if (!Plugin.Instance.ChangePitch.Value)
             {
+                Plugin.LogInfo($"Changed audmix to pitchshifted mixer");
                 __instance.musictrack.outputAudioMixerGroup = __instance.audmix_bgmus_pitchshifted;
-                __instance.musictrack.volume = GlobalVariables.localsettings.maxvolume_music;
+                __instance.musictrack.volume = GlobalVariables.localsettings.maxvolume_music * (TootTallyGlobalVariables.gameSpeedMultiplier == 1 ? .75f : 1f); //For some reasons 1x speed is louder
                 __instance.audmix.SetFloat("pitchShifterMult", 1f / TootTallyGlobalVariables.gameSpeedMultiplier);
                 __instance.audmix.SetFloat("mastervol", Mathf.Log10(GlobalVariables.localsettings.maxvolume) * 40f);
                 __instance.audmix.SetFloat("trombvol", Mathf.Log10(GlobalVariables.localsettings.maxvolume_tromb) * 60f + 12f);

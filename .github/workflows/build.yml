@@ -1,0 +1,23 @@
+name: Build DLL + Nuget Package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET 6 environment
+        uses: actions/setup-dotnet@v4
+        with:
+            dotnet-version: '6.x'
+      - name: Setup GitHub Nuget Repo
+        run: dotnet nuget add source --username TootTally --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/TootTally/index.json"
+      - name: Build core
+        run: dotnet build
+      - name: Build Thunderstore package
+        run: echo 'TODO'

@@ -23,7 +23,7 @@ namespace TootTallyCore.Utils.Steam
 
                 SteamTicket = hex;
 
-                Plugin.LogInfo($"Got Steam auth ticket: '{hex}'");
+                Plugin.LogInfo("Steam Auth Ticket obtained successfully!");
             }
         }
 

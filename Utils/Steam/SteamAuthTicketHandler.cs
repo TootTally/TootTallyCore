@@ -44,6 +44,7 @@ namespace TootTallyCore.Utils.Steam
         {
             SteamUser.CancelAuthTicket(hAuthTicket);
             m_GetAuthSessionTicketResponse?.Dispose();
+            SteamTicket = null;
         }
     }
 }

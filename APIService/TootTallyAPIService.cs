@@ -467,14 +467,14 @@ namespace TootTallyCore.APIServices
 
         public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, int status, Action callback = null)
         {
-            APIHeartbeat heartbeat = new APIHeartbeat()
+            APISteamConnect steamConnect = new APISteamConnect()
             {
                 apiKey = apiKey,
                 steamTicket = SteamAuthTicketHandler.SteamTicket,
             };
 
             string query = $"{APIURL}/api/profile/connect_steam/";
-            var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(heartbeat));
+            var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(steamConnect));
             UnityWebRequest webRequest = PostUploadRequest(query, data);
             yield return webRequest.SendWebRequest();
 

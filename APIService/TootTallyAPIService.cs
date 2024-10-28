@@ -116,7 +116,7 @@ namespace TootTallyCore.APIServices
         {
             var query = $"{APIURL}/auth/steam-login/";
             var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new SteamLogin() { steamTicket = steamTicket };
+            var apiObj = new APISteamLogin() { steamTicket = steamTicket };
             var apiLogin = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiLogin);
             User user;
@@ -437,6 +437,7 @@ namespace TootTallyCore.APIServices
             }
 
             sendableModInfo.apiKey = apiKey;
+            sendableModInfo.steamTicket = SteamAuthTicketHandler.SteamTicket;
             sendableModInfo.mods = mods.ToArray();
             string query = $"{APIURL}/api/mods/submit/";
             var jsonbin = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(sendableModInfo));
@@ -456,6 +457,23 @@ namespace TootTallyCore.APIServices
             APIHeartbeat heartbeat = new APIHeartbeat() { apiKey = apiKey, status = status };
 
             string query = $"{APIURL}/api/profile/heartbeat/";
+            var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(heartbeat));
+            UnityWebRequest webRequest = PostUploadRequest(query, data);
+            yield return webRequest.SendWebRequest();
+
+            if (!HasError(webRequest, query))
+                callback?.Invoke();
+        }
+
+        public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, int status, Action callback = null)
+        {
+            APIHeartbeat heartbeat = new APIHeartbeat()
+            {
+                apiKey = apiKey,
+                steamTicket = SteamAuthTicketHandler.SteamTicket,
+            };
+
+            string query = $"{APIURL}/api/profile/connect_steam/";
             var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(heartbeat));
             UnityWebRequest webRequest = PostUploadRequest(query, data);
             yield return webRequest.SendWebRequest();

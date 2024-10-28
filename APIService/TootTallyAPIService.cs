@@ -116,7 +116,7 @@ namespace TootTallyCore.APIServices
         {
             var query = $"{APIURL}/auth/steam-login/";
             var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new SteamLogin() { steamticket = steamTicket };
+            var apiObj = new SteamLogin() { steamTicket = steamTicket };
             var apiLogin = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiLogin);
             User user;
@@ -169,7 +169,7 @@ namespace TootTallyCore.APIServices
         {
             var query = $"{APIURL}/auth/signup/";
             var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamticket = steamTicket };
+            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamTicket = steamTicket };
             var apiSignUp = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiSignUp);
             yield return webRequest.SendWebRequest();

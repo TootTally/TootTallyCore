@@ -166,7 +166,7 @@ namespace TootTallyCore.APIServices
             public string username;
             public string password;
             public string pass_check;
-            public string steamticket;
+            public string steamTicket;
         }
 
         [Serializable]
@@ -179,7 +179,7 @@ namespace TootTallyCore.APIServices
         [Serializable]
         public class SteamLogin
         {
-            public string steamticket;
+            public string steamTicket;
         }
 
         [Serializable]

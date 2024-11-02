@@ -7,17 +7,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET 6 environment
         uses: actions/setup-dotnet@v4
         with:
-            dotnet-version: '6.x'
-      - name: Setup GitHub Nuget Repo
-        run: dotnet nuget add source --username TootTally --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/TootTally/index.json"
+          dotnet-version: '6.x'
       - name: Build core
         run: dotnet build
-      - name: Build Thunderstore package
-        run: echo 'TODO'
+      - name: Build NuGet package
+        run: dotnet pack --configuration Release
+      - name: Upload NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: bin/Release/*.nupkg
+  
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download NuGet package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: nuget-package
+      - name: Setup .NET 6 environment
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.x'
+      - name: Setup GitHub Nuget Repo
+        run: dotnet nuget add source --username TootTally --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/TootTally/index.json"
+      - name: Push package to GitHub Packages
+        run: dotnet nuget push nuget-package/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github"

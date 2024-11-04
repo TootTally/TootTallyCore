@@ -3,11 +3,21 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>TootTallyCore</AssemblyName>
-    <Description>TootTallyAPI for trombone champ modding</Description>
+    <Description>TootTally API for Trombone Champ modding</Description>
     <Version>1.2.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
+
+    <PackageId>TootTally.Core</PackageId>
+    <Authors>Electrostats, Emmett, gristCollector</Authors>
+    <Company>TootTally</Company>
+    <PackageTags>Trombone;Champ;TromboneChamp;TootTally</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/TootTally/TootTallyCore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <DefaultLanguage>en</DefaultLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,6 +41,11 @@
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
+    <None Include="$(SolutionDir)thunderstore\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(TromboneTootDir) != ''">

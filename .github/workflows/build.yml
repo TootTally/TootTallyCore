@@ -46,7 +46,5 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '6.x'
-      - name: Setup GitHub Nuget Repo
-        run: dotnet nuget add source --username TootTally --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/TootTally/index.json"
       - name: Push package to GitHub Packages
-        run: dotnet nuget push nuget-package/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source "github" --skip-duplicate
+        run: dotnet nuget push nuget-package/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate

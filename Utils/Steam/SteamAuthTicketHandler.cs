@@ -39,12 +39,5 @@ namespace TootTallyCore.Utils.Steam
                 Plugin.LogWarning("SteamManager not initialized, cannot obtain Steam Auth ticket.");
             }
         }
-
-        public static void Cleanup()
-        {
-            SteamUser.CancelAuthTicket(hAuthTicket);
-            m_GetAuthSessionTicketResponse?.Dispose();
-            SteamTicket = null;
-        }
     }
 }

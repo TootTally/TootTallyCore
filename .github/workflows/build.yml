@@ -9,8 +9,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  pre-build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version_check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run version check
+        id: version_check
+        run: |
+          chmod +x ./version_check.sh
+          ./version_check.sh
   build:
     runs-on: ubuntu-latest
+    needs: pre-build
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET 6 environment

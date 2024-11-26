@@ -1,5 +1,12 @@
 #### Changelog:
 
+`v1.2.2` -> `v1.2.3`
+```diff
++ Added steam Auth logistic
++ Added gameSpeed to song title
++ Adjust the track time according to gameSpeed
+```
+
 `v1.2.1` -> `v1.2.2`
 ```diff
 + Load from a list of fallback fonts instead of all the fonts

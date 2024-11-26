@@ -1,6 +1,6 @@
 #### Changelog:
 
-`v1.2.2` -> `v1.2.4`
+`v1.2.2` -> `v1.2.5`
 ```diff
 + Added steam Auth logistic
 + Added gameSpeed to song title

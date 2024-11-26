@@ -199,7 +199,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         [HarmonyPostfix]
         public static void OnGameControllerStartSetTitleWithSpeed(GameController __instance)
         {
-            if (TootTallyGlobalVariables.gameSpeedMultiplier == 1) return;
+            if (TootTallyGlobalVariables.gameSpeedMultiplier == 1 || __instance.freeplay) return;
             var trackTitle = $"{GlobalVariables.chosen_track_data.trackname_long} [{TootTallyGlobalVariables.gameSpeedMultiplier:0.00}x]";
             SetTitleText(__instance, trackTitle);
         }

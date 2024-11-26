@@ -12,6 +12,7 @@ using TootTallyCore.Utils.Assets;
 using TootTallyCore.Utils.TootTallyGlobals;
 using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
+using TootTallyCore.Utils.Steam;
 using UnityEngine;
 
 namespace TootTallyCore
@@ -108,6 +109,8 @@ namespace TootTallyCore
             gameObject.AddComponent<TootTallyAnimationManager>();
 
             TootTallyModuleManager.LoadModules();
+            SteamAuthTicketHandler.GetSteamAuthTicket();
+
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");
         }

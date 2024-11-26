@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using TootTallyCore.Graphics;
 using TootTallyCore.Utils.Helpers;
 using TootTallyCore.Utils.TootTallyNotifs;
+using TootTallyCore.Utils.Steam;
 using UnityEngine;
 using UnityEngine.Networking;
 using static TootTallyCore.APIServices.SerializableClass;
@@ -111,6 +112,35 @@ namespace TootTallyCore.APIServices
                 callback(null);
         }
 
+        public static IEnumerator<UnityWebRequestAsyncOperation> GetUserFromSteamTicket(Action<User> callback)
+        {
+            var query = $"{APIURL}/auth/steam-login/";
+            var steamTicket = SteamAuthTicketHandler.SteamTicket;
+            var apiObj = new APISteamLogin() { steamTicket = steamTicket };
+            var apiLogin = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
+            var webRequest = PostUploadRequest(query, apiLogin);
+            User user;
+
+            yield return webRequest.SendWebRequest();
+
+            if (!HasError(webRequest, query))
+            {
+                user = JsonConvert.DeserializeObject<User>(webRequest.downloadHandler.text);
+                Plugin.LogInfo($"Welcome, {user.username}!");
+            }
+            else
+            {
+                user = new User()
+                {
+                    username = "Guest",
+                    id = 0,
+                };
+                Plugin.LogInfo($"Logged in with Guest Account");
+            }
+
+            callback(user);
+        }
+
         public static IEnumerator<UnityWebRequestAsyncOperation> GetLoginToken(string username, string password, Action<LoginToken> callback)
         {
             var query = $"{APIURL}/auth/token/";
@@ -138,7 +168,8 @@ namespace TootTallyCore.APIServices
         public static IEnumerator<UnityWebRequestAsyncOperation> SignUpRequest(string username, string password, string pass_check, Action<bool> callback)
         {
             var query = $"{APIURL}/auth/signup/";
-            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check };
+            var steamTicket = SteamAuthTicketHandler.SteamTicket;
+            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamTicket = steamTicket };
             var apiSignUp = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiSignUp);
             yield return webRequest.SendWebRequest();
@@ -406,6 +437,7 @@ namespace TootTallyCore.APIServices
             }
 
             sendableModInfo.apiKey = apiKey;
+            sendableModInfo.steamTicket = SteamAuthTicketHandler.SteamTicket;
             sendableModInfo.mods = mods.ToArray();
             string query = $"{APIURL}/api/mods/submit/";
             var jsonbin = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(sendableModInfo));
@@ -426,6 +458,23 @@ namespace TootTallyCore.APIServices
 
             string query = $"{APIURL}/api/profile/heartbeat/";
             var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(heartbeat));
+            UnityWebRequest webRequest = PostUploadRequest(query, data);
+            yield return webRequest.SendWebRequest();
+
+            if (!HasError(webRequest, query))
+                callback?.Invoke();
+        }
+
+        public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, Action callback = null)
+        {
+            APISteamConnect steamConnect = new APISteamConnect()
+            {
+                apiKey = apiKey,
+                steamTicket = SteamAuthTicketHandler.SteamTicket,
+            };
+
+            string query = $"{APIURL}/api/profile/connect_steam/";
+            var data = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(steamConnect));
             UnityWebRequest webRequest = PostUploadRequest(query, data);
             yield return webRequest.SendWebRequest();
 

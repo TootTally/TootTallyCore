@@ -114,6 +114,7 @@ namespace TootTallyCore.APIServices
         public class ModInfoAPI
         {
             public string apiKey;
+            public string steamTicket;
             public SendableModInfo[] mods;
         }
 
@@ -162,11 +163,19 @@ namespace TootTallyCore.APIServices
         }
 
         [Serializable]
+        public struct APISteamConnect
+        {
+            public string apiKey;
+            public string steamTicket;
+        }
+
+        [Serializable]
         public class APISignUp
         {
             public string username;
             public string password;
             public string pass_check;
+            public string steamTicket;
         }
 
         [Serializable]
@@ -174,6 +183,12 @@ namespace TootTallyCore.APIServices
         {
             public string username;
             public string password;
+        }
+
+        [Serializable]
+        public class APISteamLogin
+        {
+            public string steamTicket;
         }
 
         [Serializable]

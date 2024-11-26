@@ -13,7 +13,11 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         public static void FixAudioLatency(GameController __instance)
         {
             if (GlobalVariables.practicemode == 1 && !GlobalVariables.turbomode)
-                __instance.latency_offset = GlobalVariables.localsettings.latencyadjust * 0.001f * TootTallyGlobalVariables.gameSpeedMultiplier;
+            {
+                var fixedLatency = GlobalVariables.localsettings.latencyadjust * 0.001f * TootTallyGlobalVariables.gameSpeedMultiplier;
+                Plugin.LogInfo($"Fixed audio latency from: {__instance.latency_offset} to {fixedLatency}");
+                __instance.latency_offset = fixedLatency;
+            }
         }
 
         [HarmonyPatch(typeof(HomeController), nameof(HomeController.doFastScreenShake))]
@@ -61,10 +65,9 @@ namespace TootTallyCore.Utils.TootTallyGlobals
             //Have to set the speed here because the pitch is changed in 2 different places? one time during GC.Start and one during GC.loadAssetBundleResources... Derp
             if (TootTallyGlobalVariables.gameSpeedMultiplier != 1)
             {
-                __instance.gamecontroller.smooth_scrolling_move_mult = TootTallyGlobalVariables.gameSpeedMultiplier;
-                __instance.gamecontroller.musictrack.pitch = TootTallyGlobalVariables.gameSpeedMultiplier; // SPEEEEEEEEEEEED
-                __instance.gamecontroller.breathmultiplier = TootTallyGlobalVariables.gameSpeedMultiplier;
+                OnGameControllerReadySetGameSpeed(__instance.gamecontroller, TootTallyGlobalVariables.gameSpeedMultiplier);
                 Plugin.LogInfo("GameSpeed set to " + TootTallyGlobalVariables.gameSpeedMultiplier);
+                SetGCTotalTrackTimeString(__instance.gamecontroller);
             }
 
         }
@@ -75,8 +78,9 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         {
             if (!Plugin.Instance.ChangePitch.Value)
             {
+                Plugin.LogInfo($"Changed audmix to pitchshifted mixer");
                 __instance.musictrack.outputAudioMixerGroup = __instance.audmix_bgmus_pitchshifted;
-                __instance.musictrack.volume = GlobalVariables.localsettings.maxvolume_music;
+                __instance.musictrack.volume = GlobalVariables.localsettings.maxvolume_music * (TootTallyGlobalVariables.gameSpeedMultiplier == 1 ? .75f : 1f); //For some reasons 1x speed is louder
                 __instance.audmix.SetFloat("pitchShifterMult", 1f / TootTallyGlobalVariables.gameSpeedMultiplier);
                 __instance.audmix.SetFloat("mastervol", Mathf.Log10(GlobalVariables.localsettings.maxvolume) * 40f);
                 __instance.audmix.SetFloat("trombvol", Mathf.Log10(GlobalVariables.localsettings.maxvolume_tromb) * 60f + 12f);
@@ -92,10 +96,10 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         {
             if (__instance.musictrack.pitch != TootTallyGlobalVariables.gameSpeedMultiplier)
             {
-                __instance.smooth_scrolling_move_mult = TootTallyGlobalVariables.gameSpeedMultiplier;
-                __instance.musictrack.pitch = TootTallyGlobalVariables.gameSpeedMultiplier;
-                __instance.breathmultiplier = TootTallyGlobalVariables.gameSpeedMultiplier;
+                OnGameControllerReadySetGameSpeed(__instance, TootTallyGlobalVariables.gameSpeedMultiplier);
                 Plugin.LogInfo("BACKUP: GameSpeed set to " + TootTallyGlobalVariables.gameSpeedMultiplier);
+                SetGCTotalTrackTimeString(__instance);
+
             }
         }
 
@@ -173,6 +177,50 @@ namespace TootTallyCore.Utils.TootTallyGlobals
 
             Plugin.LogInfo($"Starting song time.");
             _startSongTime = true;
+        }
+
+        [HarmonyPatch(typeof(GameController), nameof(GameController.updateTimeCounter))]
+        [HarmonyPostfix]
+        public static void OnUpdateTimeCounterSetTimeElapsedString(float elapsedtime, GameController __instance)
+        {
+            if (__instance.freeplay) return;
+            elapsedtime /= TootTallyGlobalVariables.gameSpeedMultiplier;
+            float num = Mathf.Floor(elapsedtime * 0.016666668f);
+            int num2 = (int)elapsedtime - (int)num * 60;
+            string text = num2.ToString();
+            if (num2 < 10)
+                text = "0" + text;
+
+            __instance.timeelapsed_shad.text = $"{num}:{text} / {__instance.totaltracktimestring}";
+            __instance.timeelapsed.text = $"{num}:{text} <color=#444>/</color> {__instance.totaltracktimestring}";
+        }
+
+        [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]
+        [HarmonyPostfix]
+        public static void OnGameControllerStartSetTitleWithSpeed(GameController __instance)
+        {
+            var trackTitle = $"{GlobalVariables.chosen_track_data.trackname_long} [{TootTallyGlobalVariables.gameSpeedMultiplier:0.00}x]";
+            __instance.songtitle.text = __instance.songtitleshadow.text = trackTitle;
+        }
+
+
+        private static void OnGameControllerReadySetGameSpeed(GameController __instance, float speed)
+        {
+            __instance.smooth_scrolling_move_mult = speed;
+            __instance.musictrack.pitch = speed;
+            __instance.breathmultiplier = speed;
+        }
+
+        public static void SetGCTotalTrackTimeString(GameController __instance)
+        {
+            if (__instance.freeplay) return;
+            float num = __instance.levelendtime / TootTallyGlobalVariables.gameSpeedMultiplier;
+            float num2 = Mathf.Floor(num / 60f);
+            int num3 = (int)num - (int)num2 * 60;
+            string text = num3.ToString();
+            if (num3 < 10)
+                text = "0" + text;
+            __instance.totaltracktimestring = $"{num2}:{text}";
         }
 
         #region GC Stuff

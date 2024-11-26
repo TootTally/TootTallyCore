@@ -200,13 +200,8 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         public static void OnGameControllerStartSetTitleWithSpeed(GameController __instance)
         {
             if (TootTallyGlobalVariables.gameSpeedMultiplier == 1 || __instance.freeplay) return;
-            var trackTitle = $"{GlobalVariables.chosen_track_data.trackname_long} [{TootTallyGlobalVariables.gameSpeedMultiplier:0.00}x]";
-            SetTitleText(__instance, trackTitle);
-        }
-
-        public static void SetTitleText(GameController gameController, string text)
-        {
-            gameController.songtitle.text = gameController.songtitleshadow.text = text;
+            var text = $" [{TootTallyGlobalVariables.gameSpeedMultiplier:0.00}x]";
+            __instance.songtitle.text = __instance.songtitleshadow.text += text;
         }
 
         private static void OnGameControllerReadySetGameSpeed(GameController __instance, float speed)

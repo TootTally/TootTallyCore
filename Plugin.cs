@@ -13,7 +13,6 @@ using TootTallyCore.Utils.TootTallyGlobals;
 using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace TootTallyCore
 {

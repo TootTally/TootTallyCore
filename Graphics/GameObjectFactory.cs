@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using TootTallyCore.Utils.SoundEffects;
+using System.IO;
 
 namespace TootTallyCore.Graphics
 {
@@ -151,9 +152,9 @@ namespace TootTallyCore.Graphics
         private static void SetTextPrefabs()
         {
             var s = Stopwatch.StartNew();
-            var paths = Font.GetPathsToOSFonts();
-            var fallbackFonts = paths.Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
-            Plugin.LogInfo($"Loaded {paths.Length} fallback fonts in {s.Elapsed.TotalSeconds}s");
+            var fallbackFonts = Directory.GetFiles($"{Path.GetDirectoryName(Plugin.Instance.Info.Location)}/Fonts")
+                .Select(path => TMP_FontAsset.CreateFontAsset(new Font(path))).ToList();
+            Plugin.LogInfo($"Loaded {fallbackFonts.Count} fallback fonts in {s.Elapsed.TotalSeconds}s");
             _multicoloreTextPrefab = CreateTextPrefab("defaultTextPrefab", "SettingsPanel/header-Settings/txt-settingsheader/txt-settingsheader-top", fallbackFonts, true);
             _comfortaaTextPrefab = CreateTextPrefab("ComfortaaTextPrefab", "AdvancedInfoPanel/primary-content/intro/copy", fallbackFonts, false);
         }
@@ -737,7 +738,7 @@ namespace TootTallyCore.Graphics
                             $"Nasty: {tally[0]}\n" : "No Tally";
 
         public static GameObject CreateBubble(Vector2 size, string name, string text) => CreateBubble(size, name, text, new Vector2(1, 0), 6, false);
-        public static GameObject CreateBubble(Vector2 size, string name, string text, int borderThiccness, bool autoResize, int fontSize = 22) => CreateBubble(size, name, text, new Vector2(1, 0), 6, autoResize, fontSize);
+        public static GameObject CreateBubble(Vector2 size, string name, string text, int borderThiccness, bool autoResize, int fontSize = 22) => CreateBubble(size, name, text, new Vector2(1, 0), borderThiccness, autoResize, fontSize);
 
         public static GameObject CreateBubble(Vector2 size, string name, string text, Vector2 alignement, int borderThiccness, bool autoResize, int fontSize = 22)
         {

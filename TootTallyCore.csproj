@@ -1,35 +1,68 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>TootTallyCore</AssemblyName>
+    <Description>TootTally API for Trombone Champ modding</Description>
+    <Version>1.2.4</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
 
-	<PropertyGroup>
-		<TargetFramework>net472</TargetFramework>
-		<AssemblyName>TootTallyCore</AssemblyName>
-		<Description>TootTallyAPI for trombone champ modding</Description>
-		<Version>1.2.4</Version>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<LangVersion>latest</LangVersion>
-	</PropertyGroup>
+    <PackageId>TootTally.Core</PackageId>
+    <Authors>Electrostats, Emmett, gristCollector</Authors>
+    <Company>TootTally</Company>
+    <PackageTags>Trombone;Champ;TromboneChamp;TootTally</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/TootTally/TootTallyCore</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <DefaultLanguage>en</DefaultLanguage>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <Optimize>True</Optimize>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-		<PackageReference Include="BepInEx.Core" Version="5.*" />
-		<PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-		<PackageReference Include="TromboneChamp.GameLibs" Version="1.20.0-beta" />
-		<PackageReference Include="TromboneChamp.BaboonAPI" Version="2.7.0-alpha.1" />
-		<PackageReference Include="TromboneChamp.TrombLoader" Version="2.0.0-rc.1" />
-		<PackageReference Include="UnityEngine.Modules" Version="2019.4.40" IncludeAssets="compile" />
-		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="websocket-sharp-customheaders" Version="1.0.2.31869" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
+    <PackageReference Include="TromboneChamp.GameLibs" Version="1.20.0-beta" />
+    <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.7.0-alpha.1" />
+    <PackageReference Include="TromboneChamp.TrombLoader" Version="2.0.0-rc.1" />
+    <PackageReference Include="UnityEngine.Modules" Version="2019.4.40" IncludeAssets="compile" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="websocket-sharp-customheaders" Version="1.0.2.31869" />
+    <Assets Include="thunderstore\Assets\**" />
+    <Fonts Include="thunderstore\Fonts\**" />
+    <Themes Include="thunderstore\Themes\**" />
+  </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(TromboneTootDir) != ''">
-		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TromboneTootDir)" />
-	</Target>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
+    <None Include="$(SolutionDir)thunderstore\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(TromboneTootDir) != ''">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TromboneTootDir)" />
+  </Target>
+
+  <Target Name="ThunderstoreZip" AfterTargets="Build">
+    <Delete Files="$(OutDir)thunderstore" />
+    <Delete Files="$(SolutionDir)$(ProjectName).zip" />
+    <Copy SourceFiles="thunderstore\icon.png" DestinationFolder="$(OutDir)thunderstore" />
+    <Copy SourceFiles="thunderstore\CHANGELOG.md" DestinationFolder="$(OutDir)thunderstore" />
+    <Copy SourceFiles="thunderstore\manifest.json" DestinationFolder="$(OutDir)thunderstore" />
+    <Copy SourceFiles="thunderstore\README.md" DestinationFolder="$(OutDir)thunderstore" />
+    <Copy SourceFiles="thunderstore\Microsoft.CSharp.dll" DestinationFolder="$(OutDir)thunderstore/plugins" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(OutDir)thunderstore/plugins" />
+    <Copy SourceFiles="@(Assets)" DestinationFolder="$(OutDir)thunderstore/plugins/Assets" />
+    <Copy SourceFiles="@(Fonts)" DestinationFolder="$(OutDir)thunderstore/plugins/Fonts" />
+    <Copy SourceFiles="@(Themes)" DestinationFolder="$(OutDir)thunderstore/plugins/Themes" />
+    <ZipDirectory DestinationFile="$(SolutionDir)$(ProjectName).zip" SourceDirectory="$(OutDir)thunderstore" />
+  </Target>
 </Project>

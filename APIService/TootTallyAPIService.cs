@@ -465,7 +465,7 @@ namespace TootTallyCore.APIServices
                 callback?.Invoke();
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, int status, Action callback = null)
+        public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, Action callback = null)
         {
             APISteamConnect steamConnect = new APISteamConnect()
             {

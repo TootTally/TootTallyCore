@@ -9,6 +9,7 @@ using TootTallyCore.Utils.Assets;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using TootTallyCore.Utils.SoundEffects;
 using System.IO;
 
 namespace TootTallyCore.Graphics
@@ -38,6 +39,7 @@ namespace TootTallyCore.Graphics
         [HarmonyPostfix]
         static void YoinkSettingsGraphicsHomeController(HomeController __instance)
         {
+            SoundEffectsManager.Initialize(__instance);
             _settingsGraphics = __instance.fullsettingspanel.transform.Find("Settings").gameObject;
             _settingsPanelVolumeSlider = GameObject.Instantiate(__instance.set_sld_volume_tromb);
             _settingsPanelVolumeSlider.gameObject.SetActive(false);
@@ -454,7 +456,11 @@ namespace TootTallyCore.Graphics
 
             EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();
             pointerEnterEvent.eventID = EventTriggerType.PointerEnter;
-            pointerEnterEvent.callback.AddListener((data) => TintImage(image, Color.black, .25f));
+            pointerEnterEvent.callback.AddListener((data) =>
+            {
+                TintImage(image, Color.black, .25f);
+                SoundEffectsManager.PlayerBtnHover();
+            });
             eventTrigger.triggers.Add(pointerEnterEvent);
 
             EventTrigger.Entry pointerLeaveEvent = new EventTrigger.Entry();
@@ -478,7 +484,11 @@ namespace TootTallyCore.Graphics
 
             EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();
             pointerEnterEvent.eventID = EventTriggerType.PointerEnter;
-            pointerEnterEvent.callback.AddListener(data => image.color = hoverColor);
+            pointerEnterEvent.callback.AddListener((data) =>
+            {
+                TintImage(image, Color.black, .25f);
+                SoundEffectsManager.PlayerBtnHover();
+            });
             eventTrigger.triggers.Add(pointerEnterEvent);
 
             EventTrigger.Entry pointerLeaveEvent = new EventTrigger.Entry();

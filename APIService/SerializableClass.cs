@@ -41,6 +41,7 @@ namespace TootTallyCore.APIServices
         {
             public int score;
             public string player;
+            public int player_id;
             public string played_on;
             public string grade;
             public int perfect;

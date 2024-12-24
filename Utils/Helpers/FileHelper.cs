@@ -165,11 +165,12 @@ namespace TootTallyCore.Utils.Helpers
         private const string _GOOGLEDRIVE_DOWNLOAD_HEADER = "https://drive.google.com/uc?export=download&id=";
         private const string _PIXELDRAIN_DOWNLOAD_HEADER = "https://pixeldrain.com/u/";
         private const string _PIXELDRAIN_DIRECT_DOWNLOAD_HEADER = "https://pixeldrain.com/api/file/";
+        private const string _TROMBONEDB_DIRECT_DOWNLOAD_HEADER = "https://db.trombone.fyi/";
         public static string GetDownloadLinkFromSongData(SongDataFromDB song)
         {
             if (song.mirror != null && Path.GetExtension(song.mirror).Contains(".zip"))
                 return song.mirror;
-            else if (song.download != null)
+            else if (song.download != null && song.download != "")
             {
                 if (song.download.Contains(_DISCORD_DOWNLOAD_HEADER) && Path.GetExtension(song.download).Contains(".zip"))
                     return song.download;
@@ -178,6 +179,8 @@ namespace TootTallyCore.Utils.Helpers
                 else if (song.download.Contains(_PIXELDRAIN_DOWNLOAD_HEADER))
                     return song.download.Replace(_PIXELDRAIN_DOWNLOAD_HEADER, _PIXELDRAIN_DIRECT_DOWNLOAD_HEADER);
                 else if (song.download.Contains(_PIXELDRAIN_DIRECT_DOWNLOAD_HEADER))
+                    return song.download;
+                else if (song.download.Contains(_TROMBONEDB_DIRECT_DOWNLOAD_HEADER))
                     return song.download;
             }
             return null;

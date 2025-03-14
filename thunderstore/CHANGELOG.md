@@ -1,5 +1,10 @@
 #### Changelog:
 
+`v1.2.5` -> `v1.2.6`
+```diff
++ Support for TromboneDB download links
+```
+
 `v1.2.2` -> `v1.2.5`
 ```diff
 + Added steam Auth logistic

@@ -14,6 +14,7 @@ using TootTallyCore.Utils.TootTallyModules;
 using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Steam;
 using UnityEngine;
+using TootTallyCore.Utils.Helpers;
 
 namespace TootTallyCore
 {
@@ -60,14 +61,8 @@ namespace TootTallyCore
             Config.SettingChanged += ThemeManager.Config_SettingChanged;
 
             string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");
-            if (!Directory.Exists(targetThemePath))
-            {
-                string sourceThemePath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Themes");
-                if (Directory.Exists(sourceThemePath))
-                    Directory.Move(sourceThemePath, targetThemePath);
-                else
-                    return;
-            }
+            string sourceThemePath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Themes");
+            FileHelper.TryMigrateFolder(sourceThemePath, targetThemePath);
 
             _harmony = new Harmony(Info.Metadata.GUID);
             GameInitializationEvent.Register(Info, TryInitialize);

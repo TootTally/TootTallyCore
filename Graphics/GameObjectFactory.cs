@@ -310,7 +310,7 @@ namespace TootTallyCore.Graphics
 
         private static void SetVerticalSliderPrefab()
         {
-            Slider defaultSlider = GameObject.Find("MainCanvas/FullScreenPanel/Slider").GetComponent<Slider>(); //yoink
+            Slider defaultSlider = GameObject.Find("MainCanvas/FullScreenPanel/scroll_speed/Slider").GetComponent<Slider>(); //yoink
 
             _verticalSliderPrefab = GameObject.Instantiate(defaultSlider);
             _verticalSliderPrefab.direction = Slider.Direction.TopToBottom;
@@ -347,7 +347,7 @@ namespace TootTallyCore.Graphics
         }
         private static void SetSliderPrefab()
         {
-            Slider defaultSlider = GameObject.Find("MainCanvas/FullScreenPanel/Slider").GetComponent<Slider>(); //yoink
+            Slider defaultSlider = GameObject.Find("MainCanvas/FullScreenPanel/scroll_speed/Slider").GetComponent<Slider>(); //yoink
 
             _sliderPrefab = GameObject.Instantiate(defaultSlider);
             _sliderPrefab.navigation = new Navigation { mode = Navigation.Mode.None };

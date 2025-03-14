@@ -1,5 +1,10 @@
 #### Changelog:
 
+`v1.2.6` -> `v1.2.7`
+```diff
++ Update for TC 1.25
+```
+
 `v1.2.5` -> `v1.2.6`
 ```diff
 + Support for TromboneDB download links

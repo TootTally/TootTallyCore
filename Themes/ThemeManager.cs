@@ -81,20 +81,28 @@ namespace TootTallyCore
 
             _btnClickSfx = __instance.hoversfx;
 
-            foreach (GameObject btn in __instance.btns)
-                btn.transform.Find("ScoreText").gameObject.GetComponent<Text>().color = Theme.colors.leaderboard.text;
+            #region ScoreText
+            try
+            {
+                foreach (GameObject btn in __instance.btns)
+                    btn.transform.Find("ScoreText").gameObject.GetComponent<Text>().color = Theme.colors.leaderboard.text;
+            } catch (Exception e)
+            {
+                Plugin.LogError("ScoreText theme couldn't be applied:" + e.Message);
+            }
+            #endregion
 
             #region SongButton
             try
             {
                 GameObject btnBGPrefab = UnityEngine.Object.Instantiate(__instance.btnbgs[0].gameObject);
-                UnityEngine.Object.DestroyImmediate(btnBGPrefab.transform.Find("Image").gameObject);
+                //UnityEngine.Object.DestroyImmediate(btnBGPrefab.transform.Find("Image").gameObject);
 
                 for (int i = 0; i < 7; i++) //songbuttons only, not the arrow ones
                 {
                     Image img = __instance.btnbgs[i];
                     img.sprite = AssetManager.GetSprite("SongButtonBackground.png");
-                    img.transform.parent.GetChild(3).GetComponent<Text>().color = i == 0 ? Theme.colors.songButton.textOver : Theme.colors.songButton.text;
+                    img.transform.parent.GetChild(2).GetComponent<Text>().color = i == 0 ? Theme.colors.songButton.textOver : Theme.colors.songButton.text;
 
                     GameObject btnBGShadow = UnityEngine.Object.Instantiate(btnBGPrefab, img.gameObject.transform.parent);
                     btnBGShadow.name = "Shadow";
@@ -104,7 +112,7 @@ namespace TootTallyCore
                     btnBGOutline.name = "Outline";
                     OverwriteGameObjectSpriteAndColor(btnBGOutline, "SongButtonOutline.png", i == 0 ? Theme.colors.songButton.outlineOver : Theme.colors.songButton.outline);
 
-                    img.transform.Find("Image").GetComponent<Image>().color = Theme.colors.songButton.square;
+                    img.transform.Find("score-zone").GetComponent<Image>().color = Theme.colors.songButton.square;
                     img.color = Theme.colors.songButton.background;
                 }
 
@@ -360,7 +368,7 @@ namespace TootTallyCore
                 GameObject.Find("bgcamera").GetComponent<Camera>().backgroundColor = Theme.colors.background.background;
                 GameObject.Find("BG Shape").GetComponent<Image>().color = Theme.colors.background.shape;
                 GameObject MainCanvas = GameObject.Find("MainCanvas").gameObject;
-                MainCanvas.transform.Find("FullScreenPanel/diamond").GetComponent<Image>().color = Theme.colors.background.diamond;
+                MainCanvas.transform.Find("FullScreenPanel/bgdots_diamond").GetComponent<Image>().color = Theme.colors.background.diamond;
             }
             catch (Exception e)
             {
@@ -392,7 +400,7 @@ namespace TootTallyCore
             }
             __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
             __instance.btnbgs[btnnum].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outlineOver;
-            __instance.btnbgs[btnnum].transform.parent.GetChild(3).GetComponent<Text>().color = Theme.colors.songButton.textOver;
+            __instance.btnbgs[btnnum].transform.parent.GetChild(2).GetComponent<Text>().color = Theme.colors.songButton.textOver;
         }
 
         [HarmonyPatch(typeof(LevelSelectController), nameof(LevelSelectController.unHoverBtn))]
@@ -407,7 +415,7 @@ namespace TootTallyCore
             }
             __instance.btnbgs[btnnum].GetComponent<Image>().color = Theme.colors.songButton.background;
             __instance.btnbgs[btnnum].transform.Find("Outline").GetComponent<Image>().color = Theme.colors.songButton.outline;
-            __instance.btnbgs[btnnum].transform.parent.GetChild(3).GetComponent<Text>().color = Theme.colors.songButton.text;
+            __instance.btnbgs[btnnum].transform.parent.GetChild(2).GetComponent<Text>().color = Theme.colors.songButton.text;
         }
         #endregion
 

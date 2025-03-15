@@ -1,7 +1,8 @@
 #### Changelog:
 
-`v1.2.6` -> `v1.2.7`
+`v1.2.6` -> `v1.2.8`
 ```diff
++ Fixed themes for TC 1.25
 + Update for TC 1.25
 ```
 

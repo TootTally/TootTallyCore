@@ -164,7 +164,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         private static void OnGameControllerStartSetupTimer(GameController __instance)
         {
             _startSongTime = false;
-            if (__instance.freeplay) return;
+            if (__instance == null || __instance.freeplay || __instance.musictrack == null || __instance.musictrack.clip == null) return;
             _songLength = __instance.musictrack.clip.length;
             _songTime = 0;
         }

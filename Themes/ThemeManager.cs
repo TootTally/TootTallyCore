@@ -256,6 +256,7 @@ namespace TootTallyCore
             try
             {
                 GameObject backButtonBG = __instance.backbutton.transform.Find("button-full").gameObject;
+                backButtonBG.name = "BackButton";
                 GameObject backBGPrefab = UnityEngine.Object.Instantiate(backButtonBG.transform.GetChild(0).gameObject, __instance.backbutton.transform);
                 foreach (Transform t in backBGPrefab.transform) t.gameObject.SetActive(false);
 
@@ -451,7 +452,7 @@ namespace TootTallyCore
         [HarmonyPrefix]
         public static bool OnHoverBackBypassIfThemeNotDefault(BackButtonController __instance, bool hovering)
         {
-            if (Theme.isDefault) return true;
+            if (Theme.isDefault || __instance.gameObject.name == "BackButtonNew") return true; //ButtonNew is from the option menu in HomeScreen
             __instance.txt_back = __instance.gameObject.transform.Find("backText").GetComponent<Text>();
             if (hovering)
             {

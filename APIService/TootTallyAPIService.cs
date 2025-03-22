@@ -11,6 +11,7 @@ using TootTallyCore.Utils.Steam;
 using UnityEngine;
 using UnityEngine.Networking;
 using static TootTallyCore.APIServices.SerializableClass;
+using TootTallyCore.Graphics.ProgressCounter;
 
 namespace TootTallyCore.APIServices
 {
@@ -287,6 +288,26 @@ namespace TootTallyCore.APIServices
             }
 
             bar.ToggleActive();
+
+            if (!HasError(webRequest, downloadlink))
+                callback(webRequest.downloadHandler.data);
+            else
+                callback(null);
+        }
+
+        public static IEnumerator<UnityWebRequestAsyncOperation> DownloadZipFromServer(string downloadlink, ProgressCounter progressCounter, Action<byte[]> callback)
+        {
+            UnityWebRequest webRequest = UnityWebRequest.Get(downloadlink);
+            webRequest.SendWebRequest();
+
+            while (!webRequest.isDone)
+            {
+                progressCounter.Update(webRequest.downloadProgress);
+
+                yield return null;
+            }
+
+            progressCounter.Finish();
 
             if (!HasError(webRequest, downloadlink))
                 callback(webRequest.downloadHandler.data);

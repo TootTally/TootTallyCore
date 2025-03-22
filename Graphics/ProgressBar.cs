@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using TootTallyCore.Graphics.ProgressCounter;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace TootTallyCore.Graphics
 {
-    public class ProgressBar
+    public class ProgressBar : IProgressCountable
     {
         private Slider _bar;
         private bool _isInitialized;
@@ -37,6 +38,16 @@ namespace TootTallyCore.Graphics
         {
             _isActive = !_isActive;
             _bar.gameObject.SetActive(_isActive);
+        }
+
+        public void OnProgressCounterFinish(double elapsed)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnProgressCounterUpdate(float progress)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace TootTallyCore.Graphics.ProgressCounter
 {
     public interface IProgressCountable
     {
-        void OnProgressCounterFinish();
-        void OnProgressCounterUpdate();
+        void OnProgressCounterFinish(double elapsed);
+        void OnProgressCounterUpdate(float progress);
     }
 }

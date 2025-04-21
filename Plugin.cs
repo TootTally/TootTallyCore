@@ -78,10 +78,22 @@ namespace TootTallyCore
 
         private void Update()
         {
+            reloadManager.Update();
+
             if (!reloadManager.IsCurrentlyReloading && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
             {
                 TootTallyNotifManager.DisplayNotif("Reloading tracks...");
-                reloadManager.ReloadAll(null);
+                reloadManager.ReloadAll(new ProgressCallbacks
+                {
+                    OnComplete = () =>
+                    {
+                        TootTallyNotifManager.DisplayNotif("Reloading complete!");
+                    },
+                    OnError = err =>
+                    {
+                        TootTallyNotifManager.DisplayNotif($"Reloading failed! {err.Message}");
+                    }
+                });
             }
             else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))
             {

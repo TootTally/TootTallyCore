@@ -85,11 +85,11 @@ namespace TootTallyCore
                 TootTallyNotifManager.DisplayNotif("Reloading tracks...");
                 reloadManager.ReloadAll(new ProgressCallbacks
                 {
-                    OnComplete = () =>
+                    onComplete = () =>
                     {
                         TootTallyNotifManager.DisplayNotif("Reloading complete!");
                     },
-                    OnError = err =>
+                    onError = err =>
                     {
                         TootTallyNotifManager.DisplayNotif($"Reloading failed! {err.Message}");
                     }
@@ -103,7 +103,11 @@ namespace TootTallyCore
             }
         }
 
-        [Obsolete]
+        /// <summary>
+        /// Obsolete; call <see cref="M:TootTallyCore.Utils.Helpers.ReloadManager.ReloadAll(TootTallyCore.Utils.Helpers.IProgressCallbacks)"/>
+        /// instead
+        /// </summary>
+        [Obsolete("Use ReloadManager#ReloadAll instead")]
         public void ReloadTracks()
         {
             reloadManager.ReloadAll(null);

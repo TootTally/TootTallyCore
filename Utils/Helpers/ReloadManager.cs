@@ -19,7 +19,7 @@ public class ReloadManager
         _plugin = plugin;
     }
 
-    public void ReloadAll([CanBeNull] ProgressCallbacks callbacks)
+    public void ReloadAll([CanBeNull] IProgressCallbacks callbacks)
     {
         if (IsCurrentlyReloading) return;
 
@@ -29,11 +29,11 @@ public class ReloadManager
             ActiveOperation = null;
             if (result.IsError)
             {
-                callbacks?.OnError?.Invoke(result.ErrorValue);
+                callbacks?.OnError(result.ErrorValue);
             }
             else
             {
-                callbacks?.OnComplete?.Invoke();
+                callbacks?.OnComplete();
             }
         }));
     }
@@ -49,10 +49,10 @@ public class ReloadManager
 /// </summary>
 public class ReloadOperation
 {
-    private readonly ProgressCallbacks _callbacks;
+    private readonly IProgressCallbacks _callbacks;
     private volatile Progress _lastProgress;
 
-    public ReloadOperation(ProgressCallbacks callbacks)
+    public ReloadOperation(IProgressCallbacks callbacks)
     {
         _callbacks = callbacks;
     }
@@ -64,16 +64,30 @@ public class ReloadOperation
 
     internal void Update()
     {
-        if (_lastProgress != null) _callbacks?.OnProgressUpdate?.Invoke(_lastProgress);
+        if (_lastProgress != null) _callbacks?.OnProgressUpdate(_lastProgress);
     }
 }
 
 /// <summary>
 /// Handle progress updates about the reload operation
 /// </summary>
-public class ProgressCallbacks
+public interface IProgressCallbacks
 {
-    public Action<Progress> OnProgressUpdate;
-    public Action OnComplete;
-    public Action<Exception> OnError;
+    public void OnProgressUpdate(Progress progress);
+    public void OnComplete();
+    public void OnError(Exception exn);
+}
+
+/// <summary>
+/// Delegate-based implementation to handle progress callbacks
+/// </summary>
+public class ProgressCallbacks : IProgressCallbacks
+{
+    public Action<Progress> onProgress;
+    public Action onComplete;
+    public Action<Exception> onError;
+
+    public void OnProgressUpdate(Progress progress) => onProgress?.Invoke(progress);
+    public void OnComplete() => onComplete?.Invoke();
+    public void OnError(Exception exn) => onError?.Invoke(exn);
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace TootTallyCore.APIServices
         //public const string APIURL = "http://localhost"; //localTesting
         public const string REPLAYURL = "http://cdn.toottally.com/replays/";
         public const string PFPURL = "https://cdn.toottally.com/profile/";
+
+        private static SteamAuthTicketHandler _steamAuth = new();
 
         public static IEnumerator<UnityWebRequestAsyncOperation> GetHashInDB(string songHash, bool isCustom, Action<int> callback)
         {
@@ -113,11 +116,20 @@ namespace TootTallyCore.APIServices
                 callback(null);
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> GetUserFromSteamTicket(Action<User> callback)
+        public static IEnumerator GetUserFromSteamTicket(Action<User> callback)
         {
-            var query = $"{APIURL}/auth/steam-login/";
-            var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new APISteamLogin() { steamTicket = steamTicket };
+            const string query = $"{APIURL}/auth/steam-login/";
+
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                yield break;
+            }
+
+            var apiObj = new APISteamLogin { steamTicket = steamTicket.Result };
             var apiLogin = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiLogin);
             User user;
@@ -166,11 +178,19 @@ namespace TootTallyCore.APIServices
             callback(token);
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> SignUpRequest(string username, string password, string pass_check, Action<bool> callback)
+        public static IEnumerator SignUpRequest(string username, string password, string pass_check, Action<bool> callback)
         {
             var query = $"{APIURL}/auth/signup/";
-            var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamTicket = steamTicket };
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                yield break;
+            }
+
+            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamTicket = steamTicket.Result };
             var apiSignUp = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiSignUp);
             yield return webRequest.SendWebRequest();
@@ -439,7 +459,7 @@ namespace TootTallyCore.APIServices
                 callback(null);
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> SendModInfo(string apiKey, Dictionary<string, BepInEx.PluginInfo> modsDict, Action<bool> callback)
+        public static IEnumerator SendModInfo(string apiKey, Dictionary<string, BepInEx.PluginInfo> modsDict, Action<bool> callback)
         {
             var sendableModInfo = new ModInfoAPI();
             var mods = new List<SendableModInfo>();
@@ -457,8 +477,17 @@ namespace TootTallyCore.APIServices
                 mods.Add(mod);
             }
 
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                yield break;
+            }
+
             sendableModInfo.apiKey = apiKey;
-            sendableModInfo.steamTicket = SteamAuthTicketHandler.SteamTicket;
+            sendableModInfo.steamTicket = steamTicket.Result;
             sendableModInfo.mods = mods.ToArray();
             string query = $"{APIURL}/api/mods/submit/";
             var jsonbin = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(sendableModInfo));
@@ -486,12 +515,21 @@ namespace TootTallyCore.APIServices
                 callback?.Invoke();
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, Action callback = null)
+        public static IEnumerator ConnectSteamToProfile(string apiKey, Action callback = null)
         {
-            APISteamConnect steamConnect = new APISteamConnect()
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                yield break;
+            }
+
+            var steamConnect = new APISteamConnect
             {
                 apiKey = apiKey,
-                steamTicket = SteamAuthTicketHandler.SteamTicket,
+                steamTicket = steamTicket.Result,
             };
 
             string query = $"{APIURL}/api/profile/connect_steam/";

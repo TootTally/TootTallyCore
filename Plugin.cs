@@ -28,6 +28,8 @@ namespace TootTallyCore
         public static Plugin Instance;
         private Harmony _harmony;
 
+        public readonly ReloadManager reloadManager;
+
         public static void LogInfo(string msg) => Instance.Logger.LogInfo(msg);
         public static void LogWarning(string msg) => Instance.Logger.LogWarning(msg);
         public static void LogError(string msg) => Instance.Logger.LogError(msg);
@@ -47,6 +49,11 @@ namespace TootTallyCore
         public ConfigEntry<string> ThemeName { get; private set; }
         public ConfigEntry<bool> RunGCWhilePlaying { get; private set; }
         public ConfigEntry<bool> ChangePitch { get; private set; }
+
+        public Plugin()
+        {
+            reloadManager = new ReloadManager(this);
+        }
 
         private void Awake()
         {
@@ -71,11 +78,22 @@ namespace TootTallyCore
 
         private void Update()
         {
-            if (!_isReloadingTracks && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
+            reloadManager.Update();
+
+            if (!reloadManager.IsCurrentlyReloading && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.R))
             {
-                _isReloadingTracks = true;
-                TootTallyNotifManager.DisplayNotif("Reloading tracks... Lag is normal.");
-                Plugin.Instance.Invoke("ReloadTracks", .5f);
+                TootTallyNotifManager.DisplayNotif("Reloading tracks...");
+                reloadManager.ReloadAll(new ProgressCallbacks
+                {
+                    onComplete = () =>
+                    {
+                        TootTallyNotifManager.DisplayNotif("Reloading complete!");
+                    },
+                    onError = err =>
+                    {
+                        TootTallyNotifManager.DisplayNotif($"Reloading failed! {err.Message}");
+                    }
+                });
             }
             else if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.G))
             {
@@ -85,12 +103,14 @@ namespace TootTallyCore
             }
         }
 
-        private bool _isReloadingTracks;
-
+        /// <summary>
+        /// Obsolete; call <see cref="M:TootTallyCore.Utils.Helpers.ReloadManager.ReloadAll(TootTallyCore.Utils.Helpers.IProgressCallbacks)"/>
+        /// instead
+        /// </summary>
+        [Obsolete("Use ReloadManager#ReloadAll instead")]
         public void ReloadTracks()
         {
-            TrackLookup.reload();
-            _isReloadingTracks = false;
+            reloadManager.ReloadAll(null);
         }
 
         private void TryInitialize()

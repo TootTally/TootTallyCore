@@ -3,7 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>TootTallyCore</AssemblyName>
     <Description>TootTally API for Trombone Champ modding</Description>
-    <Version>1.2.9</Version>
+    <Version>1.2.10</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
@@ -33,9 +33,9 @@
     <PackageReference Include="UnityEngine.Modules" Version="2019.4.40" IncludeAssets="compile" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="websocket-sharp-customheaders" Version="1.0.2.31869" />
-    <Assets Include="thunderstore\Assets\**" />
-    <Fonts Include="thunderstore\Fonts\**" />
-    <Themes Include="thunderstore\Themes\**" />
+    <Assets Include="thunderstore\plugins\Assets\**" />
+    <Fonts Include="thunderstore\plugins\Fonts\**" />
+    <Themes Include="thunderstore\plugins\Themes\**" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">

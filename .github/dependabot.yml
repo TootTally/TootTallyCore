@@ -14,6 +14,16 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+    - dependency-name: "Unity*"
+      versions:
+      - ">= 0"
+    - dependency-name: "Microsoft*"
+      versions:
+      - ">= 0"
+    - dependency-name: "BepInEx*"
+      versions:
+      - ">= 0"
     open-pull-requests-limit: 1
     registries:
     - nuget-feed-default

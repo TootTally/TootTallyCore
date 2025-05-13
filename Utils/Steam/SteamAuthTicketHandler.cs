@@ -1,43 +1,74 @@
 using Steamworks;
 using System;
+using System.Collections.Generic;
 using TootTallyCore.Utils.Helpers;
+using UnityEngine;
 
 namespace TootTallyCore.Utils.Steam
 {
-    public static class SteamAuthTicketHandler
+    public class SteamAuthTicketHandler
     {
-        public static string SteamTicket { get; private set; }
-        private static Callback<GetTicketForWebApiResponse_t> m_GetAuthSessionTicketResponse;
-        private static HAuthTicket hAuthTicket;
+        private Callback<GetTicketForWebApiResponse_t> _callback;
+        private Dictionary<HAuthTicket, TicketRequest> _activeRequests;
 
-        private static void OnSteamAuthTicketResponse(GetTicketForWebApiResponse_t pCallback)
+        public SteamAuthTicketHandler()
         {
-            if (pCallback.m_eResult != EResult.k_EResultOK)
-            {
-                Plugin.LogError($"Unable to get Steam auth ticket (Steam API Result Code {pCallback.m_eResult})");
-            }
-            if (pCallback.m_hAuthTicket == hAuthTicket)
-            {
-                var ticketBytes = new Span<byte>(pCallback.m_rgubTicket, 0, pCallback.m_cubTicket);
-                var hex = HexConverter.ToHexString(ticketBytes);
-
-                SteamTicket = hex;
-
-                Plugin.LogInfo("Steam Auth Ticket obtained successfully!");
-            }
+            _callback = Callback<GetTicketForWebApiResponse_t>.Create(OnSteamAuthTicketResponse);
         }
 
-        public static void GetSteamAuthTicket()
+        private void OnSteamAuthTicketResponse(GetTicketForWebApiResponse_t pCallback)
         {
-            if (SteamManager.Initialized)
+            if (!_activeRequests.Remove(pCallback.m_hAuthTicket, out var req)) return;
+            if (pCallback.m_eResult != EResult.k_EResultOK)
             {
-                m_GetAuthSessionTicketResponse = Callback<GetTicketForWebApiResponse_t>.Create(OnSteamAuthTicketResponse);
-                hAuthTicket = SteamUser.GetAuthTicketForWebApi("TootTally");
+                req.OnFailure(
+                    new TicketRequestException($"Unable to get Steam auth ticket (code {pCallback.m_eResult})", pCallback.m_eResult));
+                return;
             }
-            else
+
+            var ticketBytes = new Span<byte>(pCallback.m_rgubTicket, 0, pCallback.m_cubTicket);
+            var hex = HexConverter.ToHexString(ticketBytes);
+
+            req.OnSuccess(hex);
+        }
+
+        /// <summary>
+        /// Request a ticket and return the result as a coroutine
+        /// </summary>
+        public TicketRequest RequestTicket()
+        {
+            if (!SteamManager.Initialized)
             {
-                Plugin.LogWarning("SteamManager not initialized, cannot obtain Steam Auth ticket.");
+                throw new InvalidOperationException("Can't request ticket as Steam hasn't been initialized!");
             }
+
+            var handle = SteamUser.GetAuthTicketForWebApi("TootTally");
+            return _activeRequests[handle] = new TicketRequest();
+        }
+    }
+
+    public class TicketRequest : CustomYieldInstruction
+    {
+        public string Result { get; private set; }
+        public Exception Exception { get; private set; }
+
+        internal TicketRequest()
+        {
+        }
+
+        public override bool keepWaiting => Result == null && Exception == null;
+
+        internal void OnSuccess(string ticket) => Result = ticket;
+        internal void OnFailure(Exception exn) => Exception = exn;
+    }
+
+    public class TicketRequestException : Exception
+    {
+        public EResult Code { get; }
+
+        internal TicketRequestException(string message, EResult code) : base(message)
+        {
+            Code = code;
         }
     }
 }

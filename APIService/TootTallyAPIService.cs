@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Web;
 using BepInEx;
 using Newtonsoft.Json;
 using TootTallyCore.Graphics;
@@ -370,27 +372,6 @@ namespace TootTallyCore.APIServices
 
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> GetValidTwitchAccessToken(string apiKey, Action<TwitchAccessToken> callback)
-        {
-            string query = $"{APIURL}/api/twitch/self/";
-            var apiObj = new APISubmission() { apiKey = apiKey };
-            var data = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
-            var webRequest = PostUploadRequest(query, data);
-            yield return webRequest.SendWebRequest();
-
-            if (!HasError(webRequest))
-            {
-                var token_info = JsonConvert.DeserializeObject<TwitchAccessToken>(webRequest.downloadHandler.text);
-                callback(token_info);
-            }
-            else
-            {
-                Plugin.LogError($"Could not get active access token.");
-                TootTallyNotifManager.DisplayWarning("Could not get active access token, please re-authorize TootTally on Twitch");
-                callback(null);
-            }
-        }
-
         //Unused for now because we're storing textures locally, but could be useful in the future...
         public static IEnumerator<UnityWebRequestAsyncOperation> LoadTextureFromServer(string query, Action<Texture2D> callback)
         {
@@ -594,6 +575,23 @@ namespace TootTallyCore.APIServices
                 callback(null);
         }
 
+        public enum SearchResultOrder
+        {
+            Default = 0,
+            Ascending = 1,
+            Descending = 2, 
+        }
+
+        public enum SearchResultOrderBy
+        {
+            Default = 0,
+            Difficulty = 1,
+            PlayCount = 2,
+            SongLength = 3,
+            UploadDate = 4,
+        }
+        
+        [Obsolete("SearchSongWithFilters deprecated, please use SearchSong instead")]
         public static IEnumerator<UnityWebRequestAsyncOperation> SearchSongWithFilters(string songName, bool isRated, bool isUnrated, Action<SongInfoFromDB> callback)
         {
             string filters = isRated ? "&rated=1" : "";
@@ -601,6 +599,93 @@ namespace TootTallyCore.APIServices
             filters += "&page_size=100";
             string query = $"{APIURL}/api/chartsearch/?song_name={songName}{filters}";
 
+            UnityWebRequest webRequest = UnityWebRequest.Get(query);
+
+            yield return webRequest.SendWebRequest();
+
+            if (!HasError(webRequest, query))
+            {
+                var userList = JsonConvert.DeserializeObject<SongInfoFromDB>(webRequest.downloadHandler.text);
+                callback(userList);
+            }
+            else
+                callback(null);
+        }
+
+        /**
+         * Functionally the same as SearchSongWithFilters but with different parameters
+         */
+        public static IEnumerator<UnityWebRequestAsyncOperation> SearchSong(
+            string songName,
+            Action<SongInfoFromDB> callback,
+            bool isRated = false,
+            bool isUnrated = false,
+            SearchResultOrder order = SearchResultOrder.Default,
+            SearchResultOrderBy orderBy = SearchResultOrderBy.Default,
+            float minDiff = -1,
+            float maxDiff = -1
+        )
+        {
+            var queryString = HttpUtility.ParseQueryString("page_size=100");
+            queryString.Add("song_name", songName);
+
+            if (isRated)
+            {
+                // Display only rated charts
+                queryString.Add("rated", "1");
+            }
+
+            if (!isRated && isUnrated)
+            {
+                // Display only unrated charts
+                queryString.Add("rated", "0");
+            }
+
+            if (order != SearchResultOrder.Default)
+            {
+                switch (order)
+                {
+                    case SearchResultOrder.Ascending:
+                        queryString.Add("order", "asc");
+                        break;
+                    case SearchResultOrder.Descending:
+                        queryString.Add("order", "desc");
+                        break;
+                }
+            }
+
+            if (orderBy != SearchResultOrderBy.Default)
+            {
+                switch (orderBy)
+                {
+                    case SearchResultOrderBy.Difficulty:
+                        queryString.Add("order_by", "difficulty");
+                        break;
+                    case SearchResultOrderBy.PlayCount:
+                        queryString.Add("order_by", "play_count");
+                        break;
+                    case SearchResultOrderBy.SongLength:
+                        queryString.Add("order_by", "song_length");
+                        break;
+                    case SearchResultOrderBy.UploadDate:
+                        queryString.Add("order_by", "upload_date");
+                        break;
+                }
+            }
+
+            // Sanity-check that these are not infinite
+            if (float.IsFinite(minDiff) && minDiff >= 0)
+            {
+                queryString.Add("min_diff", minDiff.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (float.IsFinite(maxDiff) && maxDiff >= 0)
+            {
+                queryString.Add("max_diff", maxDiff.ToString(CultureInfo.InvariantCulture));
+            }
+            
+            string query = $"{APIURL}/api/chartsearch/?{queryString}";
+            
             UnityWebRequest webRequest = UnityWebRequest.Get(query);
 
             yield return webRequest.SendWebRequest();

@@ -3,7 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>TootTallyCore</AssemblyName>
     <Description>TootTally API for Trombone Champ modding</Description>
-    <Version>1.2.10</Version>
+    <Version>1.2.11</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 

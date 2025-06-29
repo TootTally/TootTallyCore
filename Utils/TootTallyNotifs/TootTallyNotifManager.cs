@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using TootTallyCore.Graphics;
 using UnityEngine;
@@ -34,17 +35,17 @@ namespace TootTallyCore.Utils.TootTallyNotifs
             IsInitialized = true;
         }
 
-        private static void DisplayNotif(string message, Color textColor, float lifespan)
+        private static void DisplayNotif(string message, Color textColor)
         {
             if (!IsInitialized || !Plugin.Instance.ShouldShowNotifs.Value) return;
 
-            _pendingNotifications.Enqueue(new TootTallyNotifData(message, textColor, lifespan));
+            _pendingNotifications.Enqueue(new TootTallyNotifData(message, textColor));
         }
 
-        public static void DisplayNotif(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.defaultText, lifespan);
-        public static void DisplayWarning(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.warningText, lifespan);
-        public static void DisplayError(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.errorText, lifespan);
-        public static void DisplayCustom(string message, Color textColor, float lifespan = 6f) => DisplayNotif(message, textColor, lifespan);
+        public static void DisplayNotif(string message) => DisplayNotif(message, Theme.colors.notification.defaultText);
+        public static void DisplayWarning(string message) => DisplayNotif(message, Theme.colors.notification.warningText);
+        public static void DisplayError(string message) => DisplayNotif(message, Theme.colors.notification.errorText);
+        public static void DisplayCustom(string message, Color textColor) => DisplayNotif(message, textColor);
 
         private static void OnNotifCountChangeSetNewPosition()
         {
@@ -63,7 +64,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
             while (_pendingNotifications != null && _pendingNotifications.Count > 0 && _pendingNotifications.TryDequeue(out TootTallyNotifData notifData))
             {
                 var notif = GameObjectFactory.CreateNotif(_notifCanvas.transform, "Notification", notifData.message, notifData.textColor);
-                notif.Initialize(notifData.lifespan, new Vector2(695, -400));
+                notif.Initialize(new Vector2(695, -400));
                 notif.gameObject.SetActive(true);
                 _activeNotificationList.Add(notif);
                 OnNotifCountChangeSetNewPosition();
@@ -88,16 +89,14 @@ namespace TootTallyCore.Utils.TootTallyNotifs
 
         private class TootTallyNotifData
         {
-            public TootTallyNotifData(string message, Color textColor, float lifespan)
+            public TootTallyNotifData(string message, Color textColor)
             {
                 this.message = message;
                 this.textColor = textColor;
-                this.lifespan = lifespan;
             }
 
             public string message { get; set; }
             public Color textColor { get; set; }
-            public float lifespan { get; set; }
         }
     }
 }

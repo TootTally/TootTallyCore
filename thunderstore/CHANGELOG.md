@@ -1,5 +1,10 @@
 #### Changelog:
 
+`v1.2.9` -> `v1.3.0`
+```diff
++ Implemented Steam Authentification
+```
+
 `v1.2.6` -> `v1.2.9`
 ```diff
 + Fixed themes for TC 1.25

@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static TootTallyCore.APIServices.SerializableClass;
 using TootTallyCore.Graphics.ProgressCounter;
+using System.Transactions;
 
 namespace TootTallyCore.APIServices
 {
@@ -23,6 +24,11 @@ namespace TootTallyCore.APIServices
         //public const string APIURL = "http://localhost"; //localTesting
         public const string REPLAYURL = "http://cdn.toottally.com/replays/";
         public const string PFPURL = "https://cdn.toottally.com/profile/";
+        private static readonly User _DEFAULT_USER = new User()
+        {
+            username = "Guest",
+            id = 0,
+        };
 
         private static SteamAuthTicketHandler _steamAuth = new();
 
@@ -57,11 +63,7 @@ namespace TootTallyCore.APIServices
             }
             else
             {
-                user = new User()
-                {
-                    username = "Guest",
-                    id = 0,
-                };
+                user = _DEFAULT_USER;
                 Plugin.LogInfo($"Logged in with Guest Account");
             }
             callback(user);
@@ -125,7 +127,10 @@ namespace TootTallyCore.APIServices
 
             if (steamTicket.Exception != null)
             {
-                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                callback(_DEFAULT_USER);
+                TootTallyNotifManager.DisplayNotif("Steam authentification failed.\nLogged in as a Guest.");
+                Plugin.LogError($"Couldn't get steamAuth ticket: Exception: {steamTicket.Exception.Message}\nException Trace: {steamTicket.Exception.StackTrace}");
+                Plugin.LogInfo($"Logged in with Guest Account");
                 yield break;
             }
 
@@ -143,11 +148,7 @@ namespace TootTallyCore.APIServices
             }
             else
             {
-                user = new User()
-                {
-                    username = "Guest",
-                    id = 0,
-                };
+                user = _DEFAULT_USER;
                 Plugin.LogInfo($"Logged in with Guest Account");
             }
 
@@ -186,7 +187,9 @@ namespace TootTallyCore.APIServices
 
             if (steamTicket.Exception != null)
             {
-                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                callback(false);
+                TootTallyNotifManager.DisplayNotif("Steam authentification failed.\nPlease make sure you have a steam connection.");
+                Plugin.LogError($"Sign up request failed, couldn't request a steamAuth ticket: {steamTicket.Exception.Message}\nException Trace: {steamTicket.Exception.StackTrace}");
                 yield break;
             }
 
@@ -482,7 +485,9 @@ namespace TootTallyCore.APIServices
 
             if (steamTicket.Exception != null)
             {
-                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                callback(false);
+                TootTallyNotifManager.DisplayNotif("Steam authentification failed.\nPlease make sure you have a steam connection.");
+                Plugin.LogError($"Couldn't request a steamAuth ticket during mod send info: {steamTicket.Exception.Message}\nException Trace: {steamTicket.Exception.StackTrace}");
                 yield break;
             }
 

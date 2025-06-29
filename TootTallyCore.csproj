@@ -28,14 +28,14 @@
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
     <PackageReference Include="TromboneChamp.GameLibs" Version="1.25.0" />
-    <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.7.3" />
+    <PackageReference Include="TromboneChamp.BaboonAPI" Version="2.9.0" />
     <PackageReference Include="TromboneChamp.TrombLoader" Version="2.3.0" />
     <PackageReference Include="UnityEngine.Modules" Version="2019.4.40" IncludeAssets="compile" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="websocket-sharp-customheaders" Version="1.0.2.31869" />
-    <Assets Include="thunderstore\Assets\**" />
-    <Fonts Include="thunderstore\Fonts\**" />
-    <Themes Include="thunderstore\Themes\**" />
+    <Assets Include="thunderstore\plugins\Assets\**" />
+    <Fonts Include="thunderstore\plugins\Fonts\**" />
+    <Themes Include="thunderstore\plugins\Themes\**" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">

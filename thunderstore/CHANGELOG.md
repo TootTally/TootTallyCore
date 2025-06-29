@@ -1,8 +1,13 @@
 #### Changelog:
 
-`v1.2.9` -> `v1.3.0`
+`v1.2.10` -> `v1.3.0`
 ```diff
-+ Implemented Steam Authentification
++ Implemented Steam Authentification Error handling
+
+`v1.2.9` -> `v1.2.10`
+```diff
++ Fixed part of Steam authentication
++ Fixed song reloads not reloading the collections as well
 ```
 
 `v1.2.6` -> `v1.2.9`

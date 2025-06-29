@@ -124,7 +124,6 @@ namespace TootTallyCore
             gameObject.AddComponent<TootTallyAnimationManager>();
 
             TootTallyModuleManager.LoadModules();
-            SteamAuthTicketHandler.GetSteamAuthTicket();
 
             LogInfo($"Plugin {PluginInfo.PLUGIN_GUID} [Build {BUILDDATE}] is loaded!");
             LogInfo($"Game Version: {Application.version}");

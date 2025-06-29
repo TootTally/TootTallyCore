@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static TootTallyCore.APIServices.SerializableClass;
 using TootTallyCore.Graphics.ProgressCounter;
+using System.Transactions;
 
 namespace TootTallyCore.APIServices
 {
@@ -22,6 +24,13 @@ namespace TootTallyCore.APIServices
         //public const string APIURL = "http://localhost"; //localTesting
         public const string REPLAYURL = "http://cdn.toottally.com/replays/";
         public const string PFPURL = "https://cdn.toottally.com/profile/";
+        private static readonly User _DEFAULT_USER = new User()
+        {
+            username = "Guest",
+            id = 0,
+        };
+
+        private static SteamAuthTicketHandler _steamAuth = new();
 
         public static IEnumerator<UnityWebRequestAsyncOperation> GetHashInDB(string songHash, bool isCustom, Action<int> callback)
         {
@@ -54,11 +63,7 @@ namespace TootTallyCore.APIServices
             }
             else
             {
-                user = new User()
-                {
-                    username = "Guest",
-                    id = 0,
-                };
+                user = _DEFAULT_USER;
                 Plugin.LogInfo($"Logged in with Guest Account");
             }
             callback(user);
@@ -113,11 +118,23 @@ namespace TootTallyCore.APIServices
                 callback(null);
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> GetUserFromSteamTicket(Action<User> callback)
+        public static IEnumerator GetUserFromSteamTicket(Action<User> callback)
         {
-            var query = $"{APIURL}/auth/steam-login/";
-            var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new APISteamLogin() { steamTicket = steamTicket };
+            const string query = $"{APIURL}/auth/steam-login/";
+
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                callback(_DEFAULT_USER);
+                TootTallyNotifManager.DisplayNotif("Steam authentification failed.\nLogged in as a Guest.");
+                Plugin.LogError($"Couldn't get steamAuth ticket: Exception: {steamTicket.Exception.Message}\nException Trace: {steamTicket.Exception.StackTrace}");
+                Plugin.LogInfo($"Logged in with Guest Account");
+                yield break;
+            }
+
+            var apiObj = new APISteamLogin { steamTicket = steamTicket.Result };
             var apiLogin = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiLogin);
             User user;
@@ -131,11 +148,7 @@ namespace TootTallyCore.APIServices
             }
             else
             {
-                user = new User()
-                {
-                    username = "Guest",
-                    id = 0,
-                };
+                user = _DEFAULT_USER;
                 Plugin.LogInfo($"Logged in with Guest Account");
             }
 
@@ -166,11 +179,21 @@ namespace TootTallyCore.APIServices
             callback(token);
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> SignUpRequest(string username, string password, string pass_check, Action<bool> callback)
+        public static IEnumerator SignUpRequest(string username, string password, string pass_check, Action<bool> callback)
         {
             var query = $"{APIURL}/auth/signup/";
-            var steamTicket = SteamAuthTicketHandler.SteamTicket;
-            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamTicket = steamTicket };
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                callback(false);
+                TootTallyNotifManager.DisplayNotif("Steam authentification failed.\nPlease make sure you have a steam connection.");
+                Plugin.LogError($"Sign up request failed, couldn't request a steamAuth ticket: {steamTicket.Exception.Message}\nException Trace: {steamTicket.Exception.StackTrace}");
+                yield break;
+            }
+
+            var apiObj = new APISignUp() { username = username, password = password, pass_check = pass_check, steamTicket = steamTicket.Result };
             var apiSignUp = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
             var webRequest = PostUploadRequest(query, apiSignUp);
             yield return webRequest.SendWebRequest();
@@ -439,7 +462,7 @@ namespace TootTallyCore.APIServices
                 callback(null);
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> SendModInfo(string apiKey, Dictionary<string, BepInEx.PluginInfo> modsDict, Action<bool> callback)
+        public static IEnumerator SendModInfo(string apiKey, Dictionary<string, BepInEx.PluginInfo> modsDict, Action<bool> callback)
         {
             var sendableModInfo = new ModInfoAPI();
             var mods = new List<SendableModInfo>();
@@ -457,8 +480,19 @@ namespace TootTallyCore.APIServices
                 mods.Add(mod);
             }
 
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                callback(false);
+                TootTallyNotifManager.DisplayNotif("Steam authentification failed.\nPlease make sure you have a steam connection.");
+                Plugin.LogError($"Couldn't request a steamAuth ticket during mod send info: {steamTicket.Exception.Message}\nException Trace: {steamTicket.Exception.StackTrace}");
+                yield break;
+            }
+
             sendableModInfo.apiKey = apiKey;
-            sendableModInfo.steamTicket = SteamAuthTicketHandler.SteamTicket;
+            sendableModInfo.steamTicket = steamTicket.Result;
             sendableModInfo.mods = mods.ToArray();
             string query = $"{APIURL}/api/mods/submit/";
             var jsonbin = System.Text.Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(sendableModInfo));
@@ -486,12 +520,21 @@ namespace TootTallyCore.APIServices
                 callback?.Invoke();
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> ConnectSteamToProfile(string apiKey, Action callback = null)
+        public static IEnumerator ConnectSteamToProfile(string apiKey, Action callback = null)
         {
-            APISteamConnect steamConnect = new APISteamConnect()
+            var steamTicket = _steamAuth.RequestTicket();
+            yield return steamTicket;
+
+            if (steamTicket.Exception != null)
+            {
+                // TODO error callback? we can't throw in here, it will just end up in unity machinery
+                yield break;
+            }
+
+            var steamConnect = new APISteamConnect
             {
                 apiKey = apiKey,
-                steamTicket = SteamAuthTicketHandler.SteamTicket,
+                steamTicket = steamTicket.Result,
             };
 
             string query = $"{APIURL}/api/profile/connect_steam/";

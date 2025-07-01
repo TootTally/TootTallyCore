@@ -14,6 +14,7 @@ namespace TootTallyCore.Utils.Steam
         public SteamAuthTicketHandler()
         {
             _callback = Callback<GetTicketForWebApiResponse_t>.Create(OnSteamAuthTicketResponse);
+            _activeRequests = new Dictionary<HAuthTicket, TicketRequest>();
         }
 
         private void OnSteamAuthTicketResponse(GetTicketForWebApiResponse_t pCallback)

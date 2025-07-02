@@ -22,7 +22,7 @@ namespace TootTallyCore
     [BepInIncompatibility("TootTally")]
     public class Plugin : BaseUnityPlugin
     {
-        public static int BUILDDATE = 20240331;
+        public static int BUILDDATE = 20250701;
         private const string DEFAULT_THEME = "Default";
 
         public static Plugin Instance;
@@ -49,6 +49,7 @@ namespace TootTallyCore
         public ConfigEntry<string> ThemeName { get; private set; }
         public ConfigEntry<bool> RunGCWhilePlaying { get; private set; }
         public ConfigEntry<bool> ChangePitch { get; private set; }
+        public ConfigEntry<float> OffsetAtDefaultSpeed { get; private set; }
 
         public Plugin()
         {
@@ -65,6 +66,7 @@ namespace TootTallyCore
             ThemeName = Config.Bind("Themes", "ThemeName", DEFAULT_THEME.ToString());
             RunGCWhilePlaying = Config.Bind("General", "Deactivate Garbage Collector While Playing.", false, "Deactivate the garbage collector during gameplay to prevent lag spikes.");
             ChangePitch = Config.Bind("General", "Change Pitch", false, "Change the pitch on speed changes.");
+            OffsetAtDefaultSpeed = Config.Bind("General", "Offset At Default Speed", 0f, "Add an offset when playing charts at 1.0x to compensate for the pitch shift filter latency. RECOMMENDED: 15ms");
             Config.SettingChanged += ThemeManager.Config_SettingChanged;
 
             string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");

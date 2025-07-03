@@ -14,7 +14,11 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         {
             if (GlobalVariables.practicemode == 1 && !GlobalVariables.turbomode)
             {
-                var fixedLatency = (GlobalVariables.localsettings.latencyadjust - (TootTallyGlobalVariables.gameSpeedMultiplier == 1 ? Plugin.Instance.OffsetAtDefaultSpeed.Value : 0)) * 0.001f;
+                float fixedLatency;
+                if (TootTallyGlobalVariables.gameSpeedMultiplier == 1)
+                    fixedLatency = (GlobalVariables.localsettings.latencyadjust - Plugin.Instance.OffsetAtDefaultSpeed.Value) * 0.001f;
+                else
+                    fixedLatency = GlobalVariables.localsettings.latencyadjust * 0.001f * TootTallyGlobalVariables.gameSpeedMultiplier;
                 Plugin.LogInfo($"Fixed audio latency from: {__instance.latency_offset} to {fixedLatency}");
                 __instance.latency_offset = fixedLatency;
             }

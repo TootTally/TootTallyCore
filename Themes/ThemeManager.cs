@@ -85,7 +85,7 @@ namespace TootTallyCore
             try
             {
                 foreach (GameObject btn in __instance.btns)
-                    btn.transform.Find("ScoreText").gameObject.GetComponent<Text>().color = Theme.colors.leaderboard.text;
+                    btn.transform.Find("BG/ScoreText").gameObject.GetComponent<Text>().color = Theme.colors.leaderboard.text;
             } catch (Exception e)
             {
                 Plugin.LogError("ScoreText theme couldn't be applied:" + e.Message);

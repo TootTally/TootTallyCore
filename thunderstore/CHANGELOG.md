@@ -1,6 +1,6 @@
 #### Changelog:
 
-`v1.2.10` -> `v1.3.0`
+`v1.2.10` -> `v1.3.1`
 ```diff
 + Implemented Steam Authentification Error handling
 

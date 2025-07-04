@@ -20,7 +20,6 @@ namespace TootTallyCore
 
             colors = new ThemeColors()
             {
-
                 leaderboard = new LeaderboardColors()
                 {
                     panelBody = new Color(0.95f, 0.22f, 0.35f),
@@ -772,6 +771,18 @@ namespace TootTallyCore
             public Color outlineOver;
             public Color shadow;
             public Color square;
+            public ScoreText scoreText;
+        }
+
+        public class ScoreText
+        {
+            public Color rankS;
+            public Color rankA;
+            public Color rankB;
+            public Color rankC;
+            public Color rankD;
+            public Color rankF;
+            public Color notPlayed;
         }
 
         public class PointerColors
@@ -831,7 +842,10 @@ namespace TootTallyCore
                 randomButton = new RandomButtonColors();
                 backButton = new PlayBackButtonColors();
                 playButton = new PlayBackButtonColors();
-                songButton = new SongButtonColors();
+                songButton = new SongButtonColors()
+                {
+                    scoreText = new ScoreText()
+                };
                 diffStar = new DiffStarColors();
                 pointer = new PointerColors();
                 backButton = new PlayBackButtonColors();

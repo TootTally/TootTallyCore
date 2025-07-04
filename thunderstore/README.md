@@ -1,6 +1,6 @@
 # TootTally Companion Mod
 
-> Version: 1.3.0
+> Version: 1.3.1
 
 The [TootTally](https://toottally.com/)'s core libraries and API services
 

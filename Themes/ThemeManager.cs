@@ -95,8 +95,10 @@ namespace TootTallyCore
             #region SongButton
             try
             {
-                GameObject btnBGPrefab = UnityEngine.Object.Instantiate(__instance.btnbgs[0].gameObject);
-                //UnityEngine.Object.DestroyImmediate(btnBGPrefab.transform.Find("Image").gameObject);
+                GameObject btnBGPrefab = GameObject.Instantiate(__instance.btnbgs[0].gameObject);
+                GameObject.DestroyImmediate(btnBGPrefab.transform.Find("heart-circ").gameObject);
+                GameObject.DestroyImmediate(btnBGPrefab.transform.Find("ScoreText").gameObject);
+                GameObject.DestroyImmediate(btnBGPrefab.transform.Find("score-zone").gameObject);
 
                 for (int i = 0; i < 7; i++) //songbuttons only, not the arrow ones
                 {
@@ -104,11 +106,11 @@ namespace TootTallyCore
                     img.sprite = AssetManager.GetSprite("SongButtonBackground.png");
                     img.transform.parent.GetChild(2).GetComponent<Text>().color = i == 0 ? Theme.colors.songButton.textOver : Theme.colors.songButton.text;
 
-                    GameObject btnBGShadow = UnityEngine.Object.Instantiate(btnBGPrefab, img.gameObject.transform.parent);
+                    GameObject btnBGShadow = GameObject.Instantiate(btnBGPrefab, img.gameObject.transform.parent);
                     btnBGShadow.name = "Shadow";
                     OverwriteGameObjectSpriteAndColor(btnBGShadow, "SongButtonShadow.png", Theme.colors.songButton.shadow);
 
-                    GameObject btnBGOutline = UnityEngine.Object.Instantiate(btnBGPrefab, img.gameObject.transform);
+                    GameObject btnBGOutline = GameObject.Instantiate(btnBGPrefab, img.gameObject.transform);
                     btnBGOutline.name = "Outline";
                     OverwriteGameObjectSpriteAndColor(btnBGOutline, "SongButtonOutline.png", i == 0 ? Theme.colors.songButton.outlineOver : Theme.colors.songButton.outline);
 
@@ -118,7 +120,7 @@ namespace TootTallyCore
 
                 for (int i = 7; i < __instance.btnbgs.Length; i++) //these are the arrow ones :}
                     __instance.btnbgs[i].color = Theme.colors.songButton.background;
-                UnityEngine.Object.DestroyImmediate(btnBGPrefab);
+                GameObject.DestroyImmediate(btnBGPrefab);
             }
             catch (Exception e)
             {
@@ -166,54 +168,54 @@ namespace TootTallyCore
             try
             {
                 GameObject capsules = GameObject.Find("MainCanvas/FullScreenPanel/capsules").gameObject;
-                GameObject capsulesPrefab = UnityEngine.Object.Instantiate(capsules);
+                GameObject capsulesPrefab = GameObject.Instantiate(capsules);
 
-                foreach (Transform t in capsulesPrefab.transform) UnityEngine.Object.Destroy(t.gameObject);
+                foreach (Transform t in capsulesPrefab.transform) GameObject.Destroy(t.gameObject);
                 RectTransform rectTrans = capsulesPrefab.GetComponent<RectTransform>();
                 rectTrans.localScale = Vector3.one;
                 rectTrans.anchoredPosition = Vector2.zero;
 
 
-                GameObject capsulesYearShadow = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesYearShadow = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesYearShadow, "YearCapsule.png", Theme.colors.capsules.yearShadow);
                 capsulesYearShadow.GetComponent<RectTransform>().anchoredPosition += new Vector2(5, -3);
 
-                GameObject capsulesYear = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesYear = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesYear, "YearCapsule.png", Theme.colors.capsules.year);
 
-                songyear = UnityEngine.Object.Instantiate(__instance.songyear, capsulesYear.transform);
+                songyear = GameObject.Instantiate(__instance.songyear, capsulesYear.transform);
 
-                GameObject capsulesGenreShadow = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesGenreShadow = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesGenreShadow, "GenreCapsule.png", Theme.colors.capsules.genreShadow);
                 capsulesGenreShadow.GetComponent<RectTransform>().anchoredPosition += new Vector2(5, -3);
 
-                GameObject capsulesGenre = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesGenre = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesGenre, "GenreCapsule.png", Theme.colors.capsules.genre);
-                songgenre = UnityEngine.Object.Instantiate(__instance.songgenre, capsulesGenre.transform);
+                songgenre = GameObject.Instantiate(__instance.songgenre, capsulesGenre.transform);
 
-                GameObject capsulesComposerShadow = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesComposerShadow = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesComposerShadow, "ComposerCapsule.png", Theme.colors.capsules.composerShadow);
                 capsulesComposerShadow.GetComponent<RectTransform>().anchoredPosition += new Vector2(5, -3);
 
-                GameObject capsulesComposer = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesComposer = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesComposer, "ComposerCapsule.png", Theme.colors.capsules.composer);
-                songcomposer = UnityEngine.Object.Instantiate(__instance.songcomposer, capsulesComposer.transform);
+                songcomposer = GameObject.Instantiate(__instance.songcomposer, capsulesComposer.transform);
 
-                GameObject capsulesTempo = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesTempo = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesTempo, "BPMTimeCapsule.png", Theme.colors.capsules.tempo);
-                songtempo = UnityEngine.Object.Instantiate(__instance.songtempo, capsulesTempo.transform);
-                songduration = UnityEngine.Object.Instantiate(__instance.songduration, capsulesTempo.transform);
+                songtempo = GameObject.Instantiate(__instance.songtempo, capsulesTempo.transform);
+                songduration = GameObject.Instantiate(__instance.songduration, capsulesTempo.transform);
 
-                GameObject capsulesDescTextShadow = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesDescTextShadow = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesDescTextShadow, "DescCapsule.png", Theme.colors.capsules.descriptionShadow);
                 capsulesDescTextShadow.GetComponent<RectTransform>().anchoredPosition += new Vector2(5, -3);
 
-                GameObject capsulesDescText = UnityEngine.Object.Instantiate(capsulesPrefab, capsules.transform);
+                GameObject capsulesDescText = GameObject.Instantiate(capsulesPrefab, capsules.transform);
                 OverwriteGameObjectSpriteAndColor(capsulesDescText, "DescCapsule.png", Theme.colors.capsules.description);
-                songdesctext = UnityEngine.Object.Instantiate(__instance.songdesctext, capsulesDescText.transform);
+                songdesctext = GameObject.Instantiate(__instance.songdesctext, capsulesDescText.transform);
 
-                UnityEngine.Object.DestroyImmediate(capsules.GetComponent<Image>());
-                UnityEngine.Object.DestroyImmediate(capsulesPrefab);
+                GameObject.DestroyImmediate(capsules.GetComponent<Image>());
+                GameObject.DestroyImmediate(capsulesPrefab);
             }
             catch (Exception e)
             {
@@ -225,21 +227,21 @@ namespace TootTallyCore
             try
             {
                 GameObject playButtonBG = __instance.playbtnobj.transform.Find("play-bg").gameObject;
-                GameObject playBGPrefab = UnityEngine.Object.Instantiate(playButtonBG, __instance.playbtn.transform);
+                GameObject playBGPrefab = GameObject.Instantiate(playButtonBG, __instance.playbtn.transform);
                 foreach (Transform t in playBGPrefab.transform) t.gameObject.SetActive(false);
 
-                GameObject playBackgroundImg = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
+                GameObject playBackgroundImg = GameObject.Instantiate(playBGPrefab, __instance.playbtn.transform);
                 playBackgroundImg.name = "playBackground";
                 OverwriteGameObjectSpriteAndColor(playBackgroundImg, "PlayBackground.png", Theme.colors.playButton.background);
 
-                GameObject playOutline = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
+                GameObject playOutline = GameObject.Instantiate(playBGPrefab, __instance.playbtn.transform);
                 playOutline.name = "playOutline";
                 OverwriteGameObjectSpriteAndColor(playOutline, "PlayOutline.png", Theme.colors.playButton.outline);
 
-                var playText = UnityEngine.Object.Instantiate(__instance.playbtn.transform.GetChild(3), __instance.playbtn.transform).GetChild(0).GetComponent<Text>();
+                var playText = GameObject.Instantiate(__instance.playbtn.transform.GetChild(3), __instance.playbtn.transform).GetChild(0).GetComponent<Text>();
                 playText.color = Theme.colors.playButton.text;
 
-                GameObject playShadow = UnityEngine.Object.Instantiate(playBGPrefab, __instance.playbtn.transform);
+                GameObject playShadow = GameObject.Instantiate(playBGPrefab, __instance.playbtn.transform);
                 playShadow.name = "playShadow";
                 OverwriteGameObjectSpriteAndColor(playShadow, "PlayShadow.png", Theme.colors.playButton.shadow);
 
@@ -257,22 +259,22 @@ namespace TootTallyCore
             {
                 GameObject backButtonBG = __instance.backbutton.transform.Find("button-full").gameObject;
                 backButtonBG.name = "BackButton";
-                GameObject backBGPrefab = UnityEngine.Object.Instantiate(backButtonBG.transform.GetChild(0).gameObject, __instance.backbutton.transform);
+                GameObject backBGPrefab = GameObject.Instantiate(backButtonBG.transform.GetChild(0).gameObject, __instance.backbutton.transform);
                 foreach (Transform t in backBGPrefab.transform) t.gameObject.SetActive(false);
 
-                GameObject backBackgroundImg = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
+                GameObject backBackgroundImg = GameObject.Instantiate(backBGPrefab, __instance.backbutton.transform);
                 backBackgroundImg.name = "backBackground";
                 OverwriteGameObjectSpriteAndColor(backBackgroundImg, "BackBackground.png", Theme.colors.backButton.background);
 
-                GameObject backOutline = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
+                GameObject backOutline = GameObject.Instantiate(backBGPrefab, __instance.backbutton.transform);
                 backOutline.name = "backOutline";
                 OverwriteGameObjectSpriteAndColor(backOutline, "BackOutline.png", Theme.colors.backButton.outline);
 
-                var backText = UnityEngine.Object.Instantiate(__instance.backbutton.transform.GetChild(0).GetChild(2), __instance.backbutton.transform).GetComponent<Text>();
+                var backText = GameObject.Instantiate(__instance.backbutton.transform.GetChild(0).GetChild(2), __instance.backbutton.transform).GetComponent<Text>();
                 backText.name = "backText";
                 backText.color = Theme.colors.backButton.text;
 
-                GameObject backShadow = UnityEngine.Object.Instantiate(backBGPrefab, __instance.backbutton.transform);
+                GameObject backShadow = GameObject.Instantiate(backBGPrefab, __instance.backbutton.transform);
                 backShadow.name = "backShadow";
                 OverwriteGameObjectSpriteAndColor(backShadow, "BackShadow.png", Theme.colors.backButton.shadow);
 
@@ -292,19 +294,19 @@ namespace TootTallyCore
                 __instance.btnrandom.transform.Find("icon").GetComponent<Image>().color = Theme.colors.randomButton.text;
                 __instance.btnrandom.transform.Find("btn-shadow").GetComponent<Image>().color = Theme.colors.randomButton.shadow;
 
-                GameObject randomButtonPrefab = UnityEngine.Object.Instantiate(__instance.btnrandom.transform.Find("btn").gameObject);
+                GameObject randomButtonPrefab = GameObject.Instantiate(__instance.btnrandom.transform.Find("btn").gameObject);
                 RectTransform randomRectTransform = randomButtonPrefab.GetComponent<RectTransform>();
                 randomRectTransform.anchoredPosition = Vector2.zero;
                 randomRectTransform.localScale = Vector3.one;
                 __instance.btnrandom.transform.Find("btn").gameObject.SetActive(false);
 
-                GameObject randomButtonBackground = UnityEngine.Object.Instantiate(randomButtonPrefab, __instance.btnrandom.transform);
+                GameObject randomButtonBackground = GameObject.Instantiate(randomButtonPrefab, __instance.btnrandom.transform);
                 randomButtonBackground.name = "RandomBackground";
                 OverwriteGameObjectSpriteAndColor(randomButtonBackground, "RandomBackground.png", Theme.colors.randomButton.background);
                 __instance.btnrandom.transform.Find("Text").SetParent(randomButtonBackground.transform);
                 __instance.btnrandom.transform.Find("icon").SetParent(randomButtonBackground.transform);
 
-                GameObject randomButtonOutline = UnityEngine.Object.Instantiate(randomButtonPrefab, __instance.btnrandom.transform);
+                GameObject randomButtonOutline = GameObject.Instantiate(randomButtonPrefab, __instance.btnrandom.transform);
                 randomButtonOutline.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -1);
                 randomButtonOutline.name = "RandomOutline";
                 OverwriteGameObjectSpriteAndColor(randomButtonOutline, "RandomOutline.png", Theme.colors.randomButton.outline);
@@ -313,7 +315,7 @@ namespace TootTallyCore
                 randomButtonIcon.name = "RandomIcon";
                 OverwriteGameObjectSpriteAndColor(randomButtonIcon, "RandomIcon.png", GameTheme.themeColors.randomButton.text);*/
 
-                UnityEngine.Object.DestroyImmediate(__instance.btnrandom.GetComponent<Image>());
+                GameObject.DestroyImmediate(__instance.btnrandom.GetComponent<Image>());
                 randomButtonPrefab.SetActive(false);
 
                 EventTrigger randomBtnEvents = __instance.btnrandom.AddComponent<EventTrigger>();
@@ -336,20 +338,20 @@ namespace TootTallyCore
             #region PointerArrow
             try
             {
-                GameObject arrowPointerPrefab = UnityEngine.Object.Instantiate(__instance.pointerarrow.gameObject);
+                GameObject arrowPointerPrefab = GameObject.Instantiate(__instance.pointerarrow.gameObject);
                 OverwriteGameObjectSpriteAndColor(__instance.pointerarrow.gameObject, "pointerBG.png", Theme.colors.pointer.background);
 
-                GameObject arrowPointerShadow = UnityEngine.Object.Instantiate(arrowPointerPrefab, __instance.pointerarrow.transform);
+                GameObject arrowPointerShadow = GameObject.Instantiate(arrowPointerPrefab, __instance.pointerarrow.transform);
                 arrowPointerShadow.name = "Shadow";
                 arrowPointerShadow.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 OverwriteGameObjectSpriteAndColor(arrowPointerShadow, "pointerShadow.png", Theme.colors.pointer.shadow);
 
-                GameObject arrowPointerPointerOutline = UnityEngine.Object.Instantiate(arrowPointerPrefab, __instance.pointerarrow.transform);
+                GameObject arrowPointerPointerOutline = GameObject.Instantiate(arrowPointerPrefab, __instance.pointerarrow.transform);
                 arrowPointerPointerOutline.name = "Outline";
                 arrowPointerPointerOutline.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 OverwriteGameObjectSpriteAndColor(arrowPointerPointerOutline, "pointerOutline.png", Theme.colors.pointer.outline);
 
-                UnityEngine.Object.DestroyImmediate(arrowPointerPrefab);
+                GameObject.DestroyImmediate(arrowPointerPrefab);
             }
             catch (Exception e)
             {
@@ -364,7 +366,7 @@ namespace TootTallyCore
                 __instance.bgdots.transform.Find("Image").GetComponent<Image>().color = Theme.colors.background.dots;
                 __instance.bgdots.transform.Find("Image (1)").GetComponent<Image>().color = Theme.colors.background.dots;
                 __instance.bgdots2.transform.Find("Image").GetComponent<Image>().color = Theme.colors.background.dots2;
-                GameObject extraDotsBecauseGameDidntLeanTweenFarEnoughSoWeCanSeeTheEndOfTheTextureFix = UnityEngine.Object.Instantiate(__instance.bgdots.transform.Find("Image").gameObject, __instance.bgdots.transform.Find("Image").transform);
+                GameObject extraDotsBecauseGameDidntLeanTweenFarEnoughSoWeCanSeeTheEndOfTheTextureFix = GameObject.Instantiate(__instance.bgdots.transform.Find("Image").gameObject, __instance.bgdots.transform.Find("Image").transform);
                 extraDotsBecauseGameDidntLeanTweenFarEnoughSoWeCanSeeTheEndOfTheTextureFix.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -1010);
                 GameObject.Find("bgcamera").GetComponent<Camera>().backgroundColor = Theme.colors.background.background;
                 GameObject.Find("BG Shape").GetComponent<Image>().color = Theme.colors.background.shape;

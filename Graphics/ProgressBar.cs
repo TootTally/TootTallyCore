@@ -1,4 +1,4 @@
-﻿using TootTallyCore.Graphics.ProgressCounter;
+﻿using TootTallyCore.Graphics.ProgressCounters;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,12 +40,12 @@ namespace TootTallyCore.Graphics
             _bar.gameObject.SetActive(_isActive);
         }
 
-        public void OnProgressCounterFinish(double elapsed)
+        public void OnProgressCounterFinish(ProgressCounter sender, double elapsed)
         {
             throw new System.NotImplementedException();
         }
 
-        public void OnProgressCounterUpdate(float progress)
+        public void OnProgressCounterUpdate(ProgressCounter sender, float progress)
         {
             throw new System.NotImplementedException();
         }

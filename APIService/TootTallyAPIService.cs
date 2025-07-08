@@ -12,7 +12,7 @@ using TootTallyCore.Utils.Steam;
 using UnityEngine;
 using UnityEngine.Networking;
 using static TootTallyCore.APIServices.SerializableClass;
-using TootTallyCore.Graphics.ProgressCounter;
+using TootTallyCore.Graphics.ProgressCounters;
 using System.Transactions;
 
 namespace TootTallyCore.APIServices

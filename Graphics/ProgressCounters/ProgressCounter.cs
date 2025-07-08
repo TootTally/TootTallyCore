@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace TootTallyCore.Graphics.ProgressCounter
+namespace TootTallyCore.Graphics.ProgressCounters
 {
     public class ProgressCounter
     {
@@ -19,10 +19,15 @@ namespace TootTallyCore.Graphics.ProgressCounter
         public double GetFinishedElapsedTime { get; private set; }
 
         public List<IProgressCountable> _progressCounterList { get; private set; }
+        public List<IProgressCountable> _progressCounterToAdd { get; private set; }
+        public List<IProgressCountable> _progressCounterToRemove { get; private set; }
         public ProgressCounter(params IProgressCountable[] counters)
         {
             _progressCounterList = new List<IProgressCountable>();
             _progressCounterList.AddRange(counters);
+            _progressCounterToAdd = new List<IProgressCountable>();
+            _progressCounterToRemove = new List<IProgressCountable>();
+
             GetFinishedElapsedTime = 0d;
             _progressPercent = 0;
             IsCompleted = IsRunning = IsPaused = false;
@@ -35,7 +40,8 @@ namespace TootTallyCore.Graphics.ProgressCounter
             if (!IsRunning && !IsCompleted)
                 Start();
             _progressPercent = Mathf.Clamp(progressPercent, 0, 1);
-            _progressCounterList.ForEach(c => c.OnProgressCounterUpdate(_progressPercent));
+            _progressCounterList.ForEach(c => c.OnProgressCounterUpdate(this, _progressPercent));
+            UpdateCounterList();
         }
 
         public void Start()
@@ -66,12 +72,32 @@ namespace TootTallyCore.Graphics.ProgressCounter
             IsRunning = false;
             _timer.Stop();
             GetFinishedElapsedTime = _timer.Elapsed.TotalMilliseconds;
-            _progressCounterList.ForEach(c => c.OnProgressCounterFinish(GetFinishedElapsedTime));
+            _progressCounterList.ForEach(c => c.OnProgressCounterFinish(this, GetFinishedElapsedTime));
+            UpdateCounterList();
         }
+
+        private void UpdateCounterList()
+        {
+            if (_progressCounterToRemove.Count > 0)
+                foreach (var c in _progressCounterToRemove) _progressCounterList.Remove(c);
+            if (_progressCounterToAdd.Count > 0)
+                _progressCounterList.AddRange(_progressCounterToAdd);
+            _progressCounterToRemove.Clear();
+            _progressCounterToAdd.Clear();
+
+        }
+
 
         public void ClearCounters()
         {
             _progressCounterList.Clear();
+        }
+
+        public void AddCounter(IProgressCountable counter) => _progressCounterList.Add(counter);
+        public void RemoveCounter(IProgressCountable counter)
+        {
+            if (_progressCounterList.Contains(counter))
+                _progressCounterToRemove.Remove(counter);
         }
     }
 }

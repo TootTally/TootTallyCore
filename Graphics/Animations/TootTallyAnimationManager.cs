@@ -20,6 +20,14 @@ namespace TootTallyCore.Graphics.Animations
             return anim;
         }
 
+        public static TootTallyAnimation AddNewTransformLocalPositionAnimation(GameObject gameObject, Vector3 targetVector,
+            float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null)
+        {
+            TootTallyAnimation anim = new TootTallyAnimation(gameObject, gameObject.transform.localPosition, targetVector, 1f, timeSpan, TootTallyAnimation.VectorType.TransformLocalPosition, secondDegreeAnimation, true, onFinishCallback);
+            AddToList(anim);
+            return anim;
+        }
+
         public static TootTallyAnimation AddNewPositionAnimation(GameObject gameObject, Vector3 targetVector,
             float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null)
         {
@@ -75,6 +83,15 @@ namespace TootTallyCore.Graphics.Animations
             AddToList(anim);
             return anim;
         }
+
+        public static TootTallyAnimation AddNewAlphaAnimation(GameObject gameObject, float targetValue,
+           float timeSpan, SecondDegreeDynamicsAnimation secondDegreeAnimation, Action<GameObject> onFinishCallback = null)
+        {
+            TootTallyAnimation anim = new TootTallyAnimation(gameObject, new Vector2(gameObject.GetComponent<CanvasGroup>().alpha,0), new Vector2(targetValue, 0), 1f, timeSpan, TootTallyAnimation.VectorType.Alpha, secondDegreeAnimation, true, onFinishCallback);
+            AddToList(anim);
+            return anim;
+        }
+
 
         public static TootTallyAnimation AddNewAnimation(GameObject gameObject, Vector3 startingVector, Vector3 targetVector, float speedMultiplier,
             float timeSpan, TootTallyAnimation.VectorType vectorType, SecondDegreeDynamicsAnimation secondDegreeAnimation, bool disposeOnFinish, Action<GameObject> onFinishCallback = null)

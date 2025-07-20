@@ -117,7 +117,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         [HarmonyPostfix]
         public static void OnGameControllerUpdateFixPitchAndBreathing(GameController __instance)
         {
-            if (_startSongTime && !__instance.paused && !__instance.quitting && !__instance.retrying && !__instance.freeplay)
+            if (_startSongTime && !__instance.paused && !__instance.quitting && !__instance.retrying && !__instance.freeplay && !TootTallyGlobalVariables.isTournamentHosting)
             {
                 _songTime += Time.deltaTime * TootTallyGlobalVariables.gameSpeedMultiplier;
                 if (!__instance.level_finished && !__instance.musictrack.isPlaying && _songTime >= _songLength)
@@ -180,6 +180,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
             if (__instance.freeplay || TootTallyGlobalVariables.isSpectating || TootTallyGlobalVariables.isReplaying) return;
 
             Plugin.LogInfo($"Starting song time.");
+            _songLength = __instance.musictrack.clip.length;
             _startSongTime = true;
         }
 

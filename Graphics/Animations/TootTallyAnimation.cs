@@ -67,6 +67,9 @@ namespace TootTallyCore.Graphics.Animations
                     case VectorType.TransformPosition:
                         _gameObject.transform.position = _secondDegreeAnimation.GetNewVector(_targetVector, delta * _speedMultiplier);
                         break;
+                    case VectorType.TransformLocalPosition:
+                        _gameObject.transform.localPosition = _secondDegreeAnimation.GetNewVector(_targetVector, delta * _speedMultiplier);
+                        break;
                     case VectorType.Position:
                         _gameObject.GetComponent<RectTransform>().anchoredPosition = _secondDegreeAnimation.GetNewVector(_targetVector, delta * _speedMultiplier);
                         break;
@@ -81,6 +84,9 @@ namespace TootTallyCore.Graphics.Animations
                         break;
                     case VectorType.Rotation:
                         _gameObject.transform.rotation = Quaternion.Euler(_secondDegreeAnimation.GetNewVector(_targetVector, delta * _speedMultiplier));
+                        break;
+                    case VectorType.Alpha:
+                        _gameObject.GetComponent<CanvasGroup>().alpha = _secondDegreeAnimation.GetNewVector(_targetVector, delta * _speedMultiplier).x;
                         break;
 
                 }
@@ -97,6 +103,9 @@ namespace TootTallyCore.Graphics.Animations
                 case VectorType.TransformPosition:
                     _gameObject.transform.position = _targetVector;
                     break;
+                case VectorType.TransformLocalPosition:
+                    _gameObject.transform.localPosition = _targetVector;
+                    break;
                 case VectorType.Position:
                     _gameObject.GetComponent<RectTransform>().anchoredPosition = _targetVector;
                     break;
@@ -112,25 +121,34 @@ namespace TootTallyCore.Graphics.Animations
                 case VectorType.Rotation:
                     _gameObject.transform.rotation = Quaternion.Euler(_targetVector);
                     break;
+                case VectorType.Alpha:
+                    _gameObject.GetComponent<CanvasGroup>().alpha = _targetVector.x;
+                    break;
             }
         }
 
-        public void Dispose()
+        public void Dispose(bool snapToFinalVector = false)
         {
             if (_isAlreadyDisposed) return;
+            if (snapToFinalVector)
+                SnapToFinalVector();
             TootTallyAnimationManager.RemoveFromList(this);
             _isAlreadyDisposed = true;
         }
+
+        public void Dispose() => Dispose(false);
 
         public enum VectorType
         {
             TransformScale,
             TransformPosition,
+            TransformLocalPosition,
             Position,
             SizeDelta,
             Scale,
             EulerAngle,
             Rotation,
+            Alpha,
         }
     }
 }

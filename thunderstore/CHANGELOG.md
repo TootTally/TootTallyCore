@@ -1,8 +1,15 @@
 #### Changelog:
 
+`v1.3.1` -> `v1.3.2`
+```diff
++ Added tournament host flag
++ Added new animations types for future updates
+```
+
 `v1.2.10` -> `v1.3.1`
 ```diff
 + Implemented Steam Authentification Error handling
+```
 
 `v1.2.9` -> `v1.2.10`
 ```diff

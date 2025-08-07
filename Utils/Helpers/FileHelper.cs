@@ -4,11 +4,61 @@ using System.IO;
 using System.Text;
 using static TootTallyCore.APIServices.SerializableClass;
 using System.Linq;
+using UnityEngine;
+using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+using System.CodeDom;
+using BepInEx;
+using Unity.Jobs;
 
 namespace TootTallyCore.Utils.Helpers
 {
     public static class FileHelper
     {
+        public static readonly string FILE_PATH_TOOTTALLY_APPDATA = Path.Combine(Application.persistentDataPath, "TootTally");
+
+        public static T LoadFromTootTallyAppData<T>(string fileName)
+        {
+            var path = Path.Combine(FILE_PATH_TOOTTALLY_APPDATA, fileName);
+
+            if (!File.Exists(path))
+            {
+                Plugin.LogError($"File {path} doesnt exist.");
+                return default;
+            }
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(File.ReadAllText(path));
+            }
+            catch (Exception ex)
+            {
+                Plugin.LogError($"Couldn't deserialize object: {ex.Message} - {ex.StackTrace}");
+            }
+
+            return default;
+        }
+
+        public static void SaveToTootTallyAppData<T>(string fileName, T obj, bool saveToBackupIfExists = false)
+        {
+            var path = Path.Combine(FILE_PATH_TOOTTALLY_APPDATA, fileName);
+            try
+            {
+                var json = JsonConvert.SerializeObject(obj);
+                if (File.Exists(path) && saveToBackupIfExists)
+                {
+                    if (File.Exists(path + ".old")) //For fuck sake give me NetCore3.0 please
+                        File.Delete(path + ".old");
+                    File.Move(path, path + ".old"); //Backup
+                }
+
+                File.WriteAllText(path, json);
+            }
+            catch (Exception ex)
+            {
+                Plugin.LogError($"Couldn't serialize object: {ex.Message} - {ex.StackTrace}");
+            }
+        }
+
         //Backward compatibility reasons
         public static void TryMigrateFolder(string sourceFolderPath, string targetFolderPath, bool renameToOldIfAlreadyExists) => TryMigrateFolder(sourceFolderPath, targetFolderPath);
         public static void TryMigrateFolder(string sourceFolderPath, string targetFolderPath)

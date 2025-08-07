@@ -73,6 +73,12 @@ namespace TootTallyCore
             string sourceThemePath = Path.Combine(Path.GetDirectoryName(Instance.Info.Location), "Themes");
             FileHelper.TryMigrateFolder(sourceThemePath, targetThemePath);
 
+            if (!Directory.Exists(FileHelper.FILE_PATH_TOOTTALLY_APPDATA))
+            {
+                Plugin.LogInfo($"Couldn't find {FileHelper.FILE_PATH_TOOTTALLY_APPDATA}, creating directory.");
+                Directory.CreateDirectory(FileHelper.FILE_PATH_TOOTTALLY_APPDATA);
+            }
+
             _harmony = new Harmony(Info.Metadata.GUID);
             GameInitializationEvent.Register(Info, TryInitialize);
         }

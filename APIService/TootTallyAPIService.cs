@@ -368,10 +368,11 @@ namespace TootTallyCore.APIServices
                 callback(null);
 
         }
+        public static IEnumerator<UnityWebRequestAsyncOperation> GetLeaderboardScoresFromDB(int songID, Action<List<ScoreDataFromDB>> callback) => GetLeaderboardScoresFromDB(songID, callback, 200);
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> GetLeaderboardScoresFromDB(int songID, Action<List<ScoreDataFromDB>> callback)
+        public static IEnumerator<UnityWebRequestAsyncOperation> GetLeaderboardScoresFromDB(int songID, Action<List<ScoreDataFromDB>> callback, float pageSize)
         {
-            string query = $"{APIURL}/api/songs/{songID}/leaderboard/";
+            string query = $"{APIURL}/api/songs/{songID}/leaderboard/?page_size={pageSize}";
 
             UnityWebRequest webRequest = UnityWebRequest.Get(query);
 

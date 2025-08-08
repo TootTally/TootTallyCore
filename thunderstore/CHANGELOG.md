@@ -1,5 +1,12 @@
 #### Changelog:
 
+`v1.3.2` -> `v1.3.4`
+```diff
++ Compatibility update for 1.27E
++ Added TootTally AppData folder location
++ Increased leaderboard entry from top 50 to 200
+```
+
 `v1.3.1` -> `v1.3.2`
 ```diff
 + Added tournament host flag

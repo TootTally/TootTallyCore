@@ -22,6 +22,16 @@ All current modules:
 - [Trombuddies](https://github.com/TootTally/TootTallyTrombuddies)
 - [TTCounter](https://github.com/TootTally/TootTallyTTCounter)
 - [TwitchIntegration](https://github.com/TootTally/TootTallyTwitchIntegration)
+- [HitSounds](https://github.com/TootTally/TootTallyHitSounds)
+- [LocalOffset](https://github.com/TootTally/TootTallyLocalOffset)
+- [AutoToot](https://github.com/TootTally/TootTallyAutotoot)
+- [Multiplayer](https://github.com/TootTally/TootTalllyMultiplayer)
+- [PracticePlugin](https://github.com/TootTally/TootTallyPractice)
+- [URCounter](https://github.com/TootTally/TootTallyURCounter)
+- [WickedCursorMovement](https://github.com/TootTally/TootTallyWickedCursorMovement)
+
+All current libraries:
+- [DiffCalcLibs](https://github.com/TootTally/TootTallyDiffCalcLibs)
 - [WebsocketLibs](https://github.com/TootTally/TootTallyWebSocketLibs)
 
 ## TootTally Notifs

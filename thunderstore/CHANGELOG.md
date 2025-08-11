@@ -1,5 +1,12 @@
 #### Changelog:
 
+`v1.3.4` -> `v1.3.5`
+```diff
++ Fixed Themes lines
++ Added usedAutoToot flag
++ Inverted fix latenctyAdjust being upside down
+```
+
 `v1.3.2` -> `v1.3.4`
 ```diff
 + Compatibility update for 1.27E

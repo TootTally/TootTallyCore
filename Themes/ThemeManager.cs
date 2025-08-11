@@ -147,16 +147,16 @@ namespace TootTallyCore
             try
             {
                 GameObject lines = __instance.btnspanel.transform.Find("RightLines").gameObject;
-                lines.GetComponent<RectTransform>().anchoredPosition += new Vector2(-2, 0);
-                LineRenderer redLine = lines.transform.Find("Red").GetComponent<LineRenderer>();
-                redLine.startColor = Theme.colors.leaderboard.panelBody;
-                redLine.endColor = Theme.colors.leaderboard.scoresBody;
+                //lines.GetComponent<RectTransform>().anchoredPosition += new Vector2(-2, 0);
+                var redLine = lines.transform.Find("Red (1)").GetComponent<Image>();
+                redLine.color = Theme.colors.leaderboard.scoresBody;
                 for (int i = 1; i < 8; i++)
                 {
-                    LineRenderer yellowLine = lines.transform.Find("Yellow" + i).GetComponent<LineRenderer>();
-                    yellowLine.startColor = Theme.colors.leaderboard.panelBody;
-                    yellowLine.endColor = Theme.colors.leaderboard.scoresBody;
+                    var yellowLine = lines.transform.Find("yellows/Yellow" + i).GetComponent<Image>();
+                    yellowLine.color = Theme.colors.leaderboard.scoresBody;
                 }
+                var whiteLine = lines.transform.Find("White").GetComponent<Image>();
+                whiteLine.color = Theme.colors.songButton.outline;
             }
             catch (Exception e)
             {

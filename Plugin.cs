@@ -50,6 +50,7 @@ namespace TootTallyCore
         public ConfigEntry<bool> RunGCWhilePlaying { get; private set; }
         public ConfigEntry<bool> ChangePitch { get; private set; }
         public ConfigEntry<float> OffsetAtDefaultSpeed { get; private set; }
+        public ConfigEntry<bool> CompatibilityHasConvertedOffsetCheck { get; private set; }
 
         public Plugin()
         {
@@ -67,6 +68,7 @@ namespace TootTallyCore
             RunGCWhilePlaying = Config.Bind("General", "Deactivate Garbage Collector While Playing.", false, "Deactivate the garbage collector during gameplay to prevent lag spikes.");
             ChangePitch = Config.Bind("General", "Change Pitch", false, "Change the pitch on speed changes.");
             OffsetAtDefaultSpeed = Config.Bind("General", "Offset At Default Speed", 0f, "Add an offset when playing charts at 1.0x to compensate for the pitch shift filter latency. RECOMMENDED: 15ms");
+            CompatibilityHasConvertedOffsetCheck = Config.Bind("General", nameof(CompatibilityHasConvertedOffsetCheck), false, "DO NOT TOUCH THIS SETTING :) thanks!");
             Config.SettingChanged += ThemeManager.Config_SettingChanged;
 
             string targetThemePath = Path.Combine(Paths.BepInExRootPath, "Themes");
@@ -77,6 +79,12 @@ namespace TootTallyCore
             {
                 Plugin.LogInfo($"Couldn't find {FileHelper.FILE_PATH_TOOTTALLY_APPDATA}, creating directory.");
                 Directory.CreateDirectory(FileHelper.FILE_PATH_TOOTTALLY_APPDATA);
+            }
+
+            if (!CompatibilityHasConvertedOffsetCheck.Value)
+            {
+                OffsetAtDefaultSpeed.Value = -OffsetAtDefaultSpeed.Value;
+                CompatibilityHasConvertedOffsetCheck.Value = true;
             }
 
             _harmony = new Harmony(Info.Metadata.GUID);

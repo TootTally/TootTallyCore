@@ -10,6 +10,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
     {
         public static float gameSpeedMultiplier = 1f;
         public static bool wasReplaying = false;
+        public static bool usedAutotoot = false;
         public static bool isReplaying = false;
         public static bool isOldReplay = false;
         public static bool isSpectating = false;

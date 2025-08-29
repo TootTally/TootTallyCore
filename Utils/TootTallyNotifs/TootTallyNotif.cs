@@ -82,11 +82,14 @@ namespace TootTallyCore.Utils.TootTallyNotifs
 
             _lifespan -= Time.deltaTime;
             if (_lifespan / 1.75f <= 1)
-            {
                 _canvasGroup.alpha = EasingHelper.EaseIn(_lifespan / 1.25f);
-            }
             if (_lifespan < 0)
-                TootTallyNotifManager.QueueToRemovedFromList(this);
+                Dispose();
+        }
+
+        public void Dispose()
+        {
+            TootTallyNotifManager.QueueToRemovedFromList(this);
         }
     }
 }

@@ -34,7 +34,6 @@ namespace TootTallyCore.Utils.Helpers
             {
                 Plugin.LogError($"Couldn't deserialize object: {ex.Message} - {ex.StackTrace}");
             }
-
             return default;
         }
 

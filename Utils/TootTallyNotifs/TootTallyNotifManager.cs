@@ -41,6 +41,22 @@ namespace TootTallyCore.Utils.TootTallyNotifs
             _pendingNotifications.Enqueue(new TootTallyNotifData(message, textColor, lifespan));
         }
 
+        private static TootTallyNotif DisplayNotif(string message, Color textColor)
+        {
+            if (!IsInitialized || !Plugin.Instance.ShouldShowNotifs.Value) return null;
+            var notif = GameObjectFactory.CreateNotif(_notifCanvas.transform, "Notification", message, textColor);
+            notif.Initialize(float.MaxValue, new Vector2(695, -400));
+            notif.gameObject.SetActive(true);
+            _activeNotificationList.Add(notif);
+            OnNotifCountChangeSetNewPosition();
+            return notif;
+        }
+
+        /// <summary>
+        /// WARNING: Do not use this function out of unity's main thread or it will cause a crash.
+        /// </summary>
+        public static TootTallyNotif ManualNotif(string message, Color textColor) => DisplayNotif(message, textColor);
+
         public static void DisplayNotif(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.defaultText, lifespan);
         public static void DisplayWarning(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.warningText, lifespan);
         public static void DisplayError(string message, float lifespan = 6f) => DisplayNotif(message, Theme.colors.notification.errorText, lifespan);

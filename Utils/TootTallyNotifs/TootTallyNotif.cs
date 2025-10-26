@@ -18,11 +18,15 @@ namespace TootTallyCore.Utils.TootTallyNotifs
         private CanvasGroup _canvasGroup;
         private SecondDegreeDynamicsAnimation _secondOrderDynamic;
 
-        public void SetText(string message) => _text = message;
-        public void SetTextSize(int size) => _textHolder.fontSize = size;
+        public void SetText(string text)
+        {
+            _text = text;
+            if (_textHolder != null)
+                _textHolder.text = text;
+        }
 
+        public void SetTextSize(int size) => _textHolder.fontSize = size;
         public void SetTextAlign(TextAlignmentOptions textAnchor) => _textHolder.alignment = textAnchor;
-        public void UpdateText(string text) => _textHolder.text = _text = text;
         public void SetTextColor(Color color) => _textColor = color;
         public void Initialize(float lifespan, Vector2 endPosition)
         {

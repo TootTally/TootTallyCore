@@ -1,5 +1,10 @@
 #### Changelog:
 
+`v1.3.5` -> `v1.3.6`
+```diff
++ Fixed crash when trying to dynamically set the text of TTNotifs
+```
+
 `v1.3.4` -> `v1.3.5`
 ```diff
 + Fixed Themes lines

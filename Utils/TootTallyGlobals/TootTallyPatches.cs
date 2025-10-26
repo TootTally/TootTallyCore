@@ -103,7 +103,6 @@ namespace TootTallyCore.Utils.TootTallyGlobals
                 OnGameControllerReadySetGameSpeed(__instance, TootTallyGlobalVariables.gameSpeedMultiplier);
                 Plugin.LogInfo("BACKUP: GameSpeed set to " + TootTallyGlobalVariables.gameSpeedMultiplier);
                 SetGCTotalTrackTimeString(__instance);
-
             }
         }
 

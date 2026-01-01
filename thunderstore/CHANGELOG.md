@@ -1,5 +1,11 @@
 #### Changelog:
 
+`v1.3.6` -> `v1.3.7`
+```diff
++ Fixed Bubbles tilting when their parent would tilt
++ Added Global Variable for Multiplayer
+```
+
 `v1.3.5` -> `v1.3.6`
 ```diff
 + Fixed crash when trying to dynamically set the text of TTNotifs

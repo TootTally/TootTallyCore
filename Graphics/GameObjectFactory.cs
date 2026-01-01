@@ -279,6 +279,8 @@ namespace TootTallyCore.Graphics
             text.rectTransform.sizeDelta = bubblePrefabRect.sizeDelta;
             text.gameObject.SetActive(true);
 
+            _bubblePrefab.AddComponent<LayoutElement>().ignoreLayout = true;
+
             _bubblePrefab.SetActive(false);
 
             GameObject.DontDestroyOnLoad(_bubblePrefab);

@@ -28,8 +28,31 @@ namespace TootTallyCore.Graphics
             _useWorldPosition = useWorldPosition;
         }
 
+        public void Initialize(Transform uiHolder, GameObject bubble, bool useWorldPosition = true)
+        {
+            _bubble = bubble;
+            _bubble.transform.SetParent(uiHolder);
+            _bubble.transform.position = transform.position;
+            _useWorldPosition = useWorldPosition;
+            if (!transform.TryGetComponent(out _parentTrigger))
+                _parentTrigger = transform.gameObject.AddComponent<EventTrigger>();
+
+            EventTrigger.Entry pointerEnterEvent = new EventTrigger.Entry();
+            pointerEnterEvent.eventID = EventTriggerType.PointerEnter;
+            pointerEnterEvent.callback.AddListener((data) => OnPointerEnter());
+
+            EventTrigger.Entry pointerExitEvent = new EventTrigger.Entry();
+            pointerExitEvent.eventID = EventTriggerType.PointerExit;
+            pointerExitEvent.callback.AddListener((data) => OnPointerExit());
+
+            _parentTrigger.triggers.Add(pointerEnterEvent);
+            _parentTrigger.triggers.Add(pointerExitEvent);
+        }
+
         public void Awake()
         {
+            if (_parentTrigger != null) return;
+
             var parent = transform.gameObject;
             if (!parent.TryGetComponent(out _parentTrigger))
                 _parentTrigger = parent.gameObject.AddComponent<EventTrigger>();
@@ -73,6 +96,7 @@ namespace TootTallyCore.Graphics
             _isActive = true;
             _positionAnimation?.Dispose();
             _scaleAnimation?.Dispose();
+            _bubble.transform.position = transform.position;
             _bubble.transform.localScale = Vector2.zero;
             _bubble.SetActive(true);
             _bubble.transform.SetAsLastSibling();

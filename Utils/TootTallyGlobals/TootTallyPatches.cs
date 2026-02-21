@@ -36,6 +36,10 @@ namespace TootTallyCore.Utils.TootTallyGlobals
                 TootTallyGlobalVariables.gameSpeedMultiplier = 2f;
             else if (GlobalVariables.practicemode != 1f)
                 TootTallyGlobalVariables.gameSpeedMultiplier = GlobalVariables.practicemode;
+            else
+                // Fix edge case where this isn't being set
+                // appropriately when not using the leaderboard mod.
+                TootTallyGlobalVariables.gameSpeedMultiplier = 1f;
         }
 
         [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]

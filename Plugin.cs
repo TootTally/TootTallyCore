@@ -15,6 +15,7 @@ using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Steam;
 using UnityEngine;
 using TootTallyCore.Utils.Helpers;
+using System.Reflection;
 
 namespace TootTallyCore
 {
@@ -22,7 +23,11 @@ namespace TootTallyCore
     [BepInIncompatibility("TootTally")]
     public class Plugin : BaseUnityPlugin
     {
-        public static int BUILDDATE = 20250701;
+        public static int BUILDDATE
+        {
+            get => TootTallyUtils.GetBuildDate(Assembly.GetExecutingAssembly());
+        }
+
         private const string DEFAULT_THEME = "Default";
 
         public static Plugin Instance;

@@ -25,13 +25,14 @@ namespace TootTallyCore
     {
         public static int BUILDDATE
         {
-            get => TootTallyUtils.GetBuildDate(Assembly.GetExecutingAssembly());
+            get => _buildDate;
         }
 
         private const string DEFAULT_THEME = "Default";
 
         public static Plugin Instance;
         private Harmony _harmony;
+        private static int _buildDate = 0;
 
         public readonly ReloadManager reloadManager;
 
@@ -60,6 +61,11 @@ namespace TootTallyCore
         public Plugin()
         {
             reloadManager = new ReloadManager(this);
+            
+            if (_buildDate == 0)
+            {
+                _buildDate = TootTallyUtils.GetBuildDate(Assembly.GetExecutingAssembly());
+            }
         }
 
         private void Awake()

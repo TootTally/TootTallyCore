@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System;
+using TootTallyCore.Utils.TootTallyModules;
 using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.Video;
@@ -32,10 +33,17 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         [HarmonyPrefix]
         public static void GameControllerPrefixPatch(GameController __instance)
         {
+            // Don't attempt to change speed if Leaderboard mod is enabled
+            // Leaderboard mod already handles speed changes with its own slider
+            if (TootTallyModuleManager.IsModuleEnabled("TootTally Leaderboard"))
+                return;
+
             if (GlobalVariables.turbomode)
                 TootTallyGlobalVariables.gameSpeedMultiplier = 2f;
             else if (GlobalVariables.practicemode != 1f)
                 TootTallyGlobalVariables.gameSpeedMultiplier = GlobalVariables.practicemode;
+            else
+                TootTallyGlobalVariables.gameSpeedMultiplier = 1f;
         }
 
         [HarmonyPatch(typeof(GameController), nameof(GameController.Start))]

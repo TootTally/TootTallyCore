@@ -43,6 +43,13 @@ namespace TootTallyCore.Utils.TootTallyModules
 
         }
 
+        public static bool IsModuleEnabled(string moduleName)
+        {
+            var r = _tootTallyModuleList?.Find(m => m.Name == moduleName && m.ModuleConfigEnabled.Value);
+
+            return r != null;
+        }
+
         private static void ModuleConfigEnabled_SettingChanged(ITootTallyModule module)
         {
             try

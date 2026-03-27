@@ -15,6 +15,7 @@ using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Steam;
 using UnityEngine;
 using TootTallyCore.Utils.Helpers;
+using System.Reflection;
 
 namespace TootTallyCore
 {
@@ -22,11 +23,16 @@ namespace TootTallyCore
     [BepInIncompatibility("TootTally")]
     public class Plugin : BaseUnityPlugin
     {
-        public static int BUILDDATE = 20250701;
+        public static int BUILDDATE
+        {
+            get => _buildDate;
+        }
+
         private const string DEFAULT_THEME = "Default";
 
         public static Plugin Instance;
         private Harmony _harmony;
+        private static int _buildDate = 0;
 
         public readonly ReloadManager reloadManager;
 
@@ -55,6 +61,11 @@ namespace TootTallyCore
         public Plugin()
         {
             reloadManager = new ReloadManager(this);
+            
+            if (_buildDate == 0)
+            {
+                _buildDate = TootTallyUtils.GetBuildDate(Assembly.GetExecutingAssembly());
+            }
         }
 
         private void Awake()

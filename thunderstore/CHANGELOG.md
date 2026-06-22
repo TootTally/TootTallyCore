@@ -1,5 +1,13 @@
 #### Changelog:
 
+`v1.3.7` -> `v1.3.9`
+```diff
++ Fixed crash caused by the replay stop api call
++ Fixed unintentional behavior with the GetChoosenSongHash function
++ Added missed the gaps to scoredata
++ Fixes for other module updates
+```
+
 `v1.3.6` -> `v1.3.7`
 ```diff
 + Fixed Bubbles tilting when their parent would tilt

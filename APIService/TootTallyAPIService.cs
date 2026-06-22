@@ -225,14 +225,14 @@ namespace TootTallyCore.APIServices
             }
         }
 
-        public static IEnumerator<UnityWebRequestAsyncOperation> OnReplayStopUUID(string apiKey, string songHash, string replayUUID)
+        public static IEnumerator<UnityWebRequestAsyncOperation> OnReplayStopUUID(string apiKey, string replayUUID)
         {
-            if (songHash == null) yield return null;
+            if (replayUUID == null || replayUUID == "") yield return null;
 
             var query = $"{APIURL}/api/replay/stop/";
             var apiObj = new ReplayStopSubmission() { apiKey = apiKey, replayId = replayUUID };
-            var apiKeyAndSongHash = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
-            var webRequest = PostUploadRequest(query, apiKeyAndSongHash);
+            var apiKeyAndReplayUUID = System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(apiObj));
+            var webRequest = PostUploadRequest(query, apiKeyAndReplayUUID);
             yield return webRequest.SendWebRequest();
 
             if (!HasError(webRequest, query))

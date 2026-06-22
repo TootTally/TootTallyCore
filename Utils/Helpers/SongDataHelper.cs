@@ -70,11 +70,9 @@ namespace TootTallyCore.Utils.Helpers
             }
         }
 
-        public static string GetChoosenSongHash()
+        public static string GetChoosenSongHash(string trackref)
         {
-            string trackRef = GlobalVariables.chosen_track_data.trackref;
-            var track = TrackLookup.lookup(trackRef);
-
+            var track = TrackLookup.lookup(trackref);
             return GetSongHash(track);
         }
 

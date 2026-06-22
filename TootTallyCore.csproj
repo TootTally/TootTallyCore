@@ -3,7 +3,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>TootTallyCore</AssemblyName>
     <Description>TootTally API for Trombone Champ modding</Description>
-    <Version>1.3.7</Version>
+    <Version>1.3.9</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
 
@@ -17,6 +17,8 @@
     <RepositoryUrl>https://github.com/TootTally/TootTallyCore</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <DefaultLanguage>en</DefaultLanguage>
+	<TromboneChampDir>E:\SteamLibrary\steamapps\common\TromboneChamp</TromboneChampDir>
+	<TromboneTootDir>C:\Users\Sabz\AppData\Roaming\r2modmanPlus-local\TromboneChamp\profiles\Default\BepInEx\plugins\TootTally-TootTallyCore</TromboneTootDir>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

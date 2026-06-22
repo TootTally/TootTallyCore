@@ -9,9 +9,11 @@ namespace TootTallyCore.Graphics
         private bool _isActive;
         private bool _recursiveAnimationActive;
         private TootTallyAnimation _currentAnimation;
+        private bool _isDisposed;
 
         public LoadingIcon(GameObject iconHolder, bool isActive)
         {
+            _isDisposed = false;
             this.iconHolder = iconHolder;
             _isActive = isActive;
             this.iconHolder.SetActive(isActive);
@@ -67,6 +69,8 @@ namespace TootTallyCore.Graphics
 
         public void Dispose()
         {
+            if (_isDisposed) return;
+            _isDisposed = true;
             _currentAnimation?.Dispose();
             UnityEngine.Object.DestroyImmediate(iconHolder);
         }

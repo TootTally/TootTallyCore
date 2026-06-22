@@ -49,6 +49,7 @@ namespace TootTallyCore.APIServices
             public int okay;
             public int meh;
             public int nasty;
+            public int missed_gaps;
             public string replay_id;
             public int max_combo;
             public float percentage;
@@ -58,7 +59,7 @@ namespace TootTallyCore.APIServices
             public float replay_speed;
             public string[] modifiers;
 
-            public int[] GetTally => new int[] { nasty, meh, okay, nice, perfect };
+            public int[] GetTally => new int[] { nasty, meh, okay, nice, perfect, missed_gaps };
         }
 
         [Serializable]

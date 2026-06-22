@@ -17,6 +17,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
         private float _lifespan;
         private CanvasGroup _canvasGroup;
         private SecondDegreeDynamicsAnimation _secondOrderDynamic;
+        private bool _isDiposed;
 
         public void SetText(string text)
         {
@@ -30,6 +31,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
         public void SetTextColor(Color color) => _textColor = color;
         public void Initialize(float lifespan, Vector2 endPosition)
         {
+            _isDiposed = false;
             _rectTransform = gameObject.GetComponent<RectTransform>();
             _secondOrderDynamic = new SecondDegreeDynamicsAnimation(1.4f, 0.85f, 0.75f);
             SetTransitionToNewPosition(endPosition);
@@ -44,6 +46,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
         }
         public void Initialize(float lifespan, Vector2 endPosition, Vector2 textRectSize)
         {
+            _isDiposed = false;
             _rectTransform = gameObject.GetComponent<RectTransform>();
             _secondOrderDynamic = new SecondDegreeDynamicsAnimation(1.4f, 0.85f, 0.75f);
             SetTransitionToNewPosition(endPosition);
@@ -58,6 +61,7 @@ namespace TootTallyCore.Utils.TootTallyNotifs
         }
         public void Initialize(float lifespan, Vector2 endPosition, Vector2 textRectSize, Vector2 textPosition)
         {
+            _isDiposed = false;
             _rectTransform = gameObject.GetComponent<RectTransform>();
             _secondOrderDynamic = new SecondDegreeDynamicsAnimation(1.4f, 0.85f, 0.75f);
             SetTransitionToNewPosition(endPosition);
@@ -81,6 +85,8 @@ namespace TootTallyCore.Utils.TootTallyNotifs
 
         public void Update()
         {
+            if (_isDiposed) return;
+
             if (_secondOrderDynamic != null && _rectTransform.anchoredPosition != _endPosition)
                 _rectTransform.anchoredPosition = _secondOrderDynamic.GetNewVector(_endPosition, Time.deltaTime);
 
@@ -93,6 +99,8 @@ namespace TootTallyCore.Utils.TootTallyNotifs
 
         public void Dispose()
         {
+            if (_isDiposed) return;
+            _isDiposed = true;
             TootTallyNotifManager.QueueToRemovedFromList(this);
         }
     }

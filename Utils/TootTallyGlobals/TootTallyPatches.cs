@@ -8,6 +8,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
 {
     public static class TootTallyPatches
     {
+        private static float _releaseThreshold;
         [HarmonyPatch(typeof(GameController), nameof(GameController.buildNotes))]
         [HarmonyPrefix]
         public static void FixAudioLatency(GameController __instance)
@@ -32,6 +33,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         [HarmonyPrefix]
         public static void GameControllerPrefixPatch(GameController __instance)
         {
+            _releaseThreshold = __instance.release_threshold;
             if (GlobalVariables.turbomode)
                 TootTallyGlobalVariables.gameSpeedMultiplier = 2f;
             else if (GlobalVariables.practicemode != 1f)
@@ -111,6 +113,11 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         private static double _songTime;
         private static float _songLength;
         private static bool _startSongTime;
+        public static void SetCurrentSongTime(float time)
+        {
+            if (time < 0 || time > _songLength) return;
+            _songTime = time;
+        }
 
         [HarmonyPatch(typeof(GameController), nameof(GameController.Update))]
         [HarmonyPostfix]
@@ -176,7 +183,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
         [HarmonyPostfix]
         public static void OnGameControllerStartSongStartSongTime(GameController __instance)
         {
-            if (__instance.freeplay || TootTallyGlobalVariables.isSpectating || TootTallyGlobalVariables.isReplaying) return;
+            if (__instance.freeplay || TootTallyGlobalVariables.isSpectating) return;
 
             Plugin.LogInfo($"Starting song time.");
             _songLength = __instance.musictrack.clip.length;
@@ -213,6 +220,7 @@ namespace TootTallyCore.Utils.TootTallyGlobals
             __instance.smooth_scrolling_move_mult = speed;
             __instance.musictrack.pitch = speed;
             __instance.breathmultiplier = speed;
+            __instance.release_threshold = _releaseThreshold * speed;
         }
 
         public static void SetGCTotalTrackTimeString(GameController __instance)

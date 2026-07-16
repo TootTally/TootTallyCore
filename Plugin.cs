@@ -15,6 +15,7 @@ using TootTallyCore.Utils.TootTallyNotifs;
 using TootTallyCore.Utils.Steam;
 using UnityEngine;
 using TootTallyCore.Utils.Helpers;
+using B83.Win32;
 
 namespace TootTallyCore
 {
@@ -88,6 +89,7 @@ namespace TootTallyCore
             }
 
             _harmony = new Harmony(Info.Metadata.GUID);
+            UnityDragAndDropHook.InstallHook();
             GameInitializationEvent.Register(Info, TryInitialize);
         }
 

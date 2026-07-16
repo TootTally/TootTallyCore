@@ -1,5 +1,11 @@
 #### Changelog:
 
+`v1.3.9` -> `v1.3.10`
+```diff
++ Fixed bug with release threshold not being adjusted with gamespeed
++ Implemented Drag and drop files into the game
+```
+
 `v1.3.7` -> `v1.3.9`
 ```diff
 + Fixed crash caused by the replay stop api call

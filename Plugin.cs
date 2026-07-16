@@ -23,7 +23,7 @@ namespace TootTallyCore
     [BepInIncompatibility("TootTally")]
     public class Plugin : BaseUnityPlugin
     {
-        public static int BUILDDATE = 20250701;
+        public static int BUILDDATE = 20261607;
         private const string DEFAULT_THEME = "Default";
 
         public static Plugin Instance;
